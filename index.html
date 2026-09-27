@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="description" content="STUDY FORGE — 知識を武器に変える学習RPG" />
-  <title>STUDY FORGE — PHASE 9 MASTERY & BOSS MECHANICS</title>
+  <title>STUDY FORGE FC — HIGH SCHOOL SOCCER PHASE 1</title>
   <style>
 :root {
   --bg: #07080a;
@@ -991,6 +991,116 @@ button:disabled{filter:saturate(.5);opacity:.52;cursor:not-allowed!important}.pr
 .question-meta .exam-type-badge{border-color:rgba(126,200,255,.22);color:#9fd4ff}
 .import-preview{grid-template-columns:repeat(4,1fr)}
 @media(max-width:520px){.phase11-import-meta{grid-template-columns:1fr}.import-preview{grid-template-columns:repeat(2,1fr)}.question-image-wrap img{max-height:330px}.question-image-tools small{flex-basis:100%}}
+
+/* ===== HIGH SCHOOL SOCCER • PHASE 1 ===== */
+:root{--soccer:#45d483;--soccer-deep:#0f6d43;--soccer-blue:#6fb7ff;--soccer-gold:#f2d17a}
+#screen-home>:not(.soccer-home){display:none!important}
+.topbar>.resource-row{display:none!important}
+.soccer-top-resources{display:flex;gap:8px;align-items:center}
+.soccer-top-chip{min-width:86px;padding:8px 10px;border:1px solid var(--line);border-radius:11px;background:#101419}
+.soccer-top-chip span{display:block;color:var(--muted);font-size:7px;font-weight:900;letter-spacing:.12em}
+.soccer-top-chip b{display:block;margin-top:3px;color:#eaf8f0;font-size:13px}
+.soccer-home{display:grid;gap:14px}
+.soccer-hero{position:relative;overflow:hidden;padding:24px;background:radial-gradient(circle at 85% 10%,rgba(69,212,131,.18),transparent 36%),linear-gradient(180deg,#171b20,#0d1014)}
+.soccer-hero:after{content:"";position:absolute;right:-70px;bottom:-95px;width:260px;height:190px;border:2px solid rgba(255,255,255,.05);border-radius:50%}
+.soccer-hero-grid{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:start}
+.soccer-school-kicker{color:var(--soccer);font-size:9px;font-weight:1000;letter-spacing:.18em}
+.soccer-school-name{font-size:clamp(30px,6vw,54px);margin:6px 0 8px;letter-spacing:-.04em}
+.soccer-school-sub{color:#b8c3bd;font-size:12px;line-height:1.55}
+.soccer-rank{min-width:118px;text-align:center;padding:14px;border:1px solid rgba(69,212,131,.3);border-radius:16px;background:rgba(18,63,41,.24)}
+.soccer-rank span{display:block;color:#9ac8ad;font-size:8px;font-weight:900;letter-spacing:.12em}
+.soccer-rank b{display:block;margin-top:5px;font-size:25px;color:#effff5}
+.soccer-rank small{display:block;margin-top:5px;color:#84a892;font-size:8px}
+.soccer-rep{margin-top:18px}
+.soccer-rep-head{display:flex;justify-content:space-between;gap:10px;color:#9eaaa3;font-size:9px;font-weight:900}
+.soccer-rep-bar{height:10px;border-radius:999px;margin-top:7px;background:#090b0e;border:1px solid var(--line);overflow:hidden}
+.soccer-rep-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#18804e,#55db8e);transition:width .25s}
+.soccer-dashboard{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}
+.soccer-card{padding:18px}
+.soccer-card h3{margin:5px 0 8px;font-size:21px}
+.soccer-card p{margin:0;color:var(--muted);font-size:11px;line-height:1.55}
+.soccer-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:14px}
+.soccer-action{min-height:92px;text-align:left;padding:14px;border:1px solid var(--line);border-radius:14px;background:#11151a;cursor:pointer}
+.soccer-action span{display:block;font-size:24px}
+.soccer-action b{display:block;margin-top:8px;font-size:11px}
+.soccer-action small{display:block;margin-top:4px;color:var(--muted);font-size:8px;line-height:1.35}
+.soccer-action.primary{border-color:rgba(69,212,131,.34);background:linear-gradient(145deg,rgba(69,212,131,.12),#11151a)}
+.soccer-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+.soccer-metric{padding:11px;border:1px solid var(--line);border-radius:11px;background:rgba(0,0,0,.18)}
+.soccer-metric span{display:block;color:var(--muted);font-size:8px;font-weight:900}
+.soccer-metric b{display:block;margin-top:5px;font-size:18px}
+.soccer-next{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin-top:16px}
+.soccer-next-team{text-align:center;padding:14px 8px;border:1px solid var(--line);border-radius:12px;background:#0d1115}
+.soccer-next-team b{display:block;font-size:13px}
+.soccer-next-team small{display:block;margin-top:4px;color:var(--muted);font-size:8px}
+.soccer-vs{color:var(--soccer-gold);font-weight:1000}
+.soccer-study-reward{margin-top:14px;padding:13px 14px;border:1px solid rgba(69,212,131,.28);border-radius:12px;background:rgba(69,212,131,.07)}
+.soccer-study-reward b{color:#9cf0bc}
+.soccer-study-reward span{display:block;margin-top:5px;color:#a8b6ae;font-size:9px;line-height:1.45}
+.soccer-screen-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:14px}
+.soccer-screen-head h2{margin:3px 0 0}
+.soccer-pill{padding:8px 11px;border:1px solid rgba(69,212,131,.28);border-radius:999px;color:#a9f0c2;background:rgba(69,212,131,.06);font-size:9px;font-weight:900}
+.soccer-team-layout,.soccer-training-layout{display:grid;grid-template-columns:330px minmax(0,1fr);gap:14px}
+.soccer-control-panel,.soccer-roster-panel,.soccer-train-panel{padding:18px}
+.soccer-formations{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px}
+.soccer-formation-btn{min-height:44px;border:1px solid var(--line);border-radius:10px;background:#11151a;color:#a8acb2;font-weight:900;cursor:pointer}
+.soccer-formation-btn.active{border-color:rgba(69,212,131,.48);background:rgba(69,212,131,.12);color:#d9ffe7}
+.soccer-lineup-mini{display:grid;gap:7px;margin-top:14px}
+.soccer-lineup-row{display:grid;grid-template-columns:36px 1fr auto;gap:9px;align-items:center;padding:8px;border:1px solid var(--line);border-radius:10px;background:rgba(0,0,0,.18)}
+.soccer-pos{display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:#17211c;color:#7fe0a5;font-size:9px;font-weight:1000}
+.soccer-lineup-row b{font-size:10px}.soccer-lineup-row small{display:block;margin-top:2px;color:var(--muted);font-size:8px}
+.soccer-lineup-row em{font-style:normal;color:var(--soccer-gold);font-weight:900;font-size:11px}
+.soccer-roster-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}
+.soccer-player-card{position:relative;text-align:left;padding:13px;border:1px solid var(--line);border-radius:12px;background:#0f1317;cursor:pointer;min-height:112px}
+.soccer-player-card.starter{border-color:rgba(69,212,131,.46);box-shadow:inset 0 0 0 1px rgba(69,212,131,.07)}
+.soccer-player-card.selected{border-color:rgba(111,183,255,.52);background:rgba(111,183,255,.06)}
+.soccer-player-card .starter-tag{position:absolute;right:9px;top:9px;color:#93edb5;font-size:7px;font-weight:1000}
+.soccer-player-main{display:flex;align-items:center;gap:9px}
+.soccer-player-main .soccer-pos{flex:0 0 34px}
+.soccer-player-main b{font-size:11px}.soccer-player-main small{display:block;margin-top:3px;color:var(--muted);font-size:8px}
+.soccer-ovr{margin-left:auto;color:var(--soccer-gold);font-size:17px;font-weight:1000}
+.soccer-attrs{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:10px}
+.soccer-attr{text-align:center;padding:5px 1px;border-radius:6px;background:#15191e}
+.soccer-attr span{display:block;color:#737981;font-size:6px;font-weight:900}.soccer-attr b{display:block;margin-top:2px;font-size:9px}
+.soccer-train-summary{padding:15px;border:1px solid rgba(111,183,255,.2);border-radius:13px;background:rgba(111,183,255,.05)}
+.soccer-train-summary h3{margin:4px 0 5px}.soccer-train-summary p{color:var(--muted);font-size:10px}
+.soccer-drills{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:13px}
+.soccer-drill{min-height:70px;text-align:left;padding:11px;border:1px solid var(--line);border-radius:11px;background:#11151a;cursor:pointer}
+.soccer-drill b{display:block;font-size:10px}.soccer-drill span{display:block;margin-top:4px;color:#7fdca3;font-size:9px}.soccer-drill small{display:block;margin-top:3px;color:var(--muted);font-size:7px}
+.soccer-drill:disabled{opacity:.38;cursor:not-allowed}
+.soccer-match-shell{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px}
+.soccer-match-main,.soccer-match-side{padding:18px}
+.soccer-scoreboard{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;text-align:center}
+.soccer-score-team b{display:block;font-size:14px}.soccer-score-team small{display:block;margin-top:4px;color:var(--muted);font-size:8px}
+.soccer-score{font-size:34px;font-weight:1000;letter-spacing:.08em}
+.soccer-minute{margin-top:10px;text-align:center;color:#8f9a94;font-size:10px;font-weight:900}
+.soccer-match-progress{height:7px;margin-top:9px;border-radius:999px;background:#090b0e;overflow:hidden;border:1px solid var(--line)}
+.soccer-match-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#2c9a60,#55dc8e);transition:width .3s}
+.soccer-match-log{min-height:86px;max-height:145px;overflow:auto;margin-top:12px;padding:10px;border:1px solid var(--line);border-radius:11px;background:#0b0e12;font-size:9px;line-height:1.6;color:#aeb6b1}
+.soccer-match-log b{color:#e7efe9}
+.soccer-pitch{position:relative;height:390px;margin-top:14px;border:2px solid rgba(255,255,255,.34);border-radius:14px;overflow:hidden;background:linear-gradient(90deg,#17623e 0 12.5%,#1a6d46 12.5% 25%,#17623e 25% 37.5%,#1a6d46 37.5% 50%,#17623e 50% 62.5%,#1a6d46 62.5% 75%,#17623e 75% 87.5%,#1a6d46 87.5%);touch-action:none}
+.soccer-pitch:before{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:1px solid rgba(255,255,255,.34)}
+.soccer-pitch:after{content:"";position:absolute;left:50%;top:50%;width:92px;height:92px;border:1px solid rgba(255,255,255,.34);border-radius:50%;transform:translate(-50%,-50%)}
+.soccer-goal{position:absolute;left:50%;top:6px;width:105px;height:28px;border:2px solid rgba(255,255,255,.7);border-top:0;transform:translateX(-50%)}
+.soccer-gk{position:absolute;left:50%;top:44px;transform:translateX(-50%);font-size:23px;z-index:4}
+.soccer-defender{position:absolute;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:#6d2830;border:2px solid rgba(255,255,255,.72);font-size:8px;font-weight:900;z-index:3}
+.soccer-chance-player{position:absolute;width:48px;height:48px;border-radius:50%;border:2px solid white;background:#153964;color:white;display:grid;place-items:center;cursor:pointer;z-index:5;box-shadow:0 5px 14px rgba(0,0,0,.26)}
+.soccer-chance-player.ball{background:#f3d170;color:#1b1b1b;box-shadow:0 0 0 5px rgba(243,209,112,.18)}
+.soccer-chance-player span{font-size:8px;font-weight:1000}.soccer-chance-player small{position:absolute;top:51px;white-space:nowrap;color:white;font-size:7px;text-shadow:0 1px 4px #000}
+.soccer-ball{position:absolute;width:11px;height:11px;border-radius:50%;background:#fff;border:2px solid #111;z-index:7;pointer-events:none;transition:.2s}
+.soccer-chance-overlay{position:absolute;left:10px;right:10px;bottom:10px;padding:10px 12px;border-radius:11px;background:rgba(4,9,7,.88);border:1px solid rgba(255,255,255,.15);z-index:10}
+.soccer-chance-overlay b{font-size:10px;color:#dfffe9}.soccer-chance-overlay span{display:block;margin-top:4px;color:#9fb2a6;font-size:8px}
+.soccer-match-controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.soccer-result{padding:15px;margin-top:12px;border:1px solid rgba(242,209,122,.25);border-radius:12px;background:rgba(242,209,122,.06);text-align:center}
+.soccer-result h3{font-size:25px;margin:2px 0 5px;color:#f2d17a}
+.soccer-result p{margin:0;color:var(--muted);font-size:10px}
+.soccer-side-stats{display:grid;gap:8px;margin-top:12px}.soccer-side-stat{display:flex;justify-content:space-between;gap:10px;padding:10px;border:1px solid var(--line);border-radius:10px;background:rgba(0,0,0,.18);font-size:9px}.soccer-side-stat span{color:var(--muted)}.soccer-side-stat b{color:white}
+.bottom-nav{grid-template-columns:repeat(5,minmax(0,1fr));width:min(720px,100%)}
+.bottom-nav .nav-btn{min-width:0;padding:6px 2px}
+.bottom-nav .nav-btn b{font-size:8px}
+@media(max-width:900px){.soccer-dashboard,.soccer-team-layout,.soccer-training-layout,.soccer-match-shell{grid-template-columns:1fr}.soccer-match-side{order:-1}.soccer-actions{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.soccer-top-resources{gap:4px}.soccer-top-chip{min-width:64px;padding:7px}.soccer-top-chip span{font-size:6px}.soccer-top-chip b{font-size:11px}.soccer-hero{padding:18px}.soccer-hero-grid{grid-template-columns:1fr}.soccer-rank{min-width:0;text-align:left}.soccer-metrics{grid-template-columns:repeat(2,1fr)}.soccer-roster-grid{grid-template-columns:1fr}.soccer-actions{grid-template-columns:1fr 1fr}.soccer-pitch{height:350px}.bottom-nav{gap:1px;padding:4px}.bottom-nav .nav-btn span{font-size:16px}.bottom-nav .nav-btn b{font-size:7px;letter-spacing:.04em}}
+
 </style>
 </head>
 <body>
@@ -1007,10 +1117,56 @@ button:disabled{filter:saturate(.5);opacity:.52;cursor:not-allowed!important}.pr
         <div class="resource"><span>G</span><b id="goldValue">0</b></div>
         <div class="resource forge"><span>FE</span><b id="forgeEnergyValue">0</b></div>
       </div>
+
+      <div class="soccer-top-resources" aria-label="高校サッカー進行">
+        <div class="soccer-top-chip"><span>TRAINING PT</span><b id="soccerTopTraining">0</b></div>
+        <div class="soccer-top-chip"><span>SCHOOL RANK</span><b id="soccerTopRank">無名</b></div>
+      </div>
     </header>
 
     <main>
       <section class="screen active" id="screen-home" data-screen="home">
+
+        <div class="soccer-home">
+          <section class="soccer-hero metal-panel">
+            <div class="soccer-hero-grid">
+              <div>
+                <div class="soccer-school-kicker">HIGH SCHOOL FOOTBALL • YEAR <span id="soccerHomeYear">1</span></div>
+                <h1 class="soccer-school-name" id="soccerHomeSchool">FORGE高校</h1>
+                <div class="soccer-school-sub">勉強で選手を育て、監督として全国を目指す。PHASE 1では育成・編成・試合の基本ループを遊べます。</div>
+              </div>
+              <div class="soccer-rank"><span>SCHOOL REPUTATION</span><b id="soccerHomeRank">無名</b><small id="soccerHomeRepText">0 REP</small></div>
+            </div>
+            <div class="soccer-rep"><div class="soccer-rep-head"><span>次の学校ランクまで</span><span id="soccerRepNext">60</span></div><div class="soccer-rep-bar"><i id="soccerRepBar"></i></div></div>
+          </section>
+
+          <div class="soccer-dashboard">
+            <section class="soccer-card metal-panel">
+              <div class="panel-head"><span>MANAGER HUB</span><small>PHASE 1</small></div>
+              <div class="soccer-actions">
+                <button class="soccer-action primary" data-nav="study"><span>📚</span><b>勉強する</b><small>正解で育成PTを獲得</small></button>
+                <button class="soccer-action" data-nav="soccer-training"><span>🏃</span><b>選手育成</b><small>能力を個別強化</small></button>
+                <button class="soccer-action" data-nav="soccer-team"><span>📋</span><b>チーム編成</b><small>スタメン・布陣を決定</small></button>
+                <button class="soccer-action" data-nav="soccer-match"><span>⚽</span><b>試合</b><small>重要場面だけ自分で操作</small></button>
+              </div>
+              <div class="soccer-metrics">
+                <div class="soccer-metric"><span>TRAINING PT</span><b id="soccerHomeTraining">0</b></div>
+                <div class="soccer-metric"><span>TEAM OVR</span><b id="soccerHomeOvr">0</b></div>
+                <div class="soccer-metric"><span>RECORD</span><b id="soccerHomeRecord">0-0-0</b></div>
+                <div class="soccer-metric"><span>ROSTER</span><b id="soccerHomeRoster">18</b></div>
+              </div>
+            </section>
+            <section class="soccer-card metal-panel">
+              <div class="panel-head"><span>NEXT MATCH</span><small>PRACTICE MATCH</small></div>
+              <div class="soccer-next">
+                <div class="soccer-next-team"><b id="soccerNextHome">FORGE高校</b><small id="soccerNextHomePower">OVR 0</small></div>
+                <div class="soccer-vs">VS</div>
+                <div class="soccer-next-team"><b id="soccerNextAway">市立北高</b><small id="soccerNextAwayPower">OVR 54</small></div>
+              </div>
+              <p style="margin-top:12px">試合は基本オート。CHANCEになると、味方タップでパス、ピッチを上へスワイプしてシュートできます。</p>
+            </section>
+          </div>
+        </div>
         <div class="hero-panel metal-panel">
           <div class="eyebrow">FORGER PROFILE</div>
           <div class="hero-top">
@@ -1206,6 +1362,12 @@ button:disabled{filter:saturate(.5);opacity:.52;cursor:not-allowed!important}.pr
               </div>
               <p class="small-copy" id="studyModeHelp">全問題から出題します。</p>
             </div>
+
+            <div class="soccer-study-reward">
+              <b>⚽ FOOTBALL TRAINING</b>
+              <span>正解：育成PT +12 / 学校EXP +2　・　不正解：育成PT +3<br>勉強結果がそのままチーム育成へつながります。</span>
+            </div>
+
             <div class="metal-panel compact-panel mastery-panel">
               <div class="panel-head"><span>KNOWLEDGE MASTERY</span><small>PHASE 9</small></div>
               <div class="mastery-score"><b id="masteryRate">0%</b><span>MASTER POWER</span></div>
@@ -1675,17 +1837,97 @@ button:disabled{filter:saturate(.5);opacity:.52;cursor:not-allowed!important}.pr
           </div>
         </div>
       </section>
+
+      <section class="screen" id="screen-soccer-training" data-screen="soccer-training">
+        <div class="soccer-screen-head">
+          <button class="icon-btn" data-nav="home" aria-label="ホームへ戻る">←</button>
+          <div><span class="eyebrow">PLAYER DEVELOPMENT</span><h2>選手育成</h2></div>
+          <div class="soccer-pill">TP <span id="soccerTrainingPoints">0</span></div>
+        </div>
+        <div class="soccer-training-layout">
+          <aside class="soccer-control-panel metal-panel">
+            <div class="panel-head"><span>SELECTED PLAYER</span><small>TRAINING COST 20 PT</small></div>
+            <div id="soccerSelectedPlayer" class="soccer-train-summary"></div>
+            <div class="soccer-drills" id="soccerDrillGrid"></div>
+          </aside>
+          <section class="soccer-roster-panel metal-panel">
+            <div class="panel-head"><span>ROSTER</span><small>選手をタップして育成対象を変更</small></div>
+            <div class="soccer-roster-grid" id="soccerTrainingRoster"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-soccer-team" data-screen="soccer-team">
+        <div class="soccer-screen-head">
+          <button class="icon-btn" data-nav="home" aria-label="ホームへ戻る">←</button>
+          <div><span class="eyebrow">SQUAD MANAGEMENT</span><h2>チーム編成</h2></div>
+          <div class="soccer-pill">TEAM OVR <span id="soccerTeamOvr">0</span></div>
+        </div>
+        <div class="soccer-team-layout">
+          <aside class="soccer-control-panel metal-panel">
+            <div class="panel-head"><span>FORMATION</span><small>変更時は自動で最適編成</small></div>
+            <div class="soccer-formations" id="soccerFormationButtons"></div>
+            <button class="secondary-btn" id="soccerAutoLineupBtn" style="width:100%;margin-top:10px">能力順で自動編成</button>
+            <div class="panel-head" style="margin-top:16px"><span>STARTING XI</span><small id="soccerStarterCount">11 / 11</small></div>
+            <div class="soccer-lineup-mini" id="soccerStartingList"></div>
+          </aside>
+          <section class="soccer-roster-panel metal-panel">
+            <div class="panel-head"><span>ALL PLAYERS</span><small>タップでスタメン / 控えを切替</small></div>
+            <div class="soccer-roster-grid" id="soccerTeamRoster"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-soccer-match" data-screen="soccer-match">
+        <div class="soccer-screen-head">
+          <button class="icon-btn" data-nav="home" aria-label="ホームへ戻る">←</button>
+          <div><span class="eyebrow">MATCH DAY</span><h2>練習試合</h2></div>
+          <div class="soccer-pill" id="soccerMatchStatus">READY</div>
+        </div>
+        <div class="soccer-match-shell">
+          <section class="soccer-match-main metal-panel">
+            <div class="soccer-scoreboard">
+              <div class="soccer-score-team"><b id="soccerScoreHomeName">FORGE高校</b><small id="soccerScoreHomeOvr">OVR 0</small></div>
+              <div class="soccer-score"><span id="soccerHomeGoals">0</span> - <span id="soccerAwayGoals">0</span></div>
+              <div class="soccer-score-team"><b id="soccerScoreAwayName">市立北高</b><small id="soccerScoreAwayOvr">OVR 54</small></div>
+            </div>
+            <div class="soccer-minute"><span id="soccerMinute">0</span>'</div>
+            <div class="soccer-match-progress"><i id="soccerMatchProgress"></i></div>
+            <div class="soccer-pitch" id="soccerPitch" aria-label="チャンス操作エリア">
+              <div class="soccer-goal"></div>
+              <div class="soccer-gk">🧤</div>
+              <div id="soccerPitchActors"></div>
+              <div class="soccer-chance-overlay" id="soccerChanceHelp"><b>試合開始前</b><span>スタートすると自動進行します。チャンス時だけ操作してください。</span></div>
+            </div>
+            <div class="soccer-match-controls">
+              <button class="primary-btn" id="soccerStartMatchBtn">KICK OFF</button>
+              <button class="secondary-btn" id="soccerShootBtn" disabled>シュート</button>
+            </div>
+            <div class="soccer-result hidden" id="soccerMatchResult"></div>
+          </section>
+          <aside class="soccer-match-side metal-panel">
+            <div class="panel-head"><span>MATCH INFO</span><small>AUTO + CHANCE PLAY</small></div>
+            <div class="soccer-side-stats">
+              <div class="soccer-side-stat"><span>FORMATION</span><b id="soccerMatchFormation">4-3-3</b></div>
+              <div class="soccer-side-stat"><span>SCHOOL RANK</span><b id="soccerMatchRank">無名</b></div>
+              <div class="soccer-side-stat"><span>CHANCES</span><b id="soccerChanceCount">0</b></div>
+              <div class="soccer-side-stat"><span>USER GOALS</span><b id="soccerUserGoals">0</b></div>
+            </div>
+            <div class="soccer-match-log" id="soccerMatchLog"><b>MATCH READY</b><br>スタメンを確認して試合を開始してください。</div>
+          </aside>
+        </div>
+      </section>
+
     </main>
 
     <div class="bottom-nav-shell" aria-hidden="false">
+
       <nav class="bottom-nav" aria-label="メインナビゲーション">
         <button class="nav-btn active" data-nav="home"><span>⌂</span><b>HOME</b></button>
-        <button class="nav-btn" data-nav="study"><span>✦</span><b>STUDY</b></button>
-        <button class="nav-btn" data-nav="forge"><span>♨</span><b>FORGE</b></button>
-        <button class="nav-btn" data-nav="dungeon"><span>◆</span><b>DUNGEON</b></button>
-        <button class="nav-btn" data-nav="skills"><span>✥</span><b>SKILLS</b></button>
-        <button class="nav-btn" data-nav="goals"><span>★</span><b>GOALS</b></button>
-        <button class="nav-btn" data-nav="battle"><span>⚔</span><b>BATTLE</b></button>
+        <button class="nav-btn" data-nav="study"><span>📚</span><b>STUDY</b></button>
+        <button class="nav-btn" data-nav="soccer-training"><span>🏃</span><b>TRAIN</b></button>
+        <button class="nav-btn" data-nav="soccer-team"><span>📋</span><b>TEAM</b></button>
+        <button class="nav-btn" data-nav="soccer-match"><span>⚽</span><b>MATCH</b></button>
       </nav>
     </div>
 
@@ -2002,6 +2244,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     phase9: {collectionClaims:{},mythicTickets:0},
     phase10: {loadout:{subWeaponId:null,accessoryIds:['scholar-ring',null]},accessories:['scholar-ring'],daily:{key:'',subject:'',element:'FIRE',hunt:'ELITE',huntKills:0},season:{key:'',xp:0,bossKills:0,claimed:{},firstBossReward:false}},
     today: { date: TODAY_KEY(), answered: 0, correct: 0 },
+    soccer: {initialized:false,schoolName:'FORGE高校',year:1,month:4,reputation:0,schoolExp:0,trainingPoints:0,formation:'4-3-3',players:[],starterIds:[],selectedPlayerId:null,record:{played:0,wins:0,draws:0,losses:0,gf:0,ga:0},lastResult:null},
     settings: { sound: false, fxMode: 'lite' }
   });
 
@@ -3390,6 +3633,9 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if (screen === 'goals') renderGoals();
     if (screen === 'battle') ensureEnemy();
     if (screen === 'forge') renderForge();
+    if (screen === 'soccer-team') renderSoccerTeam();
+    if (screen === 'soccer-training') renderSoccerTraining();
+    if (screen === 'soccer-match') renderSoccerMatch();
     const scrollHost = document.querySelector('main');
     if (scrollHost) scrollHost.scrollTo({top:0, behavior:'auto'});
     renderAll();
@@ -3438,6 +3684,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
 
     if (currentQuestion && !studyAnswered) renderRewardPreview(currentQuestion);
     renderBattleBars();
+    renderSoccerShell();
     refreshBankDiagnostics();
   }
 
@@ -3618,13 +3865,14 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
       const reward = calculateStudyRewards(q);
       const {exp,gold,energy} = reward;
       const materialDrop = rollStudyMaterial(q);
-      phase5Track('correct',1); if(wasReview) phase5Track('reviewCorrect',1); phase5Track('combo',state.study.combo); phase10OnCorrect(q);
+      phase5Track('correct',1); if(wasReview) phase5Track('reviewCorrect',1); phase5Track('combo',state.study.combo); phase10OnCorrect(q); soccerStudyReward(true,q,wasReview);
       $('answerFeedback').innerHTML = `<strong>✓ CORRECT — COMBO ${state.study.combo}</strong>${explanationHtml(q)}`;
       addRewards({exp,gold,energy});
       if (materialDrop) toast(`<b>MATERIAL</b> ${materialDrop}`);
     } else {
       state.study.combo = 0;
       markReview(q.id,true);
+      soccerStudyReward(false,q,false);
       $('answerFeedback').innerHTML = `<strong>✕ WRONG — 復習問題に追加</strong>${explanationHtml(q)}`;
       toast('<b>REVIEW ADDED</b> 間違えた問題を復習リストへ登録');
       saveState();
@@ -4387,6 +4635,202 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     return String(value).replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
   }
 
+
+  // ===== HIGH SCHOOL SOCCER • PHASE 1 =====
+  const SOCCER_ATTRS=['PAC','SHO','PAS','DRI','DEF','PHY'];
+  const SOCCER_FORMATIONS={
+    '4-3-3':{GK:1,DF:4,MF:3,FW:3},
+    '4-4-2':{GK:1,DF:4,MF:4,FW:2},
+    '4-2-3-1':{GK:1,DF:4,MF:5,FW:1},
+    '3-5-2':{GK:1,DF:3,MF:5,FW:2}
+  };
+  const SOCCER_OPPONENTS=[
+    {name:'市立北高',strength:54,style:'BALANCED'},
+    {name:'西陵学園',strength:58,style:'COUNTER'},
+    {name:'蒼空学院',strength:63,style:'POSSESSION'},
+    {name:'皇星高校',strength:69,style:'PRESS'}
+  ];
+  const SOCCER_SURNAMES=['佐藤','鈴木','高橋','田中','伊藤','渡辺','山本','中村','小林','加藤','吉田','山田','佐々木','山口','松本','井上','木村','林','斎藤','清水','阿部','森','池田','橋本'];
+  const SOCCER_GIVEN=['蓮','海斗','悠真','蒼','湊','陽翔','大和','颯太','陸','樹','朝陽','翼','健人','駿','玲央','奏太','拓海','一輝','優斗','航'];
+  let soccerMatchTimer=null;
+  let soccerMatchRuntime=null;
+  let soccerPointerStart=null;
+
+  function soccerDefaultState(){
+    return {initialized:false,schoolName:'FORGE高校',year:1,month:4,reputation:0,schoolExp:0,trainingPoints:0,formation:'4-3-3',players:[],starterIds:[],selectedPlayerId:null,record:{played:0,wins:0,draws:0,losses:0,gf:0,ga:0},lastResult:null};
+  }
+  function normalizeSoccerState(){
+    const base=soccerDefaultState();
+    state.soccer={...base,...(state.soccer||{}),record:{...base.record,...((state.soccer||{}).record||{})}};
+    if(!Array.isArray(state.soccer.players)||state.soccer.players.length<11){
+      state.soccer.players=generateSoccerRoster();
+      state.soccer.initialized=true;
+    }
+    state.soccer.players.forEach(p=>{SOCCER_ATTRS.forEach(a=>p[a]=clamp(Number(p[a])||45,25,99));p.ovr=soccerPlayerOvr(p);});
+    if(!SOCCER_FORMATIONS[state.soccer.formation])state.soccer.formation='4-3-3';
+    const ids=new Set(state.soccer.players.map(p=>p.id));
+    state.soccer.starterIds=(state.soccer.starterIds||[]).filter(id=>ids.has(id)).slice(0,11);
+    if(state.soccer.starterIds.length!==11)autoSelectSoccerStarters(false);
+    if(!ids.has(state.soccer.selectedPlayerId))state.soccer.selectedPlayerId=state.soccer.players[0]?.id||null;
+    state.soccer.trainingPoints=Math.max(0,Math.round(Number(state.soccer.trainingPoints)||0));
+    state.soccer.reputation=Math.max(0,Math.round(Number(state.soccer.reputation)||0));
+  }
+  function generateSoccerRoster(){
+    const positions=['GK','GK','DF','DF','DF','DF','DF','MF','MF','MF','MF','MF','MF','FW','FW','FW','FW','FW'];
+    return positions.map((pos,i)=>{
+      const base=43+Math.floor(Math.random()*15), stats={PAC:base,SHO:base,PAS:base,DRI:base,DEF:base,PHY:base};
+      if(pos==='GK'){stats.PAC-=5;stats.SHO-=12;stats.PAS+=1;stats.DRI-=5;stats.DEF+=11;stats.PHY+=5;}
+      if(pos==='DF'){stats.PAC+=1;stats.SHO-=7;stats.PAS+=1;stats.DRI-=2;stats.DEF+=11;stats.PHY+=7;}
+      if(pos==='MF'){stats.PAC+=2;stats.SHO+=1;stats.PAS+=10;stats.DRI+=7;stats.DEF+=2;stats.PHY+=1;}
+      if(pos==='FW'){stats.PAC+=8;stats.SHO+=11;stats.PAS+=1;stats.DRI+=7;stats.DEF-=10;stats.PHY+=2;}
+      const p={id:'hs-'+Date.now().toString(36)+'-'+i+'-'+Math.random().toString(36).slice(2,6),name:SOCCER_SURNAMES[Math.floor(Math.random()*SOCCER_SURNAMES.length)]+' '+SOCCER_GIVEN[Math.floor(Math.random()*SOCCER_GIVEN.length)],pos,grade:1,talent:+(0.88+Math.random()*.28).toFixed(2),potential:68+Math.floor(Math.random()*25),trait:['努力家','負けず嫌い','冷静','ムードメーカー','フィジカル型','技巧派'][Math.floor(Math.random()*6)],...stats};
+      SOCCER_ATTRS.forEach(a=>p[a]=clamp(Math.round(p[a]),25,85));p.ovr=soccerPlayerOvr(p);return p;
+    });
+  }
+  function soccerPlayerOvr(p){
+    const w=p.pos==='GK'?{PAC:.08,SHO:.03,PAS:.16,DRI:.08,DEF:.43,PHY:.22}:p.pos==='DF'?{PAC:.14,SHO:.05,PAS:.14,DRI:.09,DEF:.38,PHY:.20}:p.pos==='MF'?{PAC:.13,SHO:.13,PAS:.25,DRI:.22,DEF:.13,PHY:.14}:{PAC:.20,SHO:.28,PAS:.13,DRI:.23,DEF:.04,PHY:.12};
+    return Math.round(SOCCER_ATTRS.reduce((sum,a)=>sum+(Number(p[a])||0)*w[a],0));
+  }
+  function soccerRankInfo(rep=state.soccer.reputation){
+    const ranks=[{name:'無名',min:0,next:60},{name:'地区校',min:60,next:150},{name:'中堅',min:150,next:300},{name:'強豪',min:300,next:550},{name:'名門',min:550,next:900},{name:'全国屈指',min:900,next:null}];
+    let cur=ranks[0];for(const r of ranks)if(rep>=r.min)cur=r;return cur;
+  }
+  function soccerTeamOvr(){
+    normalizeSoccerState();
+    const starters=state.soccer.starterIds.map(id=>state.soccer.players.find(p=>p.id===id)).filter(Boolean);
+    if(!starters.length)return 0;
+    let avg=starters.reduce((n,p)=>n+p.ovr,0)/starters.length;
+    const need=SOCCER_FORMATIONS[state.soccer.formation], count={GK:0,DF:0,MF:0,FW:0};starters.forEach(p=>count[p.pos]=(count[p.pos]||0)+1);
+    const fit=Object.keys(need).every(k=>count[k]>=need[k]);if(fit)avg+=2;
+    return Math.round(avg);
+  }
+  function autoSelectSoccerStarters(doSave=true){
+    const need=SOCCER_FORMATIONS[state.soccer?.formation]||SOCCER_FORMATIONS['4-3-3'];
+    const chosen=[];
+    Object.entries(need).forEach(([pos,count])=>{
+      state.soccer.players.filter(p=>p.pos===pos).sort((a,b)=>b.ovr-a.ovr).slice(0,count).forEach(p=>chosen.push(p.id));
+    });
+    if(chosen.length<11)state.soccer.players.filter(p=>!chosen.includes(p.id)).sort((a,b)=>b.ovr-a.ovr).slice(0,11-chosen.length).forEach(p=>chosen.push(p.id));
+    state.soccer.starterIds=chosen.slice(0,11);if(doSave){saveState();renderSoccerShell();}
+  }
+  function soccerStudyReward(correct,q,wasReview=false){
+    normalizeSoccerState();
+    const tp=correct?12:3;state.soccer.trainingPoints+=tp;if(correct)state.soccer.schoolExp+=2+(wasReview?1:0);
+    saveState();renderSoccerShell();
+    if(correct)toast('<b>FOOTBALL TRAINING</b> 育成PT +12');
+    else toast('<b>EFFORT POINT</b> 育成PT +3');
+  }
+  function soccerPlayerCard(p,{selected=false}={}){
+    const starter=state.soccer.starterIds.includes(p.id);
+    return '<button type="button" class="soccer-player-card'+(starter?' starter':'')+(selected?' selected':'')+'" data-soccer-player="'+p.id+'">'+(starter?'<span class="starter-tag">STARTING XI</span>':'')+'<div class="soccer-player-main"><span class="soccer-pos">'+p.pos+'</span><div><b>'+escapeHtml(p.name)+'</b><small>1年 • '+escapeHtml(p.trait)+' • POT '+p.potential+'</small></div><span class="soccer-ovr">'+p.ovr+'</span></div><div class="soccer-attrs">'+SOCCER_ATTRS.map(a=>'<div class="soccer-attr"><span>'+a+'</span><b>'+p[a]+'</b></div>').join('')+'</div></button>';
+  }
+  function renderSoccerHome(){
+    if(!$('soccerHomeSchool'))return;normalizeSoccerState();const rank=soccerRankInfo(),team=soccerTeamOvr(),next=SOCCER_OPPONENTS[state.soccer.record.played%SOCCER_OPPONENTS.length];
+    $('soccerHomeSchool').textContent=state.soccer.schoolName;$('soccerHomeYear').textContent=state.soccer.year;$('soccerHomeRank').textContent=rank.name;$('soccerHomeRepText').textContent=state.soccer.reputation+' REP';$('soccerHomeTraining').textContent=state.soccer.trainingPoints;$('soccerHomeOvr').textContent=team;$('soccerHomeRoster').textContent=state.soccer.players.length;
+    const r=state.soccer.record;$('soccerHomeRecord').textContent=r.wins+'-'+r.draws+'-'+r.losses;$('soccerNextHome').textContent=state.soccer.schoolName;$('soccerNextHomePower').textContent='OVR '+team;$('soccerNextAway').textContent=next.name;$('soccerNextAwayPower').textContent='OVR '+next.strength;
+    const lower=rank.min,nextVal=rank.next,progress=nextVal?clamp((state.soccer.reputation-lower)/(nextVal-lower)*100,0,100):100;$('soccerRepBar').style.width=progress+'%';$('soccerRepNext').textContent=nextVal?Math.max(0,nextVal-state.soccer.reputation)+' REP':'MAX';
+    $('soccerTopTraining').textContent=state.soccer.trainingPoints;$('soccerTopRank').textContent=rank.name;
+  }
+  function renderSoccerTeam(){
+    if(!$('soccerTeamRoster'))return;normalizeSoccerState();$('soccerTeamOvr').textContent=soccerTeamOvr();$('soccerStarterCount').textContent=state.soccer.starterIds.length+' / 11';
+    $('soccerFormationButtons').innerHTML=Object.keys(SOCCER_FORMATIONS).map(f=>'<button class="soccer-formation-btn'+(state.soccer.formation===f?' active':'')+'" data-soccer-formation="'+f+'">'+f+'</button>').join('');
+    Array.from(document.querySelectorAll('[data-soccer-formation]')).forEach(btn=>btn.addEventListener('click',()=>{state.soccer.formation=btn.dataset.soccerFormation;autoSelectSoccerStarters();renderSoccerTeam();}));
+    const starters=state.soccer.starterIds.map(id=>state.soccer.players.find(p=>p.id===id)).filter(Boolean);
+    $('soccerStartingList').innerHTML=starters.sort((a,b)=>['GK','DF','MF','FW'].indexOf(a.pos)-['GK','DF','MF','FW'].indexOf(b.pos)||b.ovr-a.ovr).map(p=>'<div class="soccer-lineup-row"><span class="soccer-pos">'+p.pos+'</span><div><b>'+escapeHtml(p.name)+'</b><small>'+p.trait+'</small></div><em>'+p.ovr+'</em></div>').join('');
+    $('soccerTeamRoster').innerHTML=state.soccer.players.slice().sort((a,b)=>b.ovr-a.ovr).map(p=>soccerPlayerCard(p)).join('');
+    Array.from(document.querySelectorAll('#soccerTeamRoster [data-soccer-player]')).forEach(btn=>btn.addEventListener('click',()=>toggleSoccerStarter(btn.dataset.soccerPlayer)));
+  }
+  function toggleSoccerStarter(id){
+    normalizeSoccerState();const at=state.soccer.starterIds.indexOf(id);
+    if(at>=0){state.soccer.starterIds.splice(at,1);}
+    else if(state.soccer.starterIds.length<11){state.soccer.starterIds.push(id);}
+    else return toast('<b>STARTING XI</b> 先に1人を控えへ移してください');
+    saveState();renderSoccerTeam();renderSoccerHome();
+  }
+  function renderSoccerTraining(){
+    if(!$('soccerTrainingRoster'))return;normalizeSoccerState();$('soccerTrainingPoints').textContent=state.soccer.trainingPoints;const p=state.soccer.players.find(x=>x.id===state.soccer.selectedPlayerId)||state.soccer.players[0];if(!p)return;
+    $('soccerSelectedPlayer').innerHTML='<span class="soccer-pos">'+p.pos+'</span><h3>'+escapeHtml(p.name)+' <small style="color:var(--soccer-gold)">OVR '+p.ovr+'</small></h3><p>1年 • '+escapeHtml(p.trait)+' • POT '+p.potential+' • 成長補正 ×'+p.talent.toFixed(2)+'</p>';
+    const labels={PAC:'スプリント',SHO:'シュート',PAS:'パス',DRI:'1対1',DEF:'守備',PHY:'フィジカル'};
+    $('soccerDrillGrid').innerHTML=SOCCER_ATTRS.map(a=>'<button class="soccer-drill" data-soccer-drill="'+a+'" '+(state.soccer.trainingPoints<20||p[a]>=99?'disabled':'')+'><b>'+labels[a]+'</b><span>'+a+' '+p[a]+' → UP</span><small>20 PT / 成長 +1〜3</small></button>').join('');
+    Array.from(document.querySelectorAll('[data-soccer-drill]')).forEach(btn=>btn.addEventListener('click',()=>trainSoccerPlayer(btn.dataset.soccerDrill)));
+    $('soccerTrainingRoster').innerHTML=state.soccer.players.slice().sort((a,b)=>b.ovr-a.ovr).map(x=>soccerPlayerCard(x,{selected:x.id===p.id})).join('');
+    Array.from(document.querySelectorAll('#soccerTrainingRoster [data-soccer-player]')).forEach(btn=>btn.addEventListener('click',()=>{state.soccer.selectedPlayerId=btn.dataset.soccerPlayer;saveState();renderSoccerTraining();}));
+  }
+  function trainSoccerPlayer(attr){
+    normalizeSoccerState();const p=state.soccer.players.find(x=>x.id===state.soccer.selectedPlayerId);if(!p||!SOCCER_ATTRS.includes(attr)||state.soccer.trainingPoints<20||p[attr]>=99)return;
+    state.soccer.trainingPoints-=20;const gain=Math.max(1,Math.min(3,Math.round(1+p.talent+Math.random()*.8)-1));p[attr]=clamp(p[attr]+gain,25,99);p.ovr=soccerPlayerOvr(p);saveState();renderSoccerTraining();renderSoccerHome();toast('<b>TRAINING</b> '+escapeHtml(p.name)+' • '+attr+' +'+gain);
+  }
+  function currentSoccerOpponent(){normalizeSoccerState();return SOCCER_OPPONENTS[state.soccer.record.played%SOCCER_OPPONENTS.length];}
+  function renderSoccerMatch(){
+    if(!$('soccerScoreHomeName'))return;normalizeSoccerState();const opp=soccerMatchRuntime?.opponent||currentSoccerOpponent(),team=soccerTeamOvr(),rt=soccerMatchRuntime;
+    $('soccerScoreHomeName').textContent=state.soccer.schoolName;$('soccerScoreAwayName').textContent=opp.name;$('soccerScoreHomeOvr').textContent='OVR '+team;$('soccerScoreAwayOvr').textContent='OVR '+opp.strength;$('soccerMatchFormation').textContent=state.soccer.formation;$('soccerMatchRank').textContent=soccerRankInfo().name;
+    $('soccerMinute').textContent=rt?Math.min(90,rt.minute):0;$('soccerHomeGoals').textContent=rt?rt.home:0;$('soccerAwayGoals').textContent=rt?rt.away:0;$('soccerMatchProgress').style.width=((rt?Math.min(90,rt.minute):0)/90*100)+'%';$('soccerChanceCount').textContent=rt?rt.chances:0;$('soccerUserGoals').textContent=rt?rt.userGoals:0;
+    $('soccerMatchStatus').textContent=rt?(rt.finished?'FULL TIME':rt.inChance?'CHANCE!':'LIVE'):'READY';$('soccerStartMatchBtn').disabled=!!(rt&&!rt.finished);$('soccerStartMatchBtn').textContent=rt&&rt.finished?'REMATCH':'KICK OFF';$('soccerShootBtn').disabled=!(rt&&rt.inChance);
+    if(!rt||!rt.inChance)renderSoccerPitchIdle();
+  }
+  function renderSoccerPitchIdle(){
+    if(!$('soccerPitchActors'))return;$('soccerPitchActors').innerHTML='<div class="soccer-defender" style="left:28%;top:34%">DF</div><div class="soccer-defender" style="right:28%;top:34%">DF</div><div class="soccer-defender" style="left:44%;top:49%">DF</div>';$('soccerChanceHelp').innerHTML='<b>'+(soccerMatchRuntime&&!soccerMatchRuntime.finished?'AUTO MATCH':'MATCH READY')+'</b><span>'+(soccerMatchRuntime&&!soccerMatchRuntime.finished?'重要な攻撃場面になると自動でCHANCEへ切り替わります。':'KICK OFFで試合開始。')+'</span>';
+  }
+  function soccerLog(text){
+    if(!$('soccerMatchLog'))return;const line=document.createElement('div');line.innerHTML='<b>'+Math.min(90,soccerMatchRuntime?.minute||0)+"'</b> "+escapeHtml(text);$('soccerMatchLog').prepend(line);
+  }
+  function startSoccerMatch(){
+    normalizeSoccerState();if(state.soccer.starterIds.length!==11)return toast('<b>LINEUP ERROR</b> スタメンを11人選んでください');
+    if(soccerMatchTimer){clearInterval(soccerMatchTimer);soccerMatchTimer=null;}
+    const opp=currentSoccerOpponent();soccerMatchRuntime={opponent:opp,minute:0,home:0,away:0,chances:0,userGoals:0,nextChance:15+Math.floor(Math.random()*9),inChance:false,finished:false,stage:0,ballHolder:null,attackers:[]};
+    $('soccerMatchResult').classList.add('hidden');$('soccerMatchResult').innerHTML='';$('soccerMatchLog').innerHTML='<b>KICK OFF</b><br>'+escapeHtml(state.soccer.schoolName)+' vs '+escapeHtml(opp.name);renderSoccerMatch();
+    soccerMatchTimer=setInterval(soccerMatchTick,520);
+  }
+  function soccerMatchTick(){
+    const rt=soccerMatchRuntime;if(!rt||rt.finished||rt.inChance)return;rt.minute=Math.min(90,rt.minute+3);const team=Math.max(35,soccerTeamOvr()),opp=rt.opponent.strength;
+    if(Math.random()<.012*(team/opp)){rt.home++;soccerLog('連係からゴール！ 自動得点');}
+    if(Math.random()<.014*(opp/team)){rt.away++;soccerLog(rt.opponent.name+'が得点');}
+    if(rt.minute>=rt.nextChance&&rt.minute<87&&rt.chances<3){startSoccerChance();return;}
+    if(rt.minute>=90){finishSoccerMatch();return;}renderSoccerMatch();
+  }
+  function startSoccerChance(){
+    const rt=soccerMatchRuntime;if(!rt)return;rt.inChance=true;rt.chances++;rt.stage=0;const pool=state.soccer.starterIds.map(id=>state.soccer.players.find(p=>p.id===id)).filter(p=>p&&p.pos!=='GK').sort((a,b)=>(b.SHO+b.DRI+b.PAS)-(a.SHO+a.DRI+a.PAS));rt.attackers=pool.slice(0,6).sort(()=>Math.random()-.5).slice(0,3);rt.ballHolder=rt.attackers[0]?.id||null;soccerLog('CHANCE! 自分で攻撃を操作');renderSoccerChance();renderSoccerMatch();
+  }
+  function renderSoccerChance(){
+    const rt=soccerMatchRuntime;if(!rt?.inChance||!$('soccerPitchActors'))return;
+    const pos=[{l:18,t:70},{l:68,t:64},{l:43,t:39}];
+    $('soccerPitchActors').innerHTML='<div class="soccer-defender" style="left:31%;top:31%">DF</div><div class="soccer-defender" style="right:31%;top:31%">DF</div><div class="soccer-defender" style="left:47%;top:50%">DF</div>'+rt.attackers.map((p,i)=>'<button type="button" class="soccer-chance-player'+(p.id===rt.ballHolder?' ball':'')+'" data-chance-player="'+p.id+'" style="left:'+pos[i].l+'%;top:'+pos[i].t+'%"><span>'+p.pos+'</span><small>'+escapeHtml(p.name.split(' ')[0])+'</small></button>').join('');
+    const holder=state.soccer.players.find(p=>p.id===rt.ballHolder);$('soccerChanceHelp').innerHTML='<b>CHANCE • '+escapeHtml(holder?.name||'')+'</b><span>味方をタップ＝パス　／　ピッチを上へスワイプ＝シュート。2本つなぐと決定機。</span>';
+    Array.from(document.querySelectorAll('#soccerPitchActors [data-chance-player]')).forEach(btn=>btn.addEventListener('click',()=>soccerChancePass(btn.dataset.chancePlayer)));
+  }
+  function soccerChancePass(targetId){
+    const rt=soccerMatchRuntime;if(!rt?.inChance||targetId===rt.ballHolder)return;const passer=state.soccer.players.find(p=>p.id===rt.ballHolder),target=state.soccer.players.find(p=>p.id===targetId);if(!passer||!target)return;
+    const success=clamp(.46+passer.PAS/190+target.DRI/520-rt.opponent.strength/420,.48,.94);
+    if(Math.random()>success){soccerLog('パスをカットされた');return endSoccerChance(false);}
+    rt.ballHolder=targetId;rt.stage++;soccerLog(passer.name+' → '+target.name+' パス成功');renderSoccerChance();
+  }
+  function soccerChanceShoot(lane='center'){
+    const rt=soccerMatchRuntime;if(!rt?.inChance)return;const shooter=state.soccer.players.find(p=>p.id===rt.ballHolder);if(!shooter)return;const keeperLane=['left','center','right'][Math.floor(Math.random()*3)];
+    let chance=clamp(.16+shooter.SHO/170+shooter.DRI/700+rt.stage*.07-(rt.opponent.strength-50)/300,.20,.80);if(lane===keeperLane)chance*=.48;
+    const goal=Math.random()<chance;if(goal){rt.home++;rt.userGoals++;soccerLog(shooter.name+' GOAL! '+lane.toUpperCase()+'へ決めた');showMoment('GOAL!',shooter.name,'good');}else soccerLog(lane===keeperLane?'GKに読まれてセーブ':'シュートは枠を外れた');
+    endSoccerChance(goal);
+  }
+  function endSoccerChance(goal){
+    const rt=soccerMatchRuntime;if(!rt)return;rt.inChance=false;rt.nextChance=rt.minute+19+Math.floor(Math.random()*9);renderSoccerMatch();setTimeout(()=>{if(soccerMatchRuntime&&!soccerMatchRuntime.finished)renderSoccerPitchIdle();},250);
+  }
+  function soccerPitchPointerDown(e){if(!soccerMatchRuntime?.inChance)return;soccerPointerStart={x:e.clientX,y:e.clientY};}
+  function soccerPitchPointerUp(e){if(!soccerMatchRuntime?.inChance||!soccerPointerStart)return;const dx=e.clientX-soccerPointerStart.x,dy=e.clientY-soccerPointerStart.y;soccerPointerStart=null;if(dy<-45){const lane=dx<-35?'left':dx>35?'right':'center';soccerChanceShoot(lane);}}
+  function finishSoccerMatch(){
+    const rt=soccerMatchRuntime;if(!rt||rt.finished)return;rt.finished=true;if(soccerMatchTimer){clearInterval(soccerMatchTimer);soccerMatchTimer=null;}
+    const r=state.soccer.record;r.played++;r.gf+=rt.home;r.ga+=rt.away;let result,rep;if(rt.home>rt.away){r.wins++;result='WIN';rep=14;}else if(rt.home===rt.away){r.draws++;result='DRAW';rep=5;}else{r.losses++;result='LOSE';rep=2;}
+    state.soccer.reputation+=rep;state.soccer.trainingPoints+=8;state.soccer.lastResult={result,home:rt.home,away:rt.away,opponent:rt.opponent.name,at:Date.now()};saveState();
+    const box=$('soccerMatchResult');box.classList.remove('hidden');box.innerHTML='<h3>'+result+' '+rt.home+' - '+rt.away+'</h3><p>学校評判 +'+rep+' / 育成PT +8</p>';soccerLog('FULL TIME • '+result);renderSoccerMatch();renderSoccerHome();
+  }
+  function renderSoccerShell(){if(!state.soccer)normalizeSoccerState();renderSoccerHome();const active=document.querySelector('.screen.active')?.dataset.screen;if(active==='soccer-team')renderSoccerTeam();if(active==='soccer-training')renderSoccerTraining();if(active==='soccer-match')renderSoccerMatch();}
+  function bindSoccerEvents(){
+    $('soccerAutoLineupBtn')?.addEventListener('click',()=>{autoSelectSoccerStarters();renderSoccerTeam();});
+    $('soccerStartMatchBtn')?.addEventListener('click',startSoccerMatch);
+    $('soccerShootBtn')?.addEventListener('click',()=>soccerChanceShoot('center'));
+    $('soccerPitch')?.addEventListener('pointerdown',soccerPitchPointerDown);
+    $('soccerPitch')?.addEventListener('pointerup',soccerPitchPointerUp);
+  }
+
+
   function bindEvents() {
     $$('[data-nav]').forEach(btn => btn.addEventListener('click', () => navigate(btn.dataset.nav)));
     $('nextQuestionBtn').addEventListener('click', nextStudyQuestion);
@@ -4443,6 +4887,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     $('openFullCollectionBtn').addEventListener('click',()=>{state.forge.view='collection';state.forge.collectionMode='catalog';saveState();navigate('forge');renderForge();});
     $$('[data-fx-mode]').forEach(btn=>btn.addEventListener('click',()=>setFxMode(btn.dataset.fxMode)));
     $('closeLevelModal').addEventListener('click', () => $('levelUpModal').classList.add('hidden'));
+    bindSoccerEvents();
   }
 
   async function init() {
@@ -4450,7 +4895,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     state.settings = {...{sound:false,fxMode:'lite'}, ...(state.settings||{})};
     if(!['off','lite','full'].includes(state.settings.fxMode)) state.settings.fxMode='lite';
     normalizePhase4State();
-    normalizePhase5State(); normalizePhase10State();
+    normalizePhase5State(); normalizePhase10State(); normalizeSoccerState();
     bindEvents();
     await loadQuestions();
     rebuildQuestionIndex(); normalizePhase10State();
