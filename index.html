@@ -4974,13 +4974,14 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"è²§è¡
   }
   function applySoccerChanceMovement(targetId=null){
     const rt=soccerMatchRuntime;if(!rt)return;
-    rt.attackers.forEach(p=>{const el=document.querySelector('[data-match-actor="'+CSS.escape(p.id)+'"]'),pos=rt.actorPos[p.id];if(!el||!pos)return;el.classList.add('running');el.classList.toggle('pass-target',p.id===targetId);el.style.left=pos.x+'%';el.style.top=pos.y+'%';});
+    rt.attackers.forEach(p=>{const el=document.querySelector('[data-match-actor="'+p.id+'"]'),pos=rt.actorPos[p.id];if(!el||!pos)return;el.classList.add('running');el.classList.toggle('pass-target',p.id===targetId);el.style.left=pos.x+'%';el.style.top=pos.y+'%';});
     Object.entries(rt.defenderPos).forEach(([id,pos])=>{const el=document.querySelector('[data-match-actor="def-'+id+'"]');if(!el||!pos)return;el.classList.add('running','closing');el.style.left=pos.x+'%';el.style.top=pos.y+'%';});
     setTimeout(()=>document.querySelectorAll('#soccerPitchActors .match-athlete').forEach(el=>el.classList.remove('running','closing','pass-target')),SOCCER_ACTION_MS+80);
   }
   function animateSoccerBall(from,to,{shot=false}={}){
     return new Promise(resolve=>{
       const pitch=$('soccerPitch');if(!pitch){resolve();return;}
+      const heldBall=document.querySelector('#soccerPitchActors .ball-holder .match-ball');if(heldBall)heldBall.style.opacity='0';
       const ball=document.createElement('div');ball.className='match-ball-flight'+(shot?' shot':'');ball.style.left=from.x+'%';ball.style.top=from.y+'%';pitch.appendChild(ball);
       requestAnimationFrame(()=>requestAnimationFrame(()=>{ball.style.left=to.x+'%';ball.style.top=to.y+'%';ball.style.transform='translate(-50%,-50%) '+(shot?'scale(.72) rotate(260deg)':'rotate(180deg)');}));
       setTimeout(()=>{ball.remove();resolve();},shot?340:SOCCER_ACTION_MS);
