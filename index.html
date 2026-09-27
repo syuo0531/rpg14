@@ -1144,6 +1144,36 @@ button.match-athlete{cursor:pointer}
 @media(prefers-reduced-motion:reduce){.match-live .match-athlete{animation:none}}
 @media(max-width:560px){.soccer-lineup-pitch{height:350px}.soccer-lineup-slot{width:62px;min-height:48px;padding:5px 3px}.soccer-pitch{height:390px}.match-athlete{transform:translate(-50%,-50%) scale(.9)}.match-athlete.focus{transform:translate(-50%,-50%) scale(.95)}}
 
+
+/* ===== LIVE CHANCE ACTION ===== */
+.match-ball-flight{
+  position:absolute;width:12px;height:12px;border-radius:50%;
+  background:radial-gradient(circle at 32% 30%,#fff 0 34%,#202020 36% 48%,#fff 50%);
+  border:1px solid #111;z-index:30;pointer-events:none;
+  transform:translate(-50%,-50%);box-shadow:0 3px 7px rgba(0,0,0,.45);
+  transition:left .42s cubic-bezier(.18,.72,.18,1),top .42s cubic-bezier(.18,.72,.18,1),transform .42s ease;
+}
+.match-ball-flight.shot{transition-duration:.32s;box-shadow:0 0 12px rgba(255,255,255,.55)}
+.match-athlete.running{z-index:8}
+.match-athlete.running .athlete-legs:before{animation:runLegLeft .18s linear infinite alternate}
+.match-athlete.running .athlete-legs:after{animation:runLegRight .18s linear infinite alternate}
+.match-athlete.closing{filter:drop-shadow(0 0 6px rgba(255,103,103,.35))}
+.match-athlete.gk-dive{z-index:12;filter:drop-shadow(0 0 9px rgba(255,216,92,.65))}
+.match-athlete.pass-target:before{
+  content:"";position:absolute;left:50%;top:50%;width:48px;height:48px;border:1px dashed rgba(126,239,168,.72);
+  border-radius:50%;transform:translate(-50%,-50%);animation:passTargetPulse .7s ease-out infinite
+}
+.match-athlete.ball-holder .match-ball{animation:ballTouch .55s ease-in-out infinite alternate}
+@keyframes runLegLeft{from{transform:rotate(18deg)}to{transform:rotate(-18deg)}}
+@keyframes runLegRight{from{transform:rotate(-18deg)}to{transform:rotate(18deg)}}
+@keyframes passTargetPulse{from{opacity:.9;transform:translate(-50%,-50%) scale(.72)}to{opacity:.1;transform:translate(-50%,-50%) scale(1.15)}}
+@keyframes ballTouch{from{transform:translate(0,0)}to{transform:translate(2px,-2px)}}
+.soccer-action-lock{pointer-events:none}
+@media(prefers-reduced-motion:reduce){
+  .match-ball-flight,.match-athlete{transition:none!important}
+  .match-athlete.running .athlete-legs:before,.match-athlete.running .athlete-legs:after,.match-athlete.pass-target:before,.match-athlete.ball-holder .match-ball{animation:none!important}
+}
+
 </style>
 </head>
 <body>
@@ -4744,6 +4774,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   let soccerMatchTimer=null;
   let soccerMatchRuntime=null;
   let soccerPointerStart=null;
+  const SOCCER_ACTION_MS=430;
 
   function soccerDefaultState(){
     return {initialized:false,schoolName:'FORGE高校',year:1,month:4,reputation:0,schoolExp:0,trainingPoints:0,formation:'4-3-3',players:[],starterIds:[],lineupSlots:{},selectedSlotId:null,selectedPlayerId:null,record:{played:0,wins:0,draws:0,losses:0,gf:0,ga:0},lastResult:null};
@@ -4881,10 +4912,10 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     $('soccerMatchStatus').textContent=rt?(rt.finished?'FULL TIME':rt.inChance?'CHANCE!':'LIVE'):'READY';$('soccerStartMatchBtn').disabled=!!(rt&&!rt.finished);$('soccerStartMatchBtn').textContent=rt&&rt.finished?'REMATCH':'KICK OFF';$('soccerShootBtn').disabled=!(rt&&rt.inChance);
     if(!rt||!rt.inChance)renderSoccerPitchIdle();
   }
-  function soccerAthleteMarkup({p=null,x=50,y=50,team='home',focus=false,ball=false,interactive=false,pos='',number=0,name=''}={}){
-    const athleteName=name||(p?.name||''),position=pos||(p?.primaryPos||''),shirtNo=number||(p?.number||0),classes=['match-athlete',team,focus?'focus':'',ball?'ball-holder':'',interactive?'selectable':''].filter(Boolean).join(' ');
-    const tag=interactive?'button':'div',attrs=interactive&&p?' type="button" data-chance-player="'+p.id+'"':'';
-    return '<'+tag+attrs+' class="'+classes+'" style="left:'+x+'%;top:'+y+'%"><span class="athlete-head"></span><span class="athlete-hair"></span><span class="athlete-shirt"></span><span class="athlete-number">'+shirtNo+'</span><span class="athlete-shorts"></span><span class="athlete-legs"></span><span class="athlete-label"><span class="athlete-pos">'+position+'</span>'+escapeHtml((athleteName||position).split(' ')[0])+'</span>'+(ball?'<span class="match-ball"></span>':'')+'</'+tag+'>';
+  function soccerAthleteMarkup({p=null,x=50,y=50,team='home',focus=false,ball=false,interactive=false,pos='',number=0,name='',actorId='',extraClass=''}={}){
+    const athleteName=name||(p?.name||''),position=pos||(p?.primaryPos||''),shirtNo=number||(p?.number||0),classes=['match-athlete',team,focus?'focus':'',ball?'ball-holder':'',interactive?'selectable':'',extraClass].filter(Boolean).join(' ');
+    const tag=interactive?'button':'div',chanceAttr=interactive&&p?' data-chance-player="'+p.id+'"':'',actorAttr=(actorId||p?.id)?' data-match-actor="'+escapeHtml(actorId||p.id)+'"':'';
+    return '<'+tag+' type="'+(interactive?'button':'button')+'"'+chanceAttr+actorAttr+' class="'+classes+'" style="left:'+x+'%;top:'+y+'%"><span class="athlete-head"></span><span class="athlete-hair"></span><span class="athlete-shirt"></span><span class="athlete-number">'+shirtNo+'</span><span class="athlete-shorts"></span><span class="athlete-legs"></span><span class="athlete-label"><span class="athlete-pos">'+position+'</span>'+escapeHtml((athleteName||position).split(' ')[0])+'</span>'+(ball?'<span class="match-ball"></span>':'')+'</'+tag+'>';
   }
   function renderSoccerPitchIdle(){
     if(!$('soccerPitchActors'))return;normalizeSoccerState();const slots=soccerFormationSlots(),live=!!(soccerMatchRuntime&&!soccerMatchRuntime.finished);
@@ -4899,7 +4930,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   function startSoccerMatch(){
     normalizeSoccerState();if(state.soccer.starterIds.length!==11)return toast('<b>LINEUP ERROR</b> スタメンを11人選んでください');
     if(soccerMatchTimer){clearInterval(soccerMatchTimer);soccerMatchTimer=null;}
-    const opp=currentSoccerOpponent();soccerMatchRuntime={opponent:opp,minute:0,home:0,away:0,chances:0,userGoals:0,nextChance:15+Math.floor(Math.random()*9),inChance:false,finished:false,stage:0,ballHolder:null,attackers:[]};
+    const opp=currentSoccerOpponent();soccerMatchRuntime={opponent:opp,minute:0,home:0,away:0,chances:0,userGoals:0,nextChance:15+Math.floor(Math.random()*9),inChance:false,finished:false,stage:0,ballHolder:null,attackers:[],actorPos:{},defenderPos:{},actionLocked:false};
     $('soccerMatchResult').classList.add('hidden');$('soccerMatchResult').innerHTML='';$('soccerMatchLog').innerHTML='<b>KICK OFF</b><br>'+escapeHtml(state.soccer.schoolName)+' vs '+escapeHtml(opp.name);renderSoccerMatch();
     soccerMatchTimer=setInterval(soccerMatchTick,520);
   }
@@ -4911,45 +4942,104 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if(rt.minute>=90){finishSoccerMatch();return;}renderSoccerMatch();
   }
   function startSoccerChance(){
-    const rt=soccerMatchRuntime;if(!rt)return;rt.inChance=true;rt.chances++;rt.stage=0;
+    const rt=soccerMatchRuntime;if(!rt)return;rt.inChance=true;rt.chances++;rt.stage=0;rt.actionLocked=false;
     const pool=soccerFormationSlots().map(slot=>({p:state.soccer.players.find(x=>x.id===state.soccer.lineupSlots[slot.id]),slot})).filter(x=>x.p&&x.slot.pos!=='GK').sort((a,b)=>(b.p.SHO+b.p.DRI+b.p.PAS)-(a.p.SHO+a.p.DRI+a.p.PAS));
-    rt.attackers=pool.slice(0,7).sort(()=>Math.random()-.5).slice(0,4).map(x=>x.p);rt.ballHolder=rt.attackers[0]?.id||null;soccerLog('CHANCE! 攻撃局面を自分で操作');renderSoccerChance();renderSoccerMatch();
+    rt.attackers=pool.slice(0,7).sort(()=>Math.random()-.5).slice(0,4).map(x=>x.p);rt.ballHolder=rt.attackers[0]?.id||null;
+    rt.actorPos={};rt.attackers.forEach((p,i)=>{rt.actorPos[p.id]=soccerChanceCoordinates(p,i);});
+    rt.defenderPos={lsb:{x:24,y:27},lcb:{x:41,y:32},rcb:{x:59,y:32},rsb:{x:76,y:27},dmf:{x:50,y:44},gk:{x:50,y:10}};
+    soccerLog('CHANCE! 攻撃局面を自分で操作');renderSoccerChance();renderSoccerMatch();
   }
   function soccerChanceCoordinates(p,i){
     const pos=p?.primaryPos||'';if(pos==='LWG'||pos==='LMF'||pos==='LSB')return{x:18,y:i%2?58:68};if(pos==='RWG'||pos==='RMF'||pos==='RSB')return{x:82,y:i%2?58:68};if(pos==='CF')return{x:50,y:31};if(pos==='OMF')return{x:50,y:51};return{x:[30,42,58,70][i%4],y:[67,59,57,66][i%4]};
   }
+  function pctDistance(a,b){const dx=(a?.x||0)-(b?.x||0),dy=(a?.y||0)-(b?.y||0);return Math.hypot(dx,dy);}
+  function nearestSoccerDefender(pos){
+    const rt=soccerMatchRuntime;if(!rt?.defenderPos)return {id:null,pos:{x:50,y:40},distance:99};
+    return Object.entries(rt.defenderPos).filter(([id])=>id!=='gk').map(([id,p])=>({id,pos:p,distance:pctDistance(pos,p)})).sort((a,b)=>a.distance-b.distance)[0]||{id:null,pos:{x:50,y:40},distance:99};
+  }
+  function clampPitchPos(p){p.x=clamp(p.x,8,92);p.y=clamp(p.y,14,88);return p;}
+  function advanceSoccerChanceShape(targetId){
+    const rt=soccerMatchRuntime,target=state.soccer.players.find(p=>p.id===targetId);if(!rt||!target)return;
+    rt.attackers.forEach((p,i)=>{
+      const cur={...(rt.actorPos[p.id]||soccerChanceCoordinates(p,i))};
+      if(p.id===targetId){cur.y-=Math.max(7,Math.min(13,5+p.PAC/18));if(['LWG','LMF'].includes(p.primaryPos))cur.x-=3;if(['RWG','RMF'].includes(p.primaryPos))cur.x+=3;}
+      else if(p.id!==rt.ballHolder){cur.y-=3+Math.min(5,p.PAC/25);cur.x+=(50-cur.x)*.035;}
+      rt.actorPos[p.id]=clampPitchPos(cur);
+    });
+    const targetPos=rt.actorPos[targetId];
+    Object.entries(rt.defenderPos).forEach(([id,p])=>{
+      if(id==='gk')return;const factor=id==='dmf'?.25:.17;
+      p.x+= (targetPos.x-p.x)*factor;p.y+=(targetPos.y-p.y)*factor;rt.defenderPos[id]=clampPitchPos(p);
+    });
+  }
+  function applySoccerChanceMovement(targetId=null){
+    const rt=soccerMatchRuntime;if(!rt)return;
+    rt.attackers.forEach(p=>{const el=document.querySelector('[data-match-actor="'+CSS.escape(p.id)+'"]'),pos=rt.actorPos[p.id];if(!el||!pos)return;el.classList.add('running');el.classList.toggle('pass-target',p.id===targetId);el.style.left=pos.x+'%';el.style.top=pos.y+'%';});
+    Object.entries(rt.defenderPos).forEach(([id,pos])=>{const el=document.querySelector('[data-match-actor="def-'+id+'"]');if(!el||!pos)return;el.classList.add('running','closing');el.style.left=pos.x+'%';el.style.top=pos.y+'%';});
+    setTimeout(()=>document.querySelectorAll('#soccerPitchActors .match-athlete').forEach(el=>el.classList.remove('running','closing','pass-target')),SOCCER_ACTION_MS+80);
+  }
+  function animateSoccerBall(from,to,{shot=false}={}){
+    return new Promise(resolve=>{
+      const pitch=$('soccerPitch');if(!pitch){resolve();return;}
+      const ball=document.createElement('div');ball.className='match-ball-flight'+(shot?' shot':'');ball.style.left=from.x+'%';ball.style.top=from.y+'%';pitch.appendChild(ball);
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{ball.style.left=to.x+'%';ball.style.top=to.y+'%';ball.style.transform='translate(-50%,-50%) '+(shot?'scale(.72) rotate(260deg)':'rotate(180deg)');}));
+      setTimeout(()=>{ball.remove();resolve();},shot?340:SOCCER_ACTION_MS);
+    });
+  }
+  function setSoccerActionLock(locked){
+    const rt=soccerMatchRuntime;if(rt)rt.actionLocked=locked;
+    $('soccerPitch')?.classList.toggle('soccer-action-lock',locked);
+    if($('soccerShootBtn'))$('soccerShootBtn').disabled=locked||!(rt&&rt.inChance);
+  }
   function renderSoccerChance(){
     const rt=soccerMatchRuntime;if(!rt?.inChance||!$('soccerPitchActors'))return;
-    const defenders=[
-      soccerAthleteMarkup({x:24,y:27,team:'opponent',pos:'LSB',number:3,name:'相手'}),
-      soccerAthleteMarkup({x:41,y:32,team:'opponent',pos:'CB',number:4,name:'相手'}),
-      soccerAthleteMarkup({x:59,y:32,team:'opponent',pos:'CB',number:5,name:'相手'}),
-      soccerAthleteMarkup({x:76,y:27,team:'opponent',pos:'RSB',number:2,name:'相手'}),
-      soccerAthleteMarkup({x:50,y:44,team:'opponent',pos:'DMF',number:6,name:'相手'}),
-      soccerAthleteMarkup({x:50,y:10,team:'opponent',pos:'GK',number:1,name:'GK'})
-    ].join('');
-    const attackers=rt.attackers.map((p,i)=>{const c=soccerChanceCoordinates(p,i);return soccerAthleteMarkup({p,x:c.x,y:c.y,team:'home',focus:true,ball:p.id===rt.ballHolder,interactive:p.id!==rt.ballHolder});}).join('');
+    const defs=[
+      ['lsb','LSB',3],['lcb','CB',4],['rcb','CB',5],['rsb','RSB',2],['dmf','DMF',6],['gk','GK',1]
+    ];
+    const defenders=defs.map(([id,pos,num])=>{const c=rt.defenderPos[id]||{x:50,y:40};return soccerAthleteMarkup({x:c.x,y:c.y,team:'opponent',pos,number:num,name:id==='gk'?'GK':'相手',actorId:'def-'+id,extraClass:id==='gk'?'keeper':''});}).join('');
+    const attackers=rt.attackers.map((p,i)=>{const c=rt.actorPos[p.id]||soccerChanceCoordinates(p,i);return soccerAthleteMarkup({p,x:c.x,y:c.y,team:'home',focus:true,ball:p.id===rt.ballHolder,interactive:!rt.actionLocked&&p.id!==rt.ballHolder});}).join('');
     $('soccerPitchActors').className='match-live';$('soccerPitchActors').innerHTML=defenders+attackers;
-    const holder=state.soccer.players.find(p=>p.id===rt.ballHolder);$('soccerChanceHelp').innerHTML='<b>CHANCE • '+escapeHtml(holder?.name||'')+' / '+(holder?.primaryPos||'')+'</b><span>味方をタップ＝パス　／　上へスワイプ＝シュート。選手のPAS・DRI・SHOとポジション特性が成功率に影響。</span>';
+    const holder=state.soccer.players.find(p=>p.id===rt.ballHolder),holderPos=rt.actorPos[rt.ballHolder],pressure=nearestSoccerDefender(holderPos).distance;
+    $('soccerChanceHelp').innerHTML='<b>CHANCE • '+escapeHtml(holder?.name||'')+' / '+(holder?.primaryPos||'')+'</b><span>味方タップ＝パス　／　上スワイプ＝シュート　•　DF距離 '+Math.round(pressure)+'m相当。パス後は味方が走り込み、守備も寄せます。</span>';
     Array.from(document.querySelectorAll('#soccerPitchActors [data-chance-player]')).forEach(btn=>btn.addEventListener('click',()=>soccerChancePass(btn.dataset.chancePlayer)));
   }
-  function soccerChancePass(targetId){
-    const rt=soccerMatchRuntime;if(!rt?.inChance||targetId===rt.ballHolder)return;const passer=state.soccer.players.find(p=>p.id===rt.ballHolder),target=state.soccer.players.find(p=>p.id===targetId);if(!passer||!target)return;
-    const targetRoleBoost=['CMF','OMF','LMF','RMF','LWG','RWG'].includes(target.primaryPos)?.035:0;const success=clamp(.43+passer.PAS/185+target.DRI/540+targetRoleBoost-rt.opponent.strength/420,.46,.94);
-    if(Math.random()>success){soccerLog('パスをカットされた');return endSoccerChance(false);}
-    rt.ballHolder=targetId;rt.stage++;soccerLog(passer.name+' → '+target.name+' パス成功');renderSoccerChance();
+  async function soccerChancePass(targetId){
+    const rt=soccerMatchRuntime;if(!rt?.inChance||rt.actionLocked||targetId===rt.ballHolder)return;
+    const passer=state.soccer.players.find(p=>p.id===rt.ballHolder),target=state.soccer.players.find(p=>p.id===targetId);if(!passer||!target)return;
+    setSoccerActionLock(true);
+    const from={...(rt.actorPos[passer.id]||{x:50,y:65})};
+    advanceSoccerChanceShape(targetId);const to={...(rt.actorPos[targetId]||{x:50,y:50})},nearest=nearestSoccerDefender(to);
+    const pressurePenalty=clamp((18-nearest.distance)/110,0,.12),targetRoleBoost=['CMF','OMF','LMF','RMF','LWG','RWG'].includes(target.primaryPos)?.035:0;
+    const success=clamp(.47+passer.PAS/190+target.DRI/560+targetRoleBoost-pressurePenalty-rt.opponent.strength/440,.42,.94);
+    applySoccerChanceMovement(targetId);
+    if(Math.random()>success){
+      const intercept=nearest.pos||to;await animateSoccerBall(from,{x:(to.x+intercept.x)/2,y:(to.y+intercept.y)/2});
+      soccerLog('DFが寄せてパスカット');setSoccerActionLock(false);return endSoccerChance(false);
+    }
+    await animateSoccerBall(from,to);rt.ballHolder=targetId;rt.stage++;soccerLog(passer.name+' → '+target.name+'　走り込みへパス成功');
+    setSoccerActionLock(false);renderSoccerChance();
   }
-  function soccerChanceShoot(lane='center'){
-    const rt=soccerMatchRuntime;if(!rt?.inChance)return;const shooter=state.soccer.players.find(p=>p.id===rt.ballHolder);if(!shooter)return;const keeperLane=['left','center','right'][Math.floor(Math.random()*3)];
-    const roleBoost=shooter.primaryPos==='CF'?.07:['LWG','RWG','OMF'].includes(shooter.primaryPos)?.035:0;let chance=clamp(.14+shooter.SHO/168+shooter.DRI/720+rt.stage*.065+roleBoost-(rt.opponent.strength-50)/300,.18,.82);if(lane===keeperLane)chance*=.48;
-    const goal=Math.random()<chance;if(goal){rt.home++;rt.userGoals++;soccerLog(shooter.name+' GOAL! '+lane.toUpperCase()+'へ決めた');showMoment('GOAL!',shooter.name,'good');}else soccerLog(lane===keeperLane?'GKに読まれてセーブ':'シュートは枠を外れた');
-    endSoccerChance(goal);
+  async function soccerChanceShoot(lane='center'){
+    const rt=soccerMatchRuntime;if(!rt?.inChance||rt.actionLocked)return;const shooter=state.soccer.players.find(p=>p.id===rt.ballHolder);if(!shooter)return;
+    setSoccerActionLock(true);
+    const keeperLane=['left','center','right'][Math.floor(Math.random()*3)],laneX={left:37,center:50,right:63},keeperX={left:36,center:50,right:64};
+    const from={...(rt.actorPos[shooter.id]||{x:50,y:40})},pressure=nearestSoccerDefender(from).distance,pressurePenalty=clamp((17-pressure)/100,0,.13);
+    const roleBoost=shooter.primaryPos==='CF'?.07:['LWG','RWG','OMF'].includes(shooter.primaryPos)?.035:0;
+    let chance=clamp(.15+shooter.SHO/170+shooter.DRI/760+rt.stage*.06+roleBoost-pressurePenalty-(rt.opponent.strength-50)/310,.16,.82);if(lane===keeperLane)chance*=.46;
+    const goal=Math.random()<chance,gk=document.querySelector('[data-match-actor="def-gk"]');
+    if(gk){gk.classList.add('gk-dive','running');gk.style.left=keeperX[keeperLane]+'%';gk.style.top='8%';gk.style.transform='translate(-50%,-50%) rotate('+(keeperLane==='left'?'-58deg':keeperLane==='right'?'58deg':'0deg')+') scale(1.12)';}
+    const shotTarget=goal?{x:laneX[lane],y:2}:lane===keeperLane?{x:keeperX[keeperLane],y:8}:{x:lane==='left'?27:lane==='right'?73:50,y:-1};
+    await animateSoccerBall(from,shotTarget,{shot:true});
+    if(goal){rt.home++;rt.userGoals++;soccerLog(shooter.name+' GOAL! '+lane.toUpperCase()+'へ決めた');showMoment('GOAL!',shooter.name,'good');}
+    else if(lane===keeperLane){soccerLog('GKがコースを読んでダイビングセーブ');showMoment('SAVE','GK READ THE SHOT','bad');}
+    else soccerLog('シュートはわずかに枠外');
+    setTimeout(()=>{setSoccerActionLock(false);endSoccerChance(goal);},260);
   }
   function endSoccerChance(goal){
     const rt=soccerMatchRuntime;if(!rt)return;rt.inChance=false;rt.nextChance=rt.minute+19+Math.floor(Math.random()*9);renderSoccerMatch();setTimeout(()=>{if(soccerMatchRuntime&&!soccerMatchRuntime.finished)renderSoccerPitchIdle();},250);
   }
   function soccerPitchPointerDown(e){if(!soccerMatchRuntime?.inChance)return;soccerPointerStart={x:e.clientX,y:e.clientY};}
-  function soccerPitchPointerUp(e){if(!soccerMatchRuntime?.inChance||!soccerPointerStart)return;const dx=e.clientX-soccerPointerStart.x,dy=e.clientY-soccerPointerStart.y;soccerPointerStart=null;if(dy<-45){const lane=dx<-35?'left':dx>35?'right':'center';soccerChanceShoot(lane);}}
+  function soccerPitchPointerUp(e){if(!soccerMatchRuntime?.inChance||soccerMatchRuntime?.actionLocked||!soccerPointerStart)return;const dx=e.clientX-soccerPointerStart.x,dy=e.clientY-soccerPointerStart.y;soccerPointerStart=null;if(dy<-45){const lane=dx<-35?'left':dx>35?'right':'center';soccerChanceShoot(lane);}}
   function finishSoccerMatch(){
     const rt=soccerMatchRuntime;if(!rt||rt.finished)return;rt.finished=true;if(soccerMatchTimer){clearInterval(soccerMatchTimer);soccerMatchTimer=null;}
     const r=state.soccer.record;r.played++;r.gf+=rt.home;r.ga+=rt.away;let result,rep;if(rt.home>rt.away){r.wins++;result='WIN';rep=14;}else if(rt.home===rt.away){r.draws++;result='DRAW';rep=5;}else{r.losses++;result='LOSE';rep=2;}
