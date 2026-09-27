@@ -4734,11 +4734,11 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   function renderSoccerTeam(){
     if(!$('soccerTeamRoster'))return;normalizeSoccerState();$('soccerTeamOvr').textContent=soccerTeamOvr();$('soccerStarterCount').textContent=state.soccer.starterIds.length+' / 11';
     $('soccerFormationButtons').innerHTML=Object.keys(SOCCER_FORMATIONS).map(f=>'<button class="soccer-formation-btn'+(state.soccer.formation===f?' active':'')+'" data-soccer-formation="'+f+'">'+f+'</button>').join('');
-    $('[data-soccer-formation]').forEach(btn=>btn.addEventListener('click',()=>{state.soccer.formation=btn.dataset.soccerFormation;autoSelectSoccerStarters();renderSoccerTeam();}));
+    Array.from(document.querySelectorAll('[data-soccer-formation]')).forEach(btn=>btn.addEventListener('click',()=>{state.soccer.formation=btn.dataset.soccerFormation;autoSelectSoccerStarters();renderSoccerTeam();}));
     const starters=state.soccer.starterIds.map(id=>state.soccer.players.find(p=>p.id===id)).filter(Boolean);
     $('soccerStartingList').innerHTML=starters.sort((a,b)=>['GK','DF','MF','FW'].indexOf(a.pos)-['GK','DF','MF','FW'].indexOf(b.pos)||b.ovr-a.ovr).map(p=>'<div class="soccer-lineup-row"><span class="soccer-pos">'+p.pos+'</span><div><b>'+escapeHtml(p.name)+'</b><small>'+p.trait+'</small></div><em>'+p.ovr+'</em></div>').join('');
     $('soccerTeamRoster').innerHTML=state.soccer.players.slice().sort((a,b)=>b.ovr-a.ovr).map(p=>soccerPlayerCard(p)).join('');
-    $('#soccerTeamRoster [data-soccer-player]').forEach(btn=>btn.addEventListener('click',()=>toggleSoccerStarter(btn.dataset.soccerPlayer)));
+    Array.from(document.querySelectorAll('#soccerTeamRoster [data-soccer-player]')).forEach(btn=>btn.addEventListener('click',()=>toggleSoccerStarter(btn.dataset.soccerPlayer)));
   }
   function toggleSoccerStarter(id){
     normalizeSoccerState();const at=state.soccer.starterIds.indexOf(id);
@@ -4752,9 +4752,9 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     $('soccerSelectedPlayer').innerHTML='<span class="soccer-pos">'+p.pos+'</span><h3>'+escapeHtml(p.name)+' <small style="color:var(--soccer-gold)">OVR '+p.ovr+'</small></h3><p>1年 • '+escapeHtml(p.trait)+' • POT '+p.potential+' • 成長補正 ×'+p.talent.toFixed(2)+'</p>';
     const labels={PAC:'スプリント',SHO:'シュート',PAS:'パス',DRI:'1対1',DEF:'守備',PHY:'フィジカル'};
     $('soccerDrillGrid').innerHTML=SOCCER_ATTRS.map(a=>'<button class="soccer-drill" data-soccer-drill="'+a+'" '+(state.soccer.trainingPoints<20||p[a]>=99?'disabled':'')+'><b>'+labels[a]+'</b><span>'+a+' '+p[a]+' → UP</span><small>20 PT / 成長 +1〜3</small></button>').join('');
-    $('[data-soccer-drill]').forEach(btn=>btn.addEventListener('click',()=>trainSoccerPlayer(btn.dataset.soccerDrill)));
+    Array.from(document.querySelectorAll('[data-soccer-drill]')).forEach(btn=>btn.addEventListener('click',()=>trainSoccerPlayer(btn.dataset.soccerDrill)));
     $('soccerTrainingRoster').innerHTML=state.soccer.players.slice().sort((a,b)=>b.ovr-a.ovr).map(x=>soccerPlayerCard(x,{selected:x.id===p.id})).join('');
-    $('#soccerTrainingRoster [data-soccer-player]').forEach(btn=>btn.addEventListener('click',()=>{state.soccer.selectedPlayerId=btn.dataset.soccerPlayer;saveState();renderSoccerTraining();}));
+    Array.from(document.querySelectorAll('#soccerTrainingRoster [data-soccer-player]')).forEach(btn=>btn.addEventListener('click',()=>{state.soccer.selectedPlayerId=btn.dataset.soccerPlayer;saveState();renderSoccerTraining();}));
   }
   function trainSoccerPlayer(attr){
     normalizeSoccerState();const p=state.soccer.players.find(x=>x.id===state.soccer.selectedPlayerId);if(!p||!SOCCER_ATTRS.includes(attr)||state.soccer.trainingPoints<20||p[attr]>=99)return;
@@ -4796,7 +4796,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     const pos=[{l:18,t:70},{l:68,t:64},{l:43,t:39}];
     $('soccerPitchActors').innerHTML='<div class="soccer-defender" style="left:31%;top:31%">DF</div><div class="soccer-defender" style="right:31%;top:31%">DF</div><div class="soccer-defender" style="left:47%;top:50%">DF</div>'+rt.attackers.map((p,i)=>'<button type="button" class="soccer-chance-player'+(p.id===rt.ballHolder?' ball':'')+'" data-chance-player="'+p.id+'" style="left:'+pos[i].l+'%;top:'+pos[i].t+'%"><span>'+p.pos+'</span><small>'+escapeHtml(p.name.split(' ')[0])+'</small></button>').join('');
     const holder=state.soccer.players.find(p=>p.id===rt.ballHolder);$('soccerChanceHelp').innerHTML='<b>CHANCE • '+escapeHtml(holder?.name||'')+'</b><span>味方をタップ＝パス　／　ピッチを上へスワイプ＝シュート。2本つなぐと決定機。</span>';
-    $('#soccerPitchActors [data-chance-player]').forEach(btn=>btn.addEventListener('click',()=>soccerChancePass(btn.dataset.chancePlayer)));
+    Array.from(document.querySelectorAll('#soccerPitchActors [data-chance-player]')).forEach(btn=>btn.addEventListener('click',()=>soccerChancePass(btn.dataset.chancePlayer)));
   }
   function soccerChancePass(targetId){
     const rt=soccerMatchRuntime;if(!rt?.inChance||targetId===rt.ballHolder)return;const passer=state.soccer.players.find(p=>p.id===rt.ballHolder),target=state.soccer.players.find(p=>p.id===targetId);if(!passer||!target)return;
