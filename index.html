@@ -4017,6 +4017,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if (screen === 'soccer-training') renderSoccerTraining();
     if (screen === 'soccer-match') renderSoccerMatch();
     if (screen === 'soccer-scout') renderSoccerScout();
+    if (screen === 'soccer-season') renderSoccerSeason();
     if (screen !== 'soccer-match') setSoccerGestureScrollLock(false);
     const scrollHost = document.querySelector('main');
     if (scrollHost) scrollHost.scrollTo({top:0, behavior:'auto'});
@@ -5388,9 +5389,10 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     return '<button type="button" class="soccer-player-card'+(starter?' starter':'')+(selected?' selected':'')+'" data-soccer-player="'+p.id+'">'+(starter?'<span class="starter-tag">STARTING XI</span>':'')+'<div class="soccer-player-main"><span class="soccer-pos">'+p.primaryPos+'</span><div><b>'+escapeHtml(p.name)+'</b><small>'+p.grade+'年 • '+escapeHtml(p.trait)+' • POT '+p.potential+'</small></div><span class="soccer-ovr">'+effective+'</span></div>'+(slotPos?'<div class="soccer-position-chips"><span class="soccer-position-chip grade-'+String(grade).toLowerCase()+'"><strong>'+grade+'</strong> '+slotPos+'適性</span></div>':'<div class="soccer-position-chips">'+soccerAptitudeChips(p)+'</div>')+'<div class="soccer-attrs">'+SOCCER_ATTRS.map(a=>'<div class="soccer-attr"><span>'+a+'</span><b>'+p[a]+'</b></div>').join('')+'</div></button>';
   }
   function renderSoccerHome(){
-    if(!$('soccerHomeSchool'))return;normalizeSoccerState();const rank=soccerRankInfo(),team=soccerTeamOvr(),next=SOCCER_OPPONENTS[state.soccer.record.played%SOCCER_OPPONENTS.length];
-    $('soccerHomeSchool').textContent=state.soccer.schoolName;$('soccerHomeYear').textContent=state.soccer.year;$('soccerHomeRank').textContent=rank.name;$('soccerHomeRepText').textContent=state.soccer.reputation+' REP';$('soccerHomeTraining').textContent=state.soccer.trainingPoints;$('soccerHomeOvr').textContent=team;$('soccerHomeRoster').textContent=state.soccer.players.length;
-    const r=state.soccer.record;$('soccerHomeRecord').textContent=r.wins+'-'+r.draws+'-'+r.losses;if($('soccerHomeScoutPoints'))$('soccerHomeScoutPoints').textContent=state.soccer.scouting.points;$('soccerNextHome').textContent=state.soccer.schoolName;$('soccerNextHomePower').textContent='OVR '+team;$('soccerNextAway').textContent=next.name;$('soccerNextAwayPower').textContent='OVR '+next.strength;
+    if(!$('soccerHomeSchool'))return;normalizeSoccerState();const rank=soccerRankInfo(),team=soccerTeamOvr(),event=currentSeasonEvent(),next=soccerSeasonOpponent(event);
+    $('soccerHomeSchool').textContent=state.soccer.schoolName;$('soccerHomeYear').textContent=state.soccer.year;if($('soccerHomeMonth'))$('soccerHomeMonth').textContent=event.month+'月';$('soccerHomeRank').textContent=rank.name;$('soccerHomeRepText').textContent=state.soccer.reputation+' REP';$('soccerHomeTraining').textContent=state.soccer.trainingPoints;$('soccerHomeOvr').textContent=team;$('soccerHomeRoster').textContent=state.soccer.players.length;
+    const r=state.soccer.record;$('soccerHomeRecord').textContent=r.wins+'-'+r.draws+'-'+r.losses;if($('soccerHomeScoutPoints'))$('soccerHomeScoutPoints').textContent=state.soccer.scouting.points;$('soccerNextHome').textContent=state.soccer.schoolName;$('soccerNextHomePower').textContent='OVR '+team;
+    $('soccerNextCompetition').textContent=seasonCompetitionLabel(event);$('soccerNextAway').textContent=event.type==='graduation'?'卒業式':next.name;$('soccerNextAwayPower').textContent=event.type==='graduation'?'次年度へ':'OVR '+next.strength;
     const lower=rank.min,nextVal=rank.next,progress=nextVal?clamp((state.soccer.reputation-lower)/(nextVal-lower)*100,0,100):100;$('soccerRepBar').style.width=progress+'%';$('soccerRepNext').textContent=nextVal?Math.max(0,nextVal-state.soccer.reputation)+' REP':'MAX';$('soccerTopTraining').textContent=state.soccer.trainingPoints;$('soccerTopRank').textContent=rank.name;
   }
 
@@ -5502,38 +5504,23 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     normalizeSoccerState();const p=state.soccer.players.find(x=>x.id===state.soccer.selectedPlayerId);if(!p||!SOCCER_ATTRS.includes(attr)||state.soccer.trainingPoints<20||p[attr]>=99)return;
     state.soccer.trainingPoints-=20;const gain=Math.max(1,Math.min(3,Math.round(1+p.talent+Math.random()*.8)-1));p[attr]=clamp(p[attr]+gain,25,99);p.ovr=soccerPlayerOvr(p);saveState();renderSoccerTraining();renderSoccerHome();toast('<b>TRAINING</b> '+escapeHtml(p.name)+' • '+attr+' +'+gain);
   }
-  function currentSoccerOpponent(){normalizeSoccerState();return SOCCER_OPPONENTS[state.soccer.record.played%SOCCER_OPPONENTS.length];}
+  function currentSoccerOpponent(){normalizeSoccerState();return soccerSeasonOpponent(currentSeasonEvent());}
+  function soccerMatchEvent(){if(soccerMatchRuntime?.eventId)return SEASON_EVENTS.find(e=>e.id===soccerMatchRuntime.eventId)||currentSeasonEvent();return currentSeasonEvent();}
   function renderSoccerMatch(){
-    if(!$('soccerScoreHomeName'))return;normalizeSoccerState();const opp=soccerMatchRuntime?.opponent||currentSoccerOpponent(),team=soccerTeamOvr(),rt=soccerMatchRuntime;
-    $('soccerScoreHomeName').textContent=state.soccer.schoolName;$('soccerScoreAwayName').textContent=opp.name;$('soccerScoreHomeOvr').textContent='OVR '+team;$('soccerScoreAwayOvr').textContent='OVR '+opp.strength;$('soccerMatchFormation').textContent=state.soccer.formation;$('soccerMatchRank').textContent=soccerRankInfo().name;
+    if(!$('soccerScoreHomeName'))return;normalizeSoccerState();const event=soccerMatchEvent(),opp=soccerMatchRuntime?.opponent||soccerSeasonOpponent(event),team=soccerTeamOvr(),rt=soccerMatchRuntime;
+    $('soccerMatchCompetition').textContent=seasonCompetitionLabel(event);$('soccerMatchTitle').textContent=event?.title||'公式戦';
+    $('soccerScoreHomeName').textContent=state.soccer.schoolName;$('soccerScoreAwayName').textContent=event?.type==='graduation'?'新年度':opp.name;$('soccerScoreHomeOvr').textContent='OVR '+team;$('soccerScoreAwayOvr').textContent=event?.type==='graduation'?'—':'OVR '+opp.strength;$('soccerMatchFormation').textContent=state.soccer.formation;$('soccerMatchRank').textContent=soccerRankInfo().name;
     $('soccerMinute').textContent=rt?Math.min(90,rt.minute):0;$('soccerHomeGoals').textContent=rt?rt.home:0;$('soccerAwayGoals').textContent=rt?rt.away:0;$('soccerMatchProgress').style.width=((rt?Math.min(90,rt.minute):0)/90*100)+'%';$('soccerChanceCount').textContent=rt?rt.chances:0;$('soccerUserGoals').textContent=rt?rt.userGoals:0;if($('soccerDribbleCount'))$('soccerDribbleCount').textContent=rt?(rt.dribbleSuccess+' / '+rt.dribbles):'0 / 0';
-    $('soccerMatchStatus').textContent=rt?(rt.finished?'FULL TIME':rt.inChance?'CHANCE!':'LIVE'):'READY';$('soccerStartMatchBtn').disabled=!!(rt&&!rt.finished);$('soccerStartMatchBtn').textContent=rt&&rt.finished?'REMATCH':'KICK OFF';$('soccerShootBtn').disabled=!(rt&&rt.inChance);
+    $('soccerMatchStatus').textContent=rt?(rt.finished?'FULL TIME':rt.inChance?'CHANCE!':'LIVE'):(event?.type==='graduation'?'NO MATCH':'READY');
+    $('soccerStartMatchBtn').disabled=!!(rt&&!rt.finished)||event?.type==='graduation';$('soccerStartMatchBtn').textContent=rt&&rt.finished?'日程へ戻る':'KICK OFF';$('soccerShootBtn').disabled=!(rt&&rt.inChance);
     if(!rt||!rt.inChance)renderSoccerPitchIdle();
   }
-  function soccerAthleteMarkup({p=null,x=50,y=50,team='home',focus=false,ball=false,interactive=false,pos='',number=0,name='',actorId='',extraClass=''}={}){
-    const athleteName=name||(p?.name||''),position=pos||(p?.primaryPos||''),shirtNo=number||(p?.number||0),classes=['match-athlete',team,focus?'focus':'',ball?'ball-holder':'',interactive?'selectable':'',extraClass].filter(Boolean).join(' ');
-    const tag=interactive?'button':'div',chanceAttr=interactive&&p?' data-chance-player="'+p.id+'"':'',actorAttr=(actorId||p?.id)?' data-match-actor="'+escapeHtml(actorId||p.id)+'"':'';
-    return '<'+tag+' type="'+(interactive?'button':'button')+'"'+chanceAttr+actorAttr+' class="'+classes+'" style="left:'+x+'%;top:'+y+'%"><span class="athlete-head"></span><span class="athlete-hair"></span><span class="athlete-shirt"></span><span class="athlete-number">'+shirtNo+'</span><span class="athlete-shorts"></span><span class="athlete-legs"></span><span class="athlete-label"><span class="athlete-pos">'+position+'</span>'+escapeHtml((athleteName||position).split(' ')[0])+'</span>'+(ball?'<span class="match-ball"></span>':'')+'</'+tag+'>';
-  }
-  function soccerIdleY(slotY,home=true){
-    const homeY=clamp(46+(slotY-20)*.56,46,85);return home?homeY:100-homeY;
-  }
-  function renderSoccerPitchIdle(){
-    if(!$('soccerPitchActors'))return;normalizeSoccerState();const slots=soccerFormationSlots(),live=!!(soccerMatchRuntime&&!soccerMatchRuntime.finished);
-    const home=slots.map(slot=>{const p=state.soccer.players.find(x=>x.id===state.soccer.lineupSlots[slot.id]);if(!p)return'';return soccerAthleteMarkup({p,x:slot.x,y:soccerIdleY(slot.y,true),team:'home'});}).join('');
-    const oppSlots=SOCCER_FORMATIONS['4-3-3'].slots,opp=oppSlots.map((slot,i)=>soccerAthleteMarkup({x:slot.x,y:soccerIdleY(slot.y,false),team:'opponent',pos:slot.pos,number:i+1,name:'相手'})).join('');
-    $('soccerPitchActors').className=live?'match-live':'';$('soccerPitchActors').innerHTML=home+opp;
-    $('soccerChanceHelp').className='soccer-chance-overlay is-compact';
-    $('soccerChanceHelp').innerHTML='<b>'+(live?'AUTO MATCH':'MATCH READY')+'</b><span>'+(live?'22人の配置を反映して自動進行中。決定機になると操作へ切り替わります。':'KICK OFFで試合開始。スタメンの配置と適性が試合力に反映されます。')+'</span>';
-  }
-  function soccerLog(text){
-    if(!$('soccerMatchLog'))return;const line=document.createElement('div');line.innerHTML='<b>'+Math.min(90,soccerMatchRuntime?.minute||0)+"'</b> "+escapeHtml(text);$('soccerMatchLog').prepend(line);
-  }
+  function soccerPrimaryMatchAction(){if(soccerMatchRuntime?.finished)return navigate('soccer-season');startSoccerMatch();}
   function startSoccerMatch(){
-    normalizeSoccerState();if(state.soccer.starterIds.length!==11)return toast('<b>LINEUP ERROR</b> スタメンを11人選んでください');
+    normalizeSoccerState();const event=currentSeasonEvent();if(event.type==='graduation')return toast('<b>SEASON</b> 年間日程から卒業式を進めてください');if(state.soccer.starterIds.length!==11)return toast('<b>LINEUP ERROR</b> スタメンを11人選んでください');
     if(soccerMatchTimer){clearInterval(soccerMatchTimer);soccerMatchTimer=null;}
-    const opp=currentSoccerOpponent();soccerMatchRuntime={opponent:opp,minute:0,home:0,away:0,chances:0,userGoals:0,dribbles:0,dribbleSuccess:0,nextChance:15+Math.floor(Math.random()*9),inChance:false,finished:false,stage:0,ballHolder:null,attackers:[],actorPos:{},defenderPos:{},actionLocked:false};
-    $('soccerMatchResult').classList.add('hidden');$('soccerMatchResult').innerHTML='';$('soccerMatchLog').innerHTML='<b>KICK OFF</b><br>'+escapeHtml(state.soccer.schoolName)+' vs '+escapeHtml(opp.name);renderSoccerMatch();
+    const opp=soccerSeasonOpponent(event);soccerMatchRuntime={eventId:event.id,eventType:event.type,opponent:opp,minute:0,home:0,away:0,chances:0,userGoals:0,dribbles:0,dribbleSuccess:0,nextChance:15+Math.floor(Math.random()*9),inChance:false,finished:false,stage:0,ballHolder:null,attackers:[],actorPos:{},defenderPos:{},actionLocked:false,pk:null};
+    $('soccerMatchResult').classList.add('hidden');$('soccerMatchResult').innerHTML='';$('soccerMatchLog').innerHTML='<b>'+escapeHtml(seasonCompetitionLabel(event))+'</b><br>'+escapeHtml(state.soccer.schoolName)+' vs '+escapeHtml(opp.name);renderSoccerMatch();
     soccerMatchTimer=setInterval(soccerMatchTick,520);
   }
   function soccerMatchTick(){
@@ -5714,14 +5701,25 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   function soccerPitchPointerUp(e){if(!soccerMatchRuntime?.inChance||soccerMatchRuntime?.actionLocked||!soccerPointerStart)return;if(e.cancelable)e.preventDefault();const dx=e.clientX-soccerPointerStart.x,dy=e.clientY-soccerPointerStart.y;try{e.currentTarget.releasePointerCapture(soccerPointerStart.pointerId);}catch(_){}soccerPointerStart=null;if(dy<-45){const lane=dx<-35?'left':dx>35?'right':'center';soccerChanceShoot(lane);}}
   function finishSoccerMatch(){
     const rt=soccerMatchRuntime;if(!rt||rt.finished)return;setSoccerGestureScrollLock(false);rt.finished=true;if(soccerMatchTimer){clearInterval(soccerMatchTimer);soccerMatchTimer=null;}
-    const r=state.soccer.record;r.played++;r.gf+=rt.home;r.ga+=rt.away;let result,rep;if(rt.home>rt.away){r.wins++;result='WIN';rep=14;}else if(rt.home===rt.away){r.draws++;result='DRAW';rep=5;}else{r.losses++;result='LOSE';rep=2;}
-    state.soccer.reputation+=rep;state.soccer.trainingPoints+=8;state.soccer.lastResult={result,home:rt.home,away:rt.away,opponent:rt.opponent.name,at:Date.now()};saveState();
-    const box=$('soccerMatchResult');box.classList.remove('hidden');box.innerHTML='<h3>'+result+' '+rt.home+' - '+rt.away+'</h3><p>学校評判 +'+rep+' / 育成PT +8</p>';soccerLog('FULL TIME • '+result);renderSoccerMatch();renderSoccerHome();
+    const event=SEASON_EVENTS.find(e=>e.id===rt.eventId)||currentSeasonEvent(),knockout=event.type==='interhigh'||event.type==='championship'||event.type==='minor',team=soccerTeamOvr(),opp=rt.opponent.strength;
+    let won=rt.home>rt.away,draw=rt.home===rt.away,pk=null;
+    if(draw&&knockout){
+      const pkWon=Math.random()<clamp(.5+(team-opp)/110,.3,.7),base=3+Math.floor(Math.random()*2);pk=pkWon?{home:base+1,away:base}:{home:base,away:base+1};won=pkWon;draw=false;rt.pk=pk;
+      soccerLog('PK戦 '+pk.home+' - '+pk.away);
+    }
+    const r=state.soccer.record;r.played++;r.gf+=rt.home;r.ga+=rt.away;let result,rep;
+    if(won){r.wins++;result=pk?'WIN (PK)':'WIN';rep=event.type==='league'?10:(event.type==='interhigh'||event.type==='championship'?18:9);}
+    else if(draw){r.draws++;result='DRAW';rep=4;}
+    else{r.losses++;result=pk?'LOSE (PK)':'LOSE';rep=event.type==='league'?1:3;}
+    const trainingReward=won?12:draw?8:6;state.soccer.reputation+=rep;state.soccer.trainingPoints+=trainingReward;state.soccer.lastResult={result,home:rt.home,away:rt.away,opponent:rt.opponent.name,eventId:event.id,at:Date.now()};
+    seasonRecordResult(event,{won,draw,home:rt.home,away:rt.away,pk,opponent:rt.opponent.name});
+    saveState();
+    const box=$('soccerMatchResult');box.classList.remove('hidden');box.innerHTML='<h3>'+result+' '+rt.home+' - '+rt.away+(pk?' <small>PK '+pk.home+'-'+pk.away+'</small>':'')+'</h3><p>'+escapeHtml(event.title)+' • 学校評判 +'+rep+' / 育成PT +'+trainingReward+'</p>';soccerLog('FULL TIME • '+result);renderSoccerMatch();renderSoccerHome();
   }
-  function renderSoccerShell(){if(!state.soccer)normalizeSoccerState();renderSoccerHome();const active=document.querySelector('.screen.active')?.dataset.screen;if(active==='soccer-team')renderSoccerTeam();if(active==='soccer-training')renderSoccerTraining();if(active==='soccer-match')renderSoccerMatch();if(active==='soccer-scout')renderSoccerScout();}
+  function renderSoccerShell(){if(!state.soccer)normalizeSoccerState();renderSoccerHome();const active=document.querySelector('.screen.active')?.dataset.screen;if(active==='soccer-team')renderSoccerTeam();if(active==='soccer-training')renderSoccerTraining();if(active==='soccer-match')renderSoccerMatch();if(active==='soccer-scout')renderSoccerScout();if(active==='soccer-season')renderSoccerSeason();}
   function bindSoccerEvents(){
     $('soccerAutoLineupBtn')?.addEventListener('click',()=>{autoSelectSoccerStarters();renderSoccerTeam();});
-    $('soccerStartMatchBtn')?.addEventListener('click',startSoccerMatch);
+    $('soccerStartMatchBtn')?.addEventListener('click',soccerPrimaryMatchAction);
     $('scoutSearchBtn')?.addEventListener('click',searchScoutCandidates);
     $('soccerSaveIdentityBtn')?.addEventListener('click',saveSoccerIdentitySetup);
     $('soccerRandomizeNamesBtn')?.addEventListener('click',randomizeSoccerSetupNames);
@@ -5838,6 +5836,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
       if(screen==='soccer-team'&&typeof renderSoccerTeam==='function')renderSoccerTeam();
       if(screen==='soccer-match'&&typeof renderSoccerMatch==='function')renderSoccerMatch();
       if(screen==='soccer-scout'&&typeof renderSoccerScout==='function')renderSoccerScout();
+      if(screen==='soccer-season'&&typeof renderSoccerSeason==='function')renderSoccerSeason();
       if(screen==='home'&&typeof renderSoccerHome==='function')renderSoccerHome();
     }catch(err){console.error('screen render error',screen,err);}
     return true;
@@ -5845,7 +5844,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   document.addEventListener('click',event=>{
     const btn=event.target?.closest?.('[data-nav]');if(!btn)return;
     const screen=btn.dataset.nav;if(!screen)return;
-    if(['home','study','soccer-training','soccer-team','soccer-match','soccer-scout'].includes(screen)){
+    if(['home','study','soccer-training','soccer-team','soccer-match','soccer-scout','soccer-season'].includes(screen)){
       event.preventDefault();event.stopImmediatePropagation();hardSoccerNavigate(screen);
     }
   },true);
