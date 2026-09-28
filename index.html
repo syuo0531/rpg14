@@ -1345,6 +1345,37 @@ button.match-athlete{cursor:pointer}
 .bottom-nav-shell{z-index:250!important}
 .bottom-nav,.bottom-nav .nav-btn{pointer-events:auto!important}
 
+
+/* ===== HIGH SCHOOL SOCCER • PHASE 3 SEASON ===== */
+.season-layout{display:grid;grid-template-columns:330px minmax(0,1fr);gap:14px}
+.season-panel,.season-board{padding:18px}
+.season-current{padding:16px;border:1px solid rgba(69,212,131,.28);border-radius:14px;background:linear-gradient(145deg,rgba(69,212,131,.08),rgba(0,0,0,.16))}
+.season-current .season-date{color:#8fe5ad;font-size:9px;font-weight:1000;letter-spacing:.12em}
+.season-current h3{margin:7px 0 4px;font-size:22px}
+.season-current p{margin:0;color:var(--muted);font-size:9px;line-height:1.55}
+.season-current .primary-btn{width:100%;margin-top:13px}
+.season-trophy-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.season-trophy{padding:11px;border:1px solid var(--line);border-radius:11px;background:#101419}
+.season-trophy span{display:block;color:var(--muted);font-size:7px;font-weight:900}
+.season-trophy b{display:block;margin-top:5px;font-size:11px}
+.season-trophy.alive{border-color:rgba(69,212,131,.25)}.season-trophy.out{opacity:.48}.season-trophy.champion{border-color:rgba(242,209,122,.4);background:rgba(242,209,122,.07)}
+.season-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:8px}
+.season-table th,.season-table td{padding:8px 5px;border-bottom:1px solid var(--line);text-align:center}
+.season-table th{color:#858e88;font-size:7px;letter-spacing:.07em}.season-table td.team{text-align:left;font-weight:900}
+.season-table tr.user{background:rgba(69,212,131,.07)}.season-table td.rank{font-weight:1000;color:#f0d77f}
+.season-calendar{display:grid;gap:7px;margin-top:12px;max-height:410px;overflow:auto;padding-right:2px}
+.season-event{display:grid;grid-template-columns:48px 1fr auto;gap:9px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:10px;background:#0e1216}
+.season-event.current{border-color:rgba(69,212,131,.45);background:rgba(69,212,131,.07)}
+.season-event.done{opacity:.58}.season-event.skipped{opacity:.34}
+.season-event .month{display:grid;place-items:center;min-height:38px;border-radius:8px;background:#161c20;color:#a7f0c1;font-size:9px;font-weight:1000}
+.season-event b{display:block;font-size:9px}.season-event small{display:block;margin-top:3px;color:var(--muted);font-size:7px;line-height:1.35}
+.season-event em{font-style:normal;font-size:7px;font-weight:1000;color:#aab4ae}.season-event.current em{color:#8fe5ad}.season-event.done em{color:#98a49d}
+.season-news{margin-top:13px;padding:11px;border:1px solid rgba(111,183,255,.18);border-radius:10px;background:rgba(111,183,255,.05);color:#aab8c4;font-size:8px;line-height:1.55}
+.season-grade-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.season-grade-row span{padding:6px 8px;border:1px solid var(--line);border-radius:999px;background:#11161a;font-size:7px;color:#b5bdb8}
+.season-grade-row b{color:#f0d77f}
+@media(max-width:900px){.season-layout{grid-template-columns:1fr}.season-calendar{max-height:none}}
+@media(max-width:560px){.season-panel,.season-board{padding:14px}.season-current h3{font-size:19px}.season-table th,.season-table td{padding:7px 3px;font-size:7px}.season-event{grid-template-columns:42px 1fr auto}}
+
 </style>
 </head>
 <body>
@@ -1375,9 +1406,9 @@ button.match-athlete{cursor:pointer}
           <section class="soccer-hero metal-panel">
             <div class="soccer-hero-grid">
               <div>
-                <div class="soccer-school-kicker">HIGH SCHOOL FOOTBALL • YEAR <span id="soccerHomeYear">1</span></div>
+                <div class="soccer-school-kicker">HIGH SCHOOL FOOTBALL • YEAR <span id="soccerHomeYear">1</span> • <span id="soccerHomeMonth">4月</span></div>
                 <h1 class="soccer-school-name" id="soccerHomeSchool">FORGE高校</h1>
-                <div class="soccer-school-sub">勉強で選手を育て、監督として全国を目指す。PHASE 2ではスカウトと特待生で次世代のチーム作りが始まります。</div>
+                <div class="soccer-school-sub">勉強・育成・スカウト・公式戦を回しながら、3年間の世代交代で全国制覇を目指します。</div>
               </div>
               <div class="soccer-rank"><span>SCHOOL REPUTATION</span><b id="soccerHomeRank">無名</b><small id="soccerHomeRepText">0 REP</small></div>
             </div>
@@ -1386,13 +1417,14 @@ button.match-athlete{cursor:pointer}
 
           <div class="soccer-dashboard">
             <section class="soccer-card metal-panel">
-              <div class="panel-head"><span>MANAGER HUB</span><small>PHASE 2</small></div>
+              <div class="panel-head"><span>MANAGER HUB</span><small>PHASE 3</small></div>
               <div class="soccer-actions">
                 <button class="soccer-action primary" data-nav="study"><span>📚</span><b>勉強する</b><small>正解で育成PTを獲得</small></button>
                 <button class="soccer-action" data-nav="soccer-training"><span>🏃</span><b>選手育成</b><small>能力を個別強化</small></button>
                 <button class="soccer-action" data-nav="soccer-team"><span>📋</span><b>チーム編成</b><small>スタメン・布陣を決定</small></button>
                 <button class="soccer-action" data-nav="soccer-match"><span>⚽</span><b>試合</b><small>重要場面だけ自分で操作</small></button>
                 <button class="soccer-action" data-nav="soccer-scout"><span>🔎</span><b>スカウト</b><small>新入生・特待生を発掘</small></button>
+                <button class="soccer-action" data-nav="soccer-season"><span>🗓️</span><b>年間日程</b><small>リーグ・大会・進級を管理</small></button>
               </div>
               <div class="soccer-metrics">
                 <div class="soccer-metric"><span>TRAINING PT</span><b id="soccerHomeTraining">0</b></div>
@@ -1403,7 +1435,7 @@ button.match-athlete{cursor:pointer}
               </div>
             </section>
             <section class="soccer-card metal-panel">
-              <div class="panel-head"><span>NEXT MATCH</span><small>PRACTICE MATCH</small></div>
+              <div class="panel-head"><span>NEXT MATCH</span><small id="soccerNextCompetition">SEASON</small></div>
               <div class="soccer-next">
                 <div class="soccer-next-team"><b id="soccerNextHome">FORGE高校</b><small id="soccerNextHomePower">OVR 0</small></div>
                 <div class="soccer-vs">VS</div>
@@ -2085,6 +2117,33 @@ button.match-athlete{cursor:pointer}
       </section>
 
 
+
+      <section class="screen" id="screen-soccer-season" data-screen="soccer-season">
+        <div class="soccer-screen-head">
+          <button class="icon-btn" data-nav="home" aria-label="ホームへ戻る">←</button>
+          <div><span class="eyebrow">SEASON CALENDAR</span><h2>年間日程</h2></div>
+          <div class="soccer-pill">YEAR <span id="seasonYearLabel">1</span></div>
+        </div>
+        <div class="season-layout">
+          <aside class="season-panel metal-panel">
+            <div class="panel-head"><span>CURRENT EVENT</span><small id="seasonMonthLabel">4月</small></div>
+            <div class="season-current" id="seasonCurrentCard"></div>
+            <div class="season-grade-row" id="seasonGradeSummary"></div>
+            <div class="season-trophy-grid">
+              <div class="season-trophy" id="seasonInterhighCard"><span>INTERHIGH</span><b>開幕前</b></div>
+              <div class="season-trophy" id="seasonChampionshipCard"><span>CHAMPIONSHIP</span><b>開幕前</b></div>
+            </div>
+            <div class="season-news" id="seasonNews">4月から10月まではリーグ戦。夏はインターハイ、秋〜冬は選手権を戦います。</div>
+          </aside>
+          <section class="season-board metal-panel">
+            <div class="panel-head"><span>LEAGUE TABLE</span><small>4月–10月 • 8校総当たり</small></div>
+            <div id="seasonLeagueTable"></div>
+            <div class="panel-head" style="margin-top:18px"><span>YEAR CALENDAR</span><small>主要大会＋小大会</small></div>
+            <div class="season-calendar" id="seasonCalendar"></div>
+          </section>
+        </div>
+      </section>
+
       <section class="screen" id="screen-soccer-scout" data-screen="soccer-scout">
         <div class="soccer-screen-head">
           <button class="icon-btn" data-nav="home" aria-label="ホームへ戻る">←</button>
@@ -2160,7 +2219,7 @@ button.match-athlete{cursor:pointer}
       <section class="screen" id="screen-soccer-match" data-screen="soccer-match">
         <div class="soccer-screen-head">
           <button class="icon-btn" data-nav="home" aria-label="ホームへ戻る">←</button>
-          <div><span class="eyebrow">MATCH DAY</span><h2>練習試合</h2></div>
+          <div><span class="eyebrow" id="soccerMatchCompetition">MATCH DAY</span><h2 id="soccerMatchTitle">公式戦</h2></div>
           <div class="soccer-pill" id="soccerMatchStatus">READY</div>
         </div>
         <div class="soccer-match-shell">
