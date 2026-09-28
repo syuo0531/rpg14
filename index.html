@@ -5207,7 +5207,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   function renderSoccerSubstitutionControls(){
     const rt=soccerMatchRuntime,outSel=$('soccerSubOut'),inSel=$('soccerSubIn'),btn=$('soccerSubBtn');if(!outSel||!inSel||!btn)return;
     const live=!!(rt&&!rt.finished),lineup=live?rt.liveLineup:state.soccer.lineupSlots,liveIds=[...new Set(Object.values(lineup||{}))],bench=state.soccer.players.filter(p=>!liveIds.includes(p.id));
-    const outSig=liveIds.join('|'),inSig=bench.map(p=>p.id).join('|');
+    const outSig=liveIds.map(id=>id+':'+soccerConditionValue(state.soccer.players.find(p=>p.id===id))).join('|'),inSig=bench.map(p=>p.id+':'+soccerConditionValue(p)).join('|');
     if(outSel.dataset.sig!==outSig){outSel.dataset.sig=outSig;outSel.innerHTML=liveIds.map(id=>{const p=state.soccer.players.find(x=>x.id===id);const slot=soccerFormationSlots().find(s=>lineup[s.id]===id);return p?'<option value="'+p.id+'">'+escapeHtml(p.name)+' • '+(slot?.pos||p.primaryPos)+' • CON '+soccerConditionValue(p)+'</option>':'';}).join('');}
     if(inSel.dataset.sig!==inSig){inSel.dataset.sig=inSig;inSel.innerHTML=bench.map(p=>'<option value="'+p.id+'">'+escapeHtml(p.name)+' • '+p.primaryPos+' • CON '+soccerConditionValue(p)+'</option>').join('');}
     const blocked=!live||rt.inChance||rt.actionLocked||rt.minute>=90||(rt.substitutions||0)>=5||!bench.length;outSel.disabled=!live;inSel.disabled=!live;btn.disabled=blocked;
@@ -5804,10 +5804,10 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     Array.from(document.querySelectorAll('[data-lineup-slot]')).forEach(btn=>btn.addEventListener('click',()=>{state.soccer.selectedSlotId=btn.dataset.lineupSlot;saveState();renderSoccerTeam();}));
   }
   function renderSoccerTeam(){
-    if(!$('soccerTeamRoster'))return;normalizeSoccerState();const selectedSlot=soccerFormationSlots().find(x=>x.id===state.soccer.selectedSlotId)||soccerFormationSlots()[0];
+    if(!$('soccerTeamRoster'))return;normalizeSoccerState();const selectedSlot=soccerFormationSlots().find(x=>x.id===state.soccer.selectedSlotId)||soccerFormationSlots()[0],matchLocked=!!(soccerMatchRuntime&&!soccerMatchRuntime.finished);
     $('soccerTeamOvr').textContent=soccerTeamOvr();$('soccerStarterCount').textContent=state.soccer.starterIds.length+' / 11';
-    $('soccerFormationButtons').innerHTML=Object.keys(SOCCER_FORMATIONS).map(f=>'<button class="soccer-formation-btn'+(state.soccer.formation===f?' active':'')+'" data-soccer-formation="'+f+'">'+f+'</button>').join('');
-    Array.from(document.querySelectorAll('[data-soccer-formation]')).forEach(btn=>btn.addEventListener('click',()=>{state.soccer.formation=btn.dataset.soccerFormation;state.soccer.lineupSlots={};autoSelectSoccerStarters();renderSoccerTeam();}));
+    $('soccerFormationButtons').innerHTML=Object.keys(SOCCER_FORMATIONS).map(f=>'<button class="soccer-formation-btn'+(state.soccer.formation===f?' active':'')+'" data-soccer-formation="'+f+'" '+(matchLocked?'disabled':'')+'>'+f+'</button>').join('');
+    Array.from(document.querySelectorAll('[data-soccer-formation]')).forEach(btn=>btn.addEventListener('click',()=>{if(matchLocked)return toast('<b>FORMATION LOCK</b> 試合中はフォーメーションを変更できません');state.soccer.formation=btn.dataset.soccerFormation;state.soccer.lineupSlots={};autoSelectSoccerStarters();renderSoccerTeam();}));
     renderSoccerTacticControls();renderSoccerLineupPitch();$('soccerSelectedSlotNote').innerHTML='選択中：<b>'+selectedSlot.pos+'</b>　右の選手をタップして配置。適性とコンディションが実効OVRに反映されます。';
     const starters=soccerFormationSlots().map(slot=>({slot,p:state.soccer.players.find(x=>x.id===state.soccer.lineupSlots[slot.id])})).filter(x=>x.p);
     $('soccerStartingList').innerHTML=starters.map(({slot,p})=>'<div class="soccer-lineup-row"><span class="soccer-pos">'+slot.pos+'</span><div><b>'+escapeHtml(p.name)+'</b><small>本職 '+p.primaryPos+' • 適性 '+soccerAptitudeGrade(p,slot.pos)+'</small></div><em>'+soccerEffectiveOvr(p,slot.pos)+'</em></div>').join('');
@@ -5877,7 +5877,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     normalizeSoccerState();const event=currentSeasonEvent();if(event.type==='graduation')return toast('<b>SEASON</b> 年間日程から卒業式を進めてください');if(state.soccer.starterIds.length!==11)return toast('<b>LINEUP ERROR</b> スタメンを11人選んでください');
     if(soccerMatchTimer){clearInterval(soccerMatchTimer);soccerMatchTimer=null;}
     const opp=soccerSeasonOpponent(event);soccerMatchRuntime={eventId:event.id,eventType:event.type,opponent:opp,minute:0,home:0,away:0,chances:0,userGoals:0,dribbles:0,dribbleSuccess:0,nextChance:Math.max(10,Math.round((15+Math.floor(Math.random()*9))/soccerTacticInfo().chance)),inChance:false,finished:false,stage:0,ballHolder:null,attackers:[],actorPos:{},defenderPos:{},actionLocked:false,pk:null,liveLineup:{...state.soccer.lineupSlots},startingLineup:{...state.soccer.lineupSlots},substitutions:0,subHistory:[],minutesPlayed:{},tacticalChanges:0};
-    $('soccerMatchResult').classList.add('hidden');$('soccerMatchResult').innerHTML='';$('soccerMatchLog').innerHTML='<b>'+escapeHtml(seasonCompetitionLabel(event))+'</b><br>'+escapeHtml(state.soccer.schoolName)+' vs '+escapeHtml(opp.name);renderSoccerMatch();
+    $('soccerMatchResult').classList.add('hidden');$('soccerMatchResult').innerHTML='';$('soccerMatchLog').innerHTML='<b>'+escapeHtml(seasonCompetitionLabel(event))+'</b><br>'+escapeHtml(state.soccer.schoolName)+' vs '+escapeHtml(opp.name)+'<br>戦術：'+escapeHtml(soccerTacticInfo().name)+' / 相手：'+escapeHtml(soccerTacticInfo(soccerOpponentTactic(opp)).name);renderSoccerMatch();
     soccerMatchTimer=setInterval(soccerMatchTick,520);
   }
   function soccerMatchTick(){
