@@ -5238,7 +5238,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   }
   function renderSoccerSubstitutionControls(){
     const rt=soccerMatchRuntime,outSel=$('soccerSubOut'),inSel=$('soccerSubIn'),btn=$('soccerSubBtn');if(!outSel||!inSel||!btn)return;
-    const live=!!(rt&&!rt.finished),lineup=live?rt.liveLineup:state.soccer.lineupSlots,liveIds=[...new Set(Object.values(lineup||{}))],bench=state.soccer.players.filter(p=>!liveIds.includes(p.id));
+    const live=!!(rt&&!rt.finished),lineup=live?rt.liveLineup:state.soccer.lineupSlots,liveIds=[...new Set(Object.values(lineup||{}))],bench=state.soccer.players.filter(p=>!liveIds.includes(p.id)&&soccerPlayerAvailable(p));
     const outSig=liveIds.map(id=>id+':'+soccerConditionValue(state.soccer.players.find(p=>p.id===id))).join('|'),inSig=bench.map(p=>p.id+':'+soccerConditionValue(p)).join('|');
     if(outSel.dataset.sig!==outSig){outSel.dataset.sig=outSig;outSel.innerHTML=liveIds.map(id=>{const p=state.soccer.players.find(x=>x.id===id);const slot=soccerFormationSlots().find(s=>lineup[s.id]===id);return p?'<option value="'+p.id+'">'+escapeHtml(p.name)+' • '+(slot?.pos||p.primaryPos)+' • CON '+soccerConditionValue(p)+'</option>':'';}).join('');}
     if(inSel.dataset.sig!==inSig){inSel.dataset.sig=inSig;inSel.innerHTML=bench.map(p=>'<option value="'+p.id+'">'+escapeHtml(p.name)+' • '+p.primaryPos+' • CON '+soccerConditionValue(p)+'</option>').join('');}
@@ -5319,7 +5319,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     state.soccer.players.forEach(p=>{
       const mins=Math.min(90,Math.round(rt.minutesPlayed?.[p.id]||0));if(mins<=0)return;
       p.careerMinutes=(p.careerMinutes||0)+mins;p.appearances=(p.appearances||0)+1;if(Object.values(rt.startingLineup||{}).includes(p.id))p.starts=(p.starts||0)+1;
-      const curve=soccerGrowthMultiplier(p),room=Math.max(.28,Math.min(1,soccerPotentialRoom(p)/8)),xp=Math.max(4,Math.round((mins/90)*36*curve*room*(tournament?1.28:1)*winBoost));
+      const curve=soccerGrowthMultiplier(p),room=Math.max(.28,Math.min(1,soccerPotentialRoom(p)/8)),xp=Math.max(4,Math.round((mins/90)*36*curve*(Number(p.talent)||1)*room*(tournament?1.28:1)*winBoost));
       p.developmentXp=(p.developmentXp||0)+xp;const gains=[];
       while(p.developmentXp>=100&&soccerPotentialRoom(p)>0){
         p.developmentXp-=100;const attr=soccerDevelopmentAttribute(p);if(!attr)break;const gain=(curve>=1.2&&Math.random()<.28)?2:1;p[attr]=clamp(p[attr]+gain,25,99);p.developmentLevels=(p.developmentLevels||0)+1;gains.push(attr+' +'+gain);p.ovr=soccerPlayerOvr(p);
@@ -5558,7 +5558,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if(!p.aptitudes[p.primaryPos])p.aptitudes[p.primaryPos]='S';
     if(!Number.isInteger(p.number))p.number=index===0?1:index+2;
     p.condition=clamp(Number.isFinite(Number(p.condition))?Math.round(Number(p.condition)):100,35,100);
-    p.growthCurve=soccerGrowthCurveFor(p);if(!SOCCER_DEV_PLANS[p.developmentPlan])p.developmentPlan='balanced';p.developmentXp=Math.max(0,Math.round(Number(p.developmentXp)||0));p.developmentLevels=Math.max(0,Math.round(Number(p.developmentLevels)||0));p.careerMinutes=Math.max(0,Math.round(Number(p.careerMinutes)||0));p.appearances=Math.max(0,Math.round(Number(p.appearances)||0));p.starts=Math.max(0,Math.round(Number(p.starts)||0));p.injuryGames=soccerInjuryGames(p);p.specialTraits=Array.isArray(p.specialTraits)?p.specialTraits.filter(id=>SOCCER_SPECIAL_TRAITS[id]):[];
+    p.growthCurve=soccerGrowthCurveFor(p);p.talent=clamp(Number(p.talent)||1,.75,1.35);if(!SOCCER_DEV_PLANS[p.developmentPlan])p.developmentPlan='balanced';p.developmentXp=Math.max(0,Math.round(Number(p.developmentXp)||0));p.developmentLevels=Math.max(0,Math.round(Number(p.developmentLevels)||0));p.careerMinutes=Math.max(0,Math.round(Number(p.careerMinutes)||0));p.appearances=Math.max(0,Math.round(Number(p.appearances)||0));p.starts=Math.max(0,Math.round(Number(p.starts)||0));p.injuryGames=soccerInjuryGames(p);p.specialTraits=Array.isArray(p.specialTraits)?p.specialTraits.filter(id=>SOCCER_SPECIAL_TRAITS[id]):[];
     SOCCER_ATTRS.forEach(a=>p[a]=clamp(Number(p[a])||45,25,99));p.ovr=soccerPlayerOvr(p);return p;
   }
   function normalizeSoccerState(){
