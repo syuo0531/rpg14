@@ -3939,7 +3939,8 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"è²§è¡
   }
 
   function navigate(screen) {
-    $('.screen').forEach(el => el.classList.toggle('active', el.dataset.screen === screen));
+    recoverSoccerScrollState();
+    Array.from(document.querySelectorAll('.screen')).forEach(el => el.classList.toggle('active', el.dataset.screen === screen));
     $('appShell')?.classList.toggle('match-focus',screen==='soccer-match');
     $$('.nav-btn').forEach(el => el.classList.toggle('active', el.dataset.nav === screen));
     if (screen === 'study' && !currentQuestion) nextStudyQuestion();
