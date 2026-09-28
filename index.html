@@ -1389,6 +1389,14 @@ button.match-athlete{cursor:pointer}
 .league-step.cleared{color:#aeb8b2;border-color:rgba(255,255,255,.14)}
 .league-movement{margin-top:9px;padding:8px 9px;border-radius:9px;background:rgba(242,209,122,.06);border:1px solid rgba(242,209,122,.18);color:#dbc985;font-size:7px;line-height:1.45}
 
+
+/* ===== NATIONWIDE REGION SELECTOR ===== */
+.soccer-name-field select,.season-region-select{width:100%;min-height:46px;padding:10px 12px;border:1px solid var(--line);border-radius:11px;background:#090d10;color:#fff;font:inherit;font-size:13px;outline:none}
+.soccer-name-field select:focus,.season-region-select:focus{border-color:rgba(69,212,131,.55);box-shadow:0 0 0 3px rgba(69,212,131,.09)}
+.season-region-box{margin-top:10px;padding:10px;border:1px solid var(--line);border-radius:10px;background:#0d1215}
+.season-region-box label{display:block;margin-bottom:6px;color:#8d9992;font-size:7px;font-weight:1000;letter-spacing:.08em}
+.season-region-box small{display:block;margin-top:6px;color:#727e77;font-size:7px;line-height:1.4}
+
 </style>
 </head>
 <body>
@@ -2146,6 +2154,11 @@ button.match-athlete{cursor:pointer}
               <div class="season-trophy" id="seasonInterhighCard"><span>INTERHIGH</span><b>開幕前</b></div>
               <div class="season-trophy" id="seasonChampionshipCard"><span>CHAMPIONSHIP</span><b>開幕前</b></div>
             </div>
+            <div class="season-region-box">
+              <label for="seasonPrefectureSelect">拠点都道府県</label>
+              <select class="season-region-select" id="seasonPrefectureSelect"></select>
+              <small id="seasonRegionHelp">リーグ戦開始前のみ変更できます。地域に応じてプリンス/プレミアへの昇格ルートが変わります。</small>
+            </div>
             <div class="season-news" id="seasonNews">4月から10月まではリーグ戦。夏はインターハイ、秋〜冬は選手権を戦います。</div>
           </aside>
           <section class="season-board metal-panel">
@@ -2297,6 +2310,7 @@ button.match-athlete{cursor:pointer}
           <div><span class="eyebrow">NEW GAME SETUP</span><h2 id="soccerIdentityTitle">高校と選手の名前を決める</h2><p>自動生成名はそのまま使っても、好きな名前へ変更してもOKです。</p></div>
         </div>
         <div class="soccer-name-field"><label for="soccerSetupSchoolName">高校名</label><input id="soccerSetupSchoolName" maxlength="20" autocomplete="off" /></div>
+        <div class="soccer-name-field"><label for="soccerSetupPrefecture">学校所在地</label><select id="soccerSetupPrefecture"></select></div>
         <div class="panel-head" style="margin-top:16px"><span>INITIAL ROSTER</span><small>18名</small></div>
         <div class="soccer-roster-name-list" id="soccerSetupRosterNames"></div>
         <div class="soccer-setup-actions">
@@ -5093,51 +5107,104 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   const SCOUT_POSITION_POOL=['GK','CB','CB','LSB','RSB','DMF','CMF','CMF','LMF','RMF','OMF','LWG','RWG','CF','CF'];
   const SCOUT_INTAKE_LIMIT=8;
 
+  const PREFECTURES=['北海道','青森県','岩手県','宮城県','秋田県','山形県','福島県','茨城県','栃木県','群馬県','埼玉県','千葉県','東京都','神奈川県','山梨県','新潟県','富山県','石川県','福井県','長野県','岐阜県','静岡県','愛知県','三重県','滋賀県','京都府','大阪府','兵庫県','奈良県','和歌山県','鳥取県','島根県','岡山県','広島県','山口県','徳島県','香川県','愛媛県','高知県','福岡県','佐賀県','長崎県','熊本県','大分県','宮崎県','鹿児島県','沖縄県'];
+  const REGION_PREFECTURES={
+    hokkaido:['北海道'],
+    tohoku:['青森県','岩手県','宮城県','秋田県','山形県','福島県'],
+    kanto:['茨城県','栃木県','群馬県','埼玉県','千葉県','東京都','神奈川県','山梨県'],
+    hokushinetsu:['新潟県','富山県','石川県','福井県','長野県'],
+    tokai:['岐阜県','静岡県','愛知県','三重県'],
+    kansai:['滋賀県','京都府','大阪府','兵庫県','奈良県','和歌山県'],
+    chugoku:['鳥取県','島根県','岡山県','広島県','山口県'],
+    shikoku:['徳島県','香川県','愛媛県','高知県'],
+    kyushu:['福岡県','佐賀県','長崎県','熊本県','大分県','宮崎県','鹿児島県','沖縄県']
+  };
+  const REGION_LABELS={hokkaido:'北海道',tohoku:'東北',kanto:'関東',hokushinetsu:'北信越',tokai:'東海',kansai:'関西',chugoku:'中国',shikoku:'四国',kyushu:'九州'};
+  const PREFECTURE_REGION=Object.fromEntries(Object.entries(REGION_PREFECTURES).flatMap(([region,prefs])=>prefs.map(pref=>[pref,region])));
   const LEAGUE_PYRAMIDS={
     hokkaido:[
-      {id:'sapporo4',name:'札幌ブロック4部',short:'札幌4部',base:43,promotion:'direct'},
-      {id:'sapporo3',name:'札幌ブロック3部',short:'札幌3部',base:48,promotion:'direct'},
-      {id:'sapporo2',name:'札幌ブロック2部',short:'札幌2部',base:54,promotion:'direct'},
-      {id:'sapporo1',name:'札幌ブロック1部',short:'札幌1部',base:61,promotion:'direct'},
-      {id:'prince-hokkaido',name:'プリンスリーグ北海道',short:'プリンス北海道',base:70,promotion:'playoff'},
-      {id:'premier-east',name:'プレミアリーグ EAST',short:'プレミアEAST',base:80,promotion:'top'}
+      {id:'sapporo3',name:'札幌ブロック3部',short:'札幌3部',base:48,promotion:'direct',scope:'local'},
+      {id:'sapporo2',name:'札幌ブロック2部',short:'札幌2部',base:54,promotion:'direct',scope:'local'},
+      {id:'sapporo1',name:'札幌ブロック1部',short:'札幌1部',base:61,promotion:'direct',scope:'local'},
+      {id:'prince-hokkaido',name:'プリンスリーグ北海道',short:'プリンス北海道',base:70,promotion:'playoff',scope:'prince'},
+      {id:'premier-east',name:'プレミアリーグ EAST',short:'プレミアEAST',base:82,promotion:'top',scope:'premier'}
+    ],
+    tohoku:[
+      {id:'pref3',division:3,short:'県3部',base:44,promotion:'direct',scope:'pref'},
+      {id:'pref2',division:2,short:'県2部',base:50,promotion:'direct',scope:'pref'},
+      {id:'pref1',division:1,short:'県1部',base:57,promotion:'direct',scope:'pref'},
+      {id:'prince-tohoku',name:'プリンスリーグ東北',short:'プリンス東北',base:70,promotion:'playoff',scope:'prince'},
+      {id:'premier-east',name:'プレミアリーグ EAST',short:'プレミアEAST',base:82,promotion:'top',scope:'premier'}
     ],
     kanto:[
-      {id:'pref3',name:'都県リーグ3部',short:'都県3部',base:45,promotion:'direct'},
-      {id:'pref2',name:'都県リーグ2部',short:'都県2部',base:51,promotion:'direct'},
-      {id:'pref1',name:'都県リーグ1部',short:'都県1部',base:58,promotion:'direct'},
-      {id:'prince-kanto2',name:'プリンスリーグ関東2部',short:'関東2部',base:67,promotion:'direct'},
-      {id:'prince-kanto1',name:'プリンスリーグ関東1部',short:'関東1部',base:74,promotion:'playoff'},
-      {id:'premier-east',name:'プレミアリーグ EAST',short:'プレミアEAST',base:82,promotion:'top'}
-    ]
-  };
-  const LEAGUE_TEAM_NAMES={
-    hokkaido:[
-      ['北都高校','札幌南陵','新川学院','石狩中央','手稲北高','月寒高校','藻岩学園'],
-      ['札幌工科','北星第二','東陵高校','白石学院','琴似高校','大麻学園','真駒内高'],
-      ['道央学院','札幌西高','北海第二','創成第二','丘珠高校','札幌第一B','山の手B'],
-      ['北星附属','札幌光星B','科学大高','札幌山の手','創成B','北海B','札幌大谷C'],
-      ['札幌大谷','北海道コンサU-18','北海高校','旭川実業','札幌創成','帯広北','札幌光星'],
-      ['青森山田','尚志','前橋育英','流経大柏','昌平','鹿島ユース','川崎U-18']
+      {id:'pref3',division:3,short:'都県3部',base:45,promotion:'direct',scope:'pref'},
+      {id:'pref2',division:2,short:'都県2部',base:51,promotion:'direct',scope:'pref'},
+      {id:'pref1',division:1,short:'都県1部',base:58,promotion:'direct',scope:'pref'},
+      {id:'prince-kanto2',name:'プリンスリーグ関東2部',short:'プリンス関東2部',base:67,promotion:'direct',scope:'prince'},
+      {id:'prince-kanto1',name:'プリンスリーグ関東1部',short:'プリンス関東1部',base:75,promotion:'playoff',scope:'prince'},
+      {id:'premier-east',name:'プレミアリーグ EAST',short:'プレミアEAST',base:83,promotion:'top',scope:'premier'}
     ],
-    kanto:[
-      ['東都第五','南葛学園','武蔵野北','城東高校','多摩中央','県央学院','湘南工科B'],
-      ['帝都第二','武南B','市立船橋C','桐光B','前橋東','浦和南B','横浜創英B'],
-      ['都立東高','国学院久我山B','成立学園B','日大藤沢B','武南','桐生第一B','八千代B'],
-      ['山梨学院','帝京','桐光学園','西武台','前橋育英B','流経大柏B','矢板中央B'],
-      ['東京Vユース','浦和ユース','鹿島学園','健大高崎','桐生第一','帝京第三','國學院久我山'],
-      ['青森山田','尚志','前橋育英','流経大柏','昌平','鹿島ユース','川崎U-18']
+    hokushinetsu:[
+      {id:'pref3',division:3,short:'県3部',base:44,promotion:'direct',scope:'pref'},
+      {id:'pref2',division:2,short:'県2部',base:50,promotion:'direct',scope:'pref'},
+      {id:'pref1',division:1,short:'県1部',base:57,promotion:'direct',scope:'pref'},
+      {id:'prince-hokushinetsu2',name:'プリンスリーグ北信越2部',short:'プリンス北信越2部',base:66,promotion:'direct',scope:'prince'},
+      {id:'prince-hokushinetsu1',name:'プリンスリーグ北信越1部',short:'プリンス北信越1部',base:74,promotion:'playoff',scope:'prince'},
+      {id:'premier-east',name:'プレミアリーグ EAST',short:'プレミアEAST',base:82,promotion:'top',scope:'premier'}
+    ],
+    tokai:[
+      {id:'pref3',division:3,short:'県3部',base:45,promotion:'direct',scope:'pref'},
+      {id:'pref2',division:2,short:'県2部',base:51,promotion:'direct',scope:'pref'},
+      {id:'pref1',division:1,short:'県1部',base:59,promotion:'direct',scope:'pref'},
+      {id:'prince-tokai',name:'プリンスリーグ東海',short:'プリンス東海',base:72,promotion:'playoff',scope:'prince'},
+      {id:'premier-west',name:'プレミアリーグ WEST',short:'プレミアWEST',base:83,promotion:'top',scope:'premier'}
+    ],
+    kansai:[
+      {id:'pref3',division:3,short:'府県3部',base:45,promotion:'direct',scope:'pref'},
+      {id:'pref2',division:2,short:'府県2部',base:51,promotion:'direct',scope:'pref'},
+      {id:'pref1',division:1,short:'府県1部',base:59,promotion:'direct',scope:'pref'},
+      {id:'prince-kansai2',name:'プリンスリーグ関西2部',short:'プリンス関西2部',base:68,promotion:'direct',scope:'prince'},
+      {id:'prince-kansai1',name:'プリンスリーグ関西1部',short:'プリンス関西1部',base:76,promotion:'playoff',scope:'prince'},
+      {id:'premier-west',name:'プレミアリーグ WEST',short:'プレミアWEST',base:84,promotion:'top',scope:'premier'}
+    ],
+    chugoku:[
+      {id:'pref3',division:3,short:'県3部',base:44,promotion:'direct',scope:'pref'},
+      {id:'pref2',division:2,short:'県2部',base:50,promotion:'direct',scope:'pref'},
+      {id:'pref1',division:1,short:'県1部',base:57,promotion:'direct',scope:'pref'},
+      {id:'prince-chugoku',name:'プリンスリーグ中国',short:'プリンス中国',base:70,promotion:'playoff',scope:'prince'},
+      {id:'premier-west',name:'プレミアリーグ WEST',short:'プレミアWEST',base:83,promotion:'top',scope:'premier'}
+    ],
+    shikoku:[
+      {id:'pref3',division:3,short:'県3部',base:43,promotion:'direct',scope:'pref'},
+      {id:'pref2',division:2,short:'県2部',base:49,promotion:'direct',scope:'pref'},
+      {id:'pref1',division:1,short:'県1部',base:56,promotion:'direct',scope:'pref'},
+      {id:'prince-shikoku',name:'プリンスリーグ四国',short:'プリンス四国',base:69,promotion:'playoff',scope:'prince'},
+      {id:'premier-west',name:'プレミアリーグ WEST',short:'プレミアWEST',base:82,promotion:'top',scope:'premier'}
+    ],
+    kyushu:[
+      {id:'pref3',division:3,short:'県3部',base:45,promotion:'direct',scope:'pref'},
+      {id:'pref2',division:2,short:'県2部',base:51,promotion:'direct',scope:'pref'},
+      {id:'pref1',division:1,short:'県1部',base:59,promotion:'direct',scope:'pref'},
+      {id:'prince-kyushu2',name:'プリンスリーグ九州2部',short:'プリンス九州2部',base:68,promotion:'direct',scope:'prince'},
+      {id:'prince-kyushu1',name:'プリンスリーグ九州1部',short:'プリンス九州1部',base:76,promotion:'playoff',scope:'prince'},
+      {id:'premier-west',name:'プレミアリーグ WEST',short:'プレミアWEST',base:84,promotion:'top',scope:'premier'}
     ]
   };
-  const SEASON_LEAGUE_TEAMS=[
-    {id:'north',name:'市立北高',strength:54},
-    {id:'seiryo',name:'西陵学園',strength:58},
-    {id:'sora',name:'蒼空学院',strength:63},
-    {id:'kosei',name:'皇星高校',strength:69},
-    {id:'minato',name:'港南高校',strength:57},
-    {id:'hakuyo',name:'白楊学園',strength:61},
-    {id:'ryusei',name:'流星学院',strength:66}
-  ];
+  const LEAGUE_TEAM_POOLS={
+    hokkaido:['北都高校','札幌南陵','新川学院','石狩中央','手稲北高','月寒高校','藻岩学園'],
+    tohoku:['奥羽学院','青葉学園','盛岡中央','仙台北陵','秋田城南','山形東雲','磐城学院'],
+    kanto:['東都学院','武蔵野学園','湘南中央','浦和城北','房総学院','上州第一','甲斐学園'],
+    hokushinetsu:['北越学院','越後中央','富山北陵','加賀学園','福井明成','信州学院','松本中央'],
+    tokai:['東海中央','駿河学院','遠州学園','尾張中央','三河学院','美濃学園','伊勢中央'],
+    kansai:['京洛学院','浪速学園','神戸港南','近江中央','奈良青翔','紀州学院','摂津学園'],
+    chugoku:['山陽学院','瀬戸内中央','出雲学園','因幡学院','備前中央','安芸学園','長州学院'],
+    shikoku:['阿波学院','讃岐中央','伊予学園','土佐学院','四国中央','鳴門学園','松山城南'],
+    kyushu:['筑紫学院','肥前学園','長崎海星','火の国学院','豊後中央','日向学園','薩摩学院']
+  };
+  const PREMIER_TEAM_POOLS={
+    east:['北日本ユース','東都ユース','武蔵学院','鹿島中央','柏育成高','青森第一','関東学園'],
+    west:['東海ユース','浪速学院','神戸育成高','瀬戸内学院','九州第一','博多ユース','西日本学園']
+  };
   const SEASON_EVENTS=[
     {id:'league-1',month:4,type:'league',title:'リーグ戦 第1節',leagueRound:1},
     {id:'spring-cup',month:5,type:'minor',title:'地区春季大会',label:'SPRING CUP',strength:55},
@@ -5192,19 +5259,21 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   const SOCCER_ACTION_MS=430;
 
   function soccerDefaultState(){
-    return {initialized:false,identitySetupDone:false,schoolName:'FORGE高校',year:1,month:4,reputation:0,schoolExp:0,trainingPoints:0,formation:'4-3-3',players:[],starterIds:[],lineupSlots:{},selectedSlotId:null,selectedPlayerId:null,scouting:{points:30,selectedZone:'local',candidates:[],committed:[],scholarshipUsed:0,searchSerial:0,homePrefecture:'北海道'},season:{currentIndex:0,gradesSeeded:false,history:[],skipped:[],news:'新シーズン開幕。',league:{region:'hokkaido',tier:0,nextTier:0,table:[],roundsPlayed:0,finalized:false,finalRank:null,promotionPlayoffEligible:false,promotionPlayoffWon:false,movement:'札幌ブロック4部からスタート'},tournaments:{interhigh:{alive:true,champion:false,best:'未出場'},championship:{alive:true,champion:false,best:'未出場'}},lastGraduates:[],lastIntake:[]},record:{played:0,wins:0,draws:0,losses:0,gf:0,ga:0},lastResult:null};
+    return {initialized:false,identitySetupDone:false,schoolName:'FORGE高校',year:1,month:4,reputation:0,schoolExp:0,trainingPoints:0,formation:'4-3-3',players:[],starterIds:[],lineupSlots:{},selectedSlotId:null,selectedPlayerId:null,scouting:{points:30,selectedZone:'local',candidates:[],committed:[],scholarshipUsed:0,searchSerial:0,homePrefecture:'北海道'},season:{currentIndex:0,gradesSeeded:false,history:[],skipped:[],news:'新シーズン開幕。',league:{region:'hokkaido',tier:0,nextTier:0,table:[],roundsPlayed:0,finalized:false,finalRank:null,promotionPlayoffEligible:false,promotionPlayoffWon:false,movement:'札幌ブロック3部からスタート'},tournaments:{interhigh:{alive:true,champion:false,best:'未出場'},championship:{alive:true,champion:false,best:'未出場'}},lastGraduates:[],lastIntake:[]},record:{played:0,wins:0,draws:0,losses:0,gf:0,ga:0},lastResult:null};
   }
 
   let pendingSoccerRename=null;
   function randomSoccerName(){return SOCCER_SURNAMES[Math.floor(Math.random()*SOCCER_SURNAMES.length)]+' '+SOCCER_GIVEN[Math.floor(Math.random()*SOCCER_GIVEN.length)];}
   function renderSoccerIdentitySetup(){
     if(!$('soccerSetupRosterNames'))return;normalizeSoccerState();$('soccerSetupSchoolName').value=state.soccer.schoolName||'FORGE高校';
+    if($('soccerSetupPrefecture')){$('soccerSetupPrefecture').innerHTML=PREFECTURES.map(p=>'<option value="'+p+'">'+p+'</option>').join('');$('soccerSetupPrefecture').value=state.soccer.scouting.homePrefecture||'北海道';}
     $('soccerSetupRosterNames').innerHTML=state.soccer.players.map((p,i)=>'<label class="soccer-roster-name-row"><span>'+p.primaryPos+'</span><input data-setup-player-id="'+p.id+'" maxlength="18" value="'+escapeHtml(p.name)+'" aria-label="'+(i+1)+'人目の選手名" /></label>').join('');
   }
   function openSoccerIdentitySetup(){renderSoccerIdentitySetup();$('soccerIdentitySetupModal')?.classList.remove('hidden');}
   function saveSoccerIdentitySetup(){
     normalizeSoccerState();const school=($('soccerSetupSchoolName')?.value||'').trim();if(!school)return toast('<b>高校名を入力してください</b>');
     state.soccer.schoolName=school.slice(0,20);
+    const pref=$('soccerSetupPrefecture')?.value||state.soccer.scouting.homePrefecture||'北海道';state.soccer.scouting.homePrefecture=pref;state.soccer.season.league.region=PREFECTURE_REGION[pref]||'hokkaido';state.soccer.season.league.tier=0;state.soccer.season.league.nextTier=0;state.soccer.season.league.table=[];
     Array.from(document.querySelectorAll('[data-setup-player-id]')).forEach(input=>{const p=state.soccer.players.find(x=>x.id===input.dataset.setupPlayerId),name=input.value.trim();if(p&&name)p.name=name.slice(0,18);});
     state.soccer.identitySetupDone=true;saveState();$('soccerIdentitySetupModal')?.classList.add('hidden');renderSoccerShell();toast('<b>'+escapeHtml(state.soccer.schoolName)+'</b> でスタート');
   }
@@ -5278,16 +5347,38 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   function soccerPlayerOvr(p){return soccerPositionOvr(p,p.primaryPos||p.pos||'CMF');}
 
   function currentLeagueRegion(){
-    const saved=state.soccer.season?.league?.region;if(saved&&LEAGUE_PYRAMIDS[saved])return saved;
-    return (state.soccer.scouting?.homePrefecture==='北海道')?'hokkaido':'kanto';
+    const pref=state.soccer.scouting?.homePrefecture||'北海道';
+    const mapped=PREFECTURE_REGION[pref]||'hokkaido';
+    const saved=state.soccer.season?.league?.region;
+    return saved&&LEAGUE_PYRAMIDS[saved]?saved:mapped;
   }
   function leaguePyramid(){return LEAGUE_PYRAMIDS[currentLeagueRegion()]||LEAGUE_PYRAMIDS.hokkaido;}
   function currentLeagueTier(){const p=leaguePyramid(),n=Number(state.soccer.season?.league?.tier)||0;return clamp(n,0,p.length-1);}
-  function currentLeagueInfo(){return leaguePyramid()[currentLeagueTier()];}
-  function currentLeagueTeams(){
-    const region=currentLeagueRegion(),tier=currentLeagueTier(),info=currentLeagueInfo(),names=(LEAGUE_TEAM_NAMES[region]?.[tier]||LEAGUE_TEAM_NAMES.hokkaido[0]);
-    return names.map((name,i)=>({id:'l'+tier+'-'+i,name,strength:info.base+[0,2,-1,4,1,3,5][i]+Math.min(6,(state.soccer.year-1))}));
+  function localLeagueName(pref,division){
+    if(pref==='東京都')return '東京都U-18 T'+division;
+    if(pref==='北海道')return '札幌ブロック'+division+'部';
+    return pref+'U-18 '+division+'部';
   }
+  function localLeagueShort(pref,division){
+    if(pref==='東京都')return 'T'+division;
+    if(pref==='北海道')return '札幌'+division+'部';
+    return pref.replace(/[都府県]$/,'')+division+'部';
+  }
+  function leagueInfoAt(tier){
+    const p=leaguePyramid(),base=p[clamp(Number(tier)||0,0,p.length-1)],pref=state.soccer.scouting?.homePrefecture||'北海道';
+    if(base.scope==='pref')return {...base,name:localLeagueName(pref,base.division),short:localLeagueShort(pref,base.division)};
+    return base;
+  }
+  function currentLeagueInfo(){return leagueInfoAt(currentLeagueTier());}
+  function currentLeagueTeams(){
+    const region=currentLeagueRegion(),tier=currentLeagueTier(),info=currentLeagueInfo();
+    const pool=info.scope==='premier'?(info.id.includes('east')?PREMIER_TEAM_POOLS.east:PREMIER_TEAM_POOLS.west):(LEAGUE_TEAM_POOLS[region]||LEAGUE_TEAM_POOLS.hokkaido);
+    return pool.map((root,i)=>{
+      const suffix=info.scope==='pref'&&tier===0?(i%3===0?'B':''):info.scope==='pref'&&tier===1&&i%4===0?'B':'';
+      return {id:'l'+region+'-'+tier+'-'+i,name:root+suffix,strength:info.base+[0,2,-1,4,1,3,5][i]+Math.min(6,(state.soccer.year-1))};
+    });
+  }
+
   function seasonInitialLeagueTable(){
     return [{id:'user',strength:0,p:0,w:0,d:0,l:0,gf:0,ga:0,pts:0},...currentLeagueTeams().map(t=>({id:t.id,strength:t.strength,p:0,w:0,d:0,l:0,gf:0,ga:0,pts:0}))];
   }
@@ -5365,9 +5456,9 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     const bonus=rank===1?35:rank<=3?18:rank<=5?8:3;state.soccer.reputation+=bonus;
     if(rank===1&&tier<max){
       if(info.promotion==='playoff'){lg.promotionPlayoffEligible=true;lg.movement=info.name+'優勝。プレミア参入プレーオフ進出！';state.soccer.season.news=lg.movement;showMoment('PLAYOFF QUALIFIED','プレミア昇格まであと1勝','legendary');}
-      else{lg.nextTier=tier+1;lg.movement=info.name+'優勝 → '+leaguePyramid()[tier+1].name+'へ昇格決定';state.soccer.season.news=lg.movement;showMoment('PROMOTION',leaguePyramid()[tier+1].short+'へ昇格','legendary');}
-    }else if(rank===8&&tier>0){lg.nextTier=tier-1;lg.movement=info.name+' 8位 → '+leaguePyramid()[tier-1].name+'へ降格';state.soccer.season.news=lg.movement;}
-    else if(rank===1&&tier===max){lg.movement=info.name+' 優勝！国内最高峰リーグ制覇';state.soccer.season.news=lg.movement;showMoment('LEAGUE CHAMPION','PREMIER EAST','legendary');}
+      else{const next=leagueInfoAt(tier+1);lg.nextTier=tier+1;lg.movement=info.name+'優勝 → '+next.name+'へ昇格決定';state.soccer.season.news=lg.movement;showMoment('PROMOTION',next.short+'へ昇格','legendary');}
+    }else if(rank===8&&tier>0){const down=leagueInfoAt(tier-1);lg.nextTier=tier-1;lg.movement=info.name+' 8位 → '+down.name+'へ降格';state.soccer.season.news=lg.movement;}
+    else if(rank===1&&tier===max){lg.movement=info.name+' 優勝！国内最高峰リーグ制覇';state.soccer.season.news=lg.movement;showMoment('LEAGUE CHAMPION',info.short,'legendary');}
     else{lg.movement=info.name+' '+rank+'位。来季も同リーグ';state.soccer.season.news=lg.movement;}
   }
 
@@ -5415,6 +5506,13 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     state.soccer.season.league.table=seasonInitialLeagueTable();state.soccer.season.news+=' 所属：'+currentLeagueInfo().name;
     state.soccer.selectedPlayerId=state.soccer.players[0]?.id||null;autoSelectSoccerStarters(false);saveState();renderSoccerShell();showMoment('NEW SCHOOL YEAR','YEAR '+state.soccer.year,'good');navigate('soccer-season');
   }
+  function canChangeLeagueRegion(){return (state.soccer.season?.league?.roundsPlayed||0)===0&&!state.soccer.season?.history?.some(h=>h.type==='league');}
+  function changeSoccerPrefecture(pref){
+    if(!PREFECTURES.includes(pref)||!canChangeLeagueRegion())return;
+    state.soccer.scouting.homePrefecture=pref;const region=PREFECTURE_REGION[pref]||'hokkaido',lg=state.soccer.season.league;
+    lg.region=region;lg.tier=0;lg.nextTier=0;lg.table=[];lg.roundsPlayed=0;lg.finalized=false;lg.finalRank=null;lg.promotionPlayoffEligible=false;lg.promotionPlayoffWon=false;lg.movement='地域設定：'+pref+' / '+REGION_LABELS[region];
+    normalizeSoccerSeason();saveState();renderSoccerSeason();renderSoccerHome();renderSoccerScout();
+  }
   function renderSoccerSeason(){
     if(!$('seasonCurrentCard'))return;normalizeSoccerState();const ss=state.soccer.season,event=currentSeasonEvent(),opp=soccerSeasonOpponent(event),table=leagueSortTable();
     $('seasonYearLabel').textContent=state.soccer.year;$('seasonMonthLabel').textContent=event.month+'月';
@@ -5426,8 +5524,9 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     $('seasonInterhighCard').className='season-trophy '+(ih.champion?'champion':ih.alive?'alive':'out');$('seasonInterhighCard').querySelector('b').textContent=seasonStatusText('interhigh');
     $('seasonChampionshipCard').className='season-trophy '+(cs.champion?'champion':cs.alive?'alive':'out');$('seasonChampionshipCard').querySelector('b').textContent=seasonStatusText('championship');
     $('seasonNews').textContent=ss.news||'シーズン進行中。';
+    if($('seasonPrefectureSelect')){$('seasonPrefectureSelect').innerHTML=PREFECTURES.map(p=>'<option value="'+p+'">'+p+'</option>').join('');$('seasonPrefectureSelect').value=state.soccer.scouting.homePrefecture||'北海道';$('seasonPrefectureSelect').disabled=!canChangeLeagueRegion();$('seasonPrefectureSelect').onchange=e=>changeSoccerPrefecture(e.target.value);$('seasonRegionHelp').textContent=(canChangeLeagueRegion()?'リーグ戦開始前のみ変更可能。':'リーグ戦開始後のため今季は変更できません。')+' 現在：'+REGION_LABELS[currentLeagueRegion()]+'地域';}
     const leagueInfo=currentLeagueInfo(),path=leaguePyramid();$('seasonLeagueMeta').textContent=leagueInfo.name+' • 4月–10月 • 8校総当たり';
-    $('seasonLeagueTierBanner').innerHTML='<span>CURRENT LEAGUE</span><b>'+escapeHtml(leagueInfo.name)+'</b><small>1位：昇格'+(leagueInfo.promotion==='playoff'?'プレーオフへ':'')+' / 8位：降格'+(currentLeagueTier()===0?'なし':'')+'</small><div class="league-path">'+path.map((l,i)=>'<span class="league-step '+(i===currentLeagueTier()?'current':i<currentLeagueTier()?'cleared':'')+'">'+escapeHtml(l.short)+'</span>').join('')+'</div>'+(ss.league.movement?'<div class="league-movement">'+escapeHtml(ss.league.movement)+'</div>':'');
+    $('seasonLeagueTierBanner').innerHTML='<span>CURRENT LEAGUE</span><b>'+escapeHtml(leagueInfo.name)+'</b><small>'+(leagueInfo.promotion==='top'?'1位：最高峰リーグ優勝':'1位：'+(leagueInfo.promotion==='playoff'?'プレミア参入プレーオフ':'昇格'))+' / 8位：'+(currentLeagueTier()===0?'残留':'降格')+'</small><div class="league-path">'+path.map((l,i)=>'<span class="league-step '+(i===currentLeagueTier()?'current':i<currentLeagueTier()?'cleared':'')+'">'+escapeHtml(l.short)+'</span>').join('')+'</div>'+(ss.league.movement?'<div class="league-movement">'+escapeHtml(ss.league.movement)+'</div>':'');
     $('seasonLeagueTable').innerHTML='<table class="season-table"><thead><tr><th>#</th><th style="text-align:left">TEAM</th><th>試</th><th>勝</th><th>分</th><th>敗</th><th>得失</th><th>勝点</th></tr></thead><tbody>'+table.map((r,i)=>'<tr class="'+(r.id==='user'?'user':'')+'"><td class="rank">'+(i+1)+'</td><td class="team">'+escapeHtml(seasonTeamName(r.id))+'</td><td>'+r.p+'</td><td>'+r.w+'</td><td>'+r.d+'</td><td>'+r.l+'</td><td>'+((r.gf-r.ga)>=0?'+':'')+(r.gf-r.ga)+'</td><td><b>'+r.pts+'</b></td></tr>').join('')+'</tbody></table>';
     $('seasonCalendar').innerHTML=SEASON_EVENTS.map((ev,i)=>{const done=seasonEventDone(ev.id),skipped=ss.skipped.includes(ev.id),current=i===ss.currentIndex;return '<div class="season-event'+(current?' current':'')+(done?' done':'')+(skipped?' skipped':'')+'"><span class="month">'+ev.month+'月</span><div><b>'+escapeHtml(ev.title)+'</b><small>'+seasonCompetitionLabel(ev)+(ev.type==='league'?' • 第'+ev.leagueRound+'節':'')+'</small></div><em>'+(current?'NEXT':done?'DONE':skipped?'敗退':'UPCOMING')+'</em></div>';}).join('');
   }
@@ -5491,16 +5590,22 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if(primaryPos==='CF'){stats.PAC+=7;stats.SHO+=13;stats.PAS+=1;stats.DRI+=7;stats.DEF-=11;stats.PHY+=4;}
     SOCCER_ATTRS.forEach(a=>stats[a]=clamp(Math.round(stats[a]+Math.random()*5-2),25,88));return stats;
   }
+  function scoutOriginsForZone(zone){
+    const pref=state.soccer.scouting.homePrefecture||'北海道',region=PREFECTURE_REGION[pref]||'hokkaido',regional=REGION_PREFECTURES[region]||[pref];
+    if(zone.id==='local')return [pref];if(zone.id==='nearby')return regional;if(zone.id==='region')return regional;
+    if(zone.id==='adjacent'){const keys=Object.keys(REGION_PREFECTURES),idx=keys.indexOf(region),near=[keys[Math.max(0,idx-1)],keys[Math.min(keys.length-1,idx+1)]].filter(Boolean);return [...new Set(near.flatMap(k=>REGION_PREFECTURES[k]))];}
+    return PREFECTURES;
+  }
   function createScoutCandidate(zone){
-    const rank=scoutAccessLevel(),primaryPos=SCOUT_POSITION_POOL[Math.floor(Math.random()*SCOUT_POSITION_POOL.length)];
+    const rank=scoutAccessLevel(),primaryPos=SCOUT_POSITION_POOL[Math.floor(Math.random()*SCOUT_POSITION_POOL.length)],origins=scoutOriginsForZone(zone);
     const hot=Math.random(),stars=clamp(1+zone.quality+(hot>.82?1:0)+(hot>.96?1:0),1,5);
     const base=41+zone.quality*2+stars*3+Math.floor(Math.random()*5),stats=scoutBuildStats(primaryPos,base);
-    const p={id:'sc-'+Date.now().toString(36)+'-'+state.soccer.scouting.searchSerial+'-'+Math.random().toString(36).slice(2,6),name:SOCCER_SURNAMES[Math.floor(Math.random()*SOCCER_SURNAMES.length)]+' '+SOCCER_GIVEN[Math.floor(Math.random()*SOCCER_GIVEN.length)],primaryPos,pos:primaryPos,aptitudes:{...SOCCER_APTITUDE_MAP[primaryPos]},grade:0,number:0,talent:+(0.9+Math.random()*.25).toFixed(2),potential:clamp(66+zone.quality*3+stars*3+Math.floor(Math.random()*7),70,96),trait:scoutTrait(),origin:zone.origins[Math.floor(Math.random()*zone.origins.length)],height:160+Math.floor(Math.random()*30),foot:Math.random()<.2?'左':'右',stars,observed:false,interest:clamp(3+rank-zone.quality-(stars>=5?1:0)+(Math.random()<.4?-1:0),1,4),status:'candidate',...stats};
+    const p={id:'sc-'+Date.now().toString(36)+'-'+state.soccer.scouting.searchSerial+'-'+Math.random().toString(36).slice(2,6),name:SOCCER_SURNAMES[Math.floor(Math.random()*SOCCER_SURNAMES.length)]+' '+SOCCER_GIVEN[Math.floor(Math.random()*SOCCER_GIVEN.length)],primaryPos,pos:primaryPos,aptitudes:{...SOCCER_APTITUDE_MAP[primaryPos]},grade:0,number:0,talent:+(0.9+Math.random()*.25).toFixed(2),potential:clamp(66+zone.quality*3+stars*3+Math.floor(Math.random()*7),70,96),trait:scoutTrait(),origin:origins[Math.floor(Math.random()*origins.length)],height:160+Math.floor(Math.random()*30),foot:Math.random()<.2?'左':'右',stars,observed:false,interest:clamp(3+rank-zone.quality-(stars>=5?1:0)+(Math.random()<.4?-1:0),1,4),status:'candidate',...stats};
     p.ovr=soccerPlayerOvr(p);p.label=stars>=5?'全国トップ級':stars===4?'地域選抜':stars===3?'県内有力':'将来性候補';return p;
   }
   function searchScoutCandidates(){
     normalizeSoccerState();const sc=state.soccer.scouting,zone=scoutZone();if(zone.unlock>scoutAccessLevel())return toast('<b>SCOUT LOCKED</b> 学校評判を上げて遠征範囲を広げてください');if(sc.points<zone.cost)return toast('<b>SCOUT PT不足</b> 勉強してSCOUT PTを獲得してください');
-    sc.points-=zone.cost;sc.searchSerial++;sc.candidates=Array.from({length:4},()=>createScoutCandidate(zone));saveState();renderSoccerScout();renderSoccerHome();toast('<b>SCOUT REPORT</b> '+zone.label+'で4名を発見');
+    sc.points-=zone.cost;sc.searchSerial++;sc.candidates=Array.from({length:4},()=>createScoutCandidate(zone));saveState();renderSoccerScout();renderSoccerHome();toast('<b>SCOUT REPORT</b> '+scoutZoneDisplay(zone).label+'で4名を発見');
   }
   function setScoutZone(id){
     const zone=SCOUT_ZONES.find(z=>z.id===id);if(!zone||zone.unlock>scoutAccessLevel())return;state.soccer.scouting.selectedZone=id;saveState();renderSoccerScout();
@@ -5527,13 +5632,21 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     let actions='';if(committed)actions='<div class="scout-actions-row one"><button disabled>✓ 入部内定</button></div>';else if(!c.observed)actions='<div class="scout-actions-row one"><button class="observe" data-scout-observe="'+c.id+'">視察する • 4 SP</button></div>';else actions='<div class="scout-actions-row"><button class="offer" data-scout-offer="'+c.id+'">通常勧誘 • 6 SP</button><button class="scholar" data-scout-scholar="'+c.id+'">特待生 • 10 SP</button></div>';
     return '<article class="scout-candidate'+(elite?' elite':'')+(committed?' committed':'')+'"><div class="scout-candidate-head"><span class="soccer-pos">'+c.primaryPos+'</span><div><h3>'+escapeHtml(c.name)+'</h3><p>'+escapeHtml(c.origin)+' • '+c.height+'cm • '+c.foot+'利き • '+escapeHtml(c.trait)+'</p></div><span class="scout-badge'+(elite?' elite':'')+'">'+escapeHtml(c.label)+'</span></div><div class="scout-interest"><span>スカウト評価 '+scoutStars(c.stars)+'</span><b>入学意欲 '+interest+'</b></div>'+stats+actions+'</article>';
   }
+  function scoutZoneDisplay(zone){
+    const pref=state.soccer.scouting.homePrefecture||'北海道',region=REGION_LABELS[currentLeagueRegion()]||'地域';
+    if(zone.id==='local')return {label:pref+'スカウト',short:'自県'};
+    if(zone.id==='nearby')return {label:'近隣県スカウト',short:'近隣'};
+    if(zone.id==='region')return {label:region+'スカウト',short:region};
+    if(zone.id==='adjacent')return {label:'隣接地域遠征',short:'遠征'};
+    return {label:'全国スカウト',short:'全国'};
+  }
   function renderSoccerScout(){
     if(!$('scoutCandidateGrid'))return;normalizeSoccerState();const sc=state.soccer.scouting,access=scoutAccessLevel(),rank=soccerRankInfo(),zone=scoutZone(),limit=scoutScholarshipLimit();
-    $('soccerScoutPoints').textContent=sc.points;$('scoutSchoolRank').textContent=rank.name;$('scoutScholarship').textContent=sc.scholarshipUsed+' / '+limit;$('scoutCommittedCount').textContent=sc.committed.length+' / '+SCOUT_INTAKE_LIMIT;$('scoutHomeArea').textContent=sc.homePrefecture||'北海道';$('scoutRangeLabel').textContent=SCOUT_ZONES[access]?.label||'全国';
-    $('scoutZoneButtons').innerHTML=SCOUT_ZONES.map(z=>'<button class="scout-zone-btn'+(sc.selectedZone===z.id?' active':'')+'" data-scout-zone="'+z.id+'" '+(z.unlock>access?'disabled':'')+'><div><b>'+z.label+'</b><small>'+(z.unlock>access?'学校評判を上げると解放':'候補4名を探索 • '+z.cost+' SP')+'</small></div><em>'+(z.unlock>access?'LOCK':z.short)+'</em></button>').join('');
+    $('soccerScoutPoints').textContent=sc.points;$('scoutSchoolRank').textContent=rank.name;$('scoutScholarship').textContent=sc.scholarshipUsed+' / '+limit;$('scoutCommittedCount').textContent=sc.committed.length+' / '+SCOUT_INTAKE_LIMIT;$('scoutHomeArea').textContent=sc.homePrefecture||'北海道';$('scoutRangeLabel').textContent=access>=4?'全国':(REGION_LABELS[currentLeagueRegion()]+'中心');
+    $('scoutZoneButtons').innerHTML=SCOUT_ZONES.map(z=>{const d=scoutZoneDisplay(z);return '<button class="scout-zone-btn'+(sc.selectedZone===z.id?' active':'')+'" data-scout-zone="'+z.id+'" '+(z.unlock>access?'disabled':'')+'><div><b>'+d.label+'</b><small>'+(z.unlock>access?'学校評判を上げると解放':'候補4名を探索 • '+z.cost+' SP')+'</small></div><em>'+(z.unlock>access?'LOCK':d.short)+'</em></button>';}).join('');
     Array.from(document.querySelectorAll('[data-scout-zone]')).forEach(btn=>btn.addEventListener('click',()=>setScoutZone(btn.dataset.scoutZone)));
-    $('scoutSearchBtn').disabled=zone.unlock>access||sc.points<zone.cost;$('scoutBoardMeta').textContent=zone.label+' • '+(sc.candidates.length?sc.candidates.length+'名':'未探索');
-    $('scoutAccessNote').innerHTML='現在の遠征範囲：<b>'+SCOUT_ZONES[access].label+'</b><br>評判が「名門」になると全国スカウトが解放。特待生枠は学校ランクで増加します。';
+    $('scoutSearchBtn').disabled=zone.unlock>access||sc.points<zone.cost;$('scoutBoardMeta').textContent=scoutZoneDisplay(zone).label+' • '+(sc.candidates.length?sc.candidates.length+'名':'未探索');
+    $('scoutAccessNote').innerHTML='現在の遠征範囲：<b>'+scoutZoneDisplay(SCOUT_ZONES[access]).label+'</b><br>評判が「名門」になると全国スカウトが解放。特待生枠は学校ランクで増加します。';
     $('scoutCandidateGrid').innerHTML=sc.candidates.length?sc.candidates.map(scoutCandidateHtml).join(''):'<div class="scout-empty">まだ候補選手がいません。<br>左の「候補を探す」からスカウトを開始してください。</div>';
     Array.from(document.querySelectorAll('[data-scout-observe]')).forEach(btn=>btn.addEventListener('click',()=>observeScoutCandidate(btn.dataset.scoutObserve)));
     Array.from(document.querySelectorAll('[data-scout-offer]')).forEach(btn=>btn.addEventListener('click',()=>regularScoutOffer(btn.dataset.scoutOffer)));
