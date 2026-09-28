@@ -5365,11 +5365,12 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if(pref==='北海道')return '札幌'+division+'部';
     return pref.replace(/[都府県]$/,'')+division+'部';
   }
-  function currentLeagueInfo(){
-    const base=leaguePyramid()[currentLeagueTier()],pref=state.soccer.scouting?.homePrefecture||'北海道';
+  function leagueInfoAt(tier){
+    const p=leaguePyramid(),base=p[clamp(Number(tier)||0,0,p.length-1)],pref=state.soccer.scouting?.homePrefecture||'北海道';
     if(base.scope==='pref')return {...base,name:localLeagueName(pref,base.division),short:localLeagueShort(pref,base.division)};
     return base;
   }
+  function currentLeagueInfo(){return leagueInfoAt(currentLeagueTier());}
   function currentLeagueTeams(){
     const region=currentLeagueRegion(),tier=currentLeagueTier(),info=currentLeagueInfo();
     const pool=info.scope==='premier'?(info.id.includes('east')?PREMIER_TEAM_POOLS.east:PREMIER_TEAM_POOLS.west):(LEAGUE_TEAM_POOLS[region]||LEAGUE_TEAM_POOLS.hokkaido);
@@ -5456,8 +5457,8 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     const bonus=rank===1?35:rank<=3?18:rank<=5?8:3;state.soccer.reputation+=bonus;
     if(rank===1&&tier<max){
       if(info.promotion==='playoff'){lg.promotionPlayoffEligible=true;lg.movement=info.name+'優勝。プレミア参入プレーオフ進出！';state.soccer.season.news=lg.movement;showMoment('PLAYOFF QUALIFIED','プレミア昇格まであと1勝','legendary');}
-      else{lg.nextTier=tier+1;lg.movement=info.name+'優勝 → '+leaguePyramid()[tier+1].name+'へ昇格決定';state.soccer.season.news=lg.movement;showMoment('PROMOTION',leaguePyramid()[tier+1].short+'へ昇格','legendary');}
-    }else if(rank===8&&tier>0){lg.nextTier=tier-1;lg.movement=info.name+' 8位 → '+leaguePyramid()[tier-1].name+'へ降格';state.soccer.season.news=lg.movement;}
+      else{const next=leagueInfoAt(tier+1);lg.nextTier=tier+1;lg.movement=info.name+'優勝 → '+next.name+'へ昇格決定';state.soccer.season.news=lg.movement;showMoment('PROMOTION',next.short+'へ昇格','legendary');}
+    }else if(rank===8&&tier>0){const down=leagueInfoAt(tier-1);lg.nextTier=tier-1;lg.movement=info.name+' 8位 → '+down.name+'へ降格';state.soccer.season.news=lg.movement;}
     else if(rank===1&&tier===max){lg.movement=info.name+' 優勝！国内最高峰リーグ制覇';state.soccer.season.news=lg.movement;showMoment('LEAGUE CHAMPION',info.short,'legendary');}
     else{lg.movement=info.name+' '+rank+'位。来季も同リーグ';state.soccer.season.news=lg.movement;}
   }
@@ -5605,7 +5606,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   }
   function searchScoutCandidates(){
     normalizeSoccerState();const sc=state.soccer.scouting,zone=scoutZone();if(zone.unlock>scoutAccessLevel())return toast('<b>SCOUT LOCKED</b> 学校評判を上げて遠征範囲を広げてください');if(sc.points<zone.cost)return toast('<b>SCOUT PT不足</b> 勉強してSCOUT PTを獲得してください');
-    sc.points-=zone.cost;sc.searchSerial++;sc.candidates=Array.from({length:4},()=>createScoutCandidate(zone));saveState();renderSoccerScout();renderSoccerHome();toast('<b>SCOUT REPORT</b> '+zone.label+'で4名を発見');
+    sc.points-=zone.cost;sc.searchSerial++;sc.candidates=Array.from({length:4},()=>createScoutCandidate(zone));saveState();renderSoccerScout();renderSoccerHome();toast('<b>SCOUT REPORT</b> '+scoutZoneDisplay(zone).label+'で4名を発見');
   }
   function setScoutZone(id){
     const zone=SCOUT_ZONES.find(z=>z.id===id);if(!zone||zone.unlock>scoutAccessLevel())return;state.soccer.scouting.selectedZone=id;saveState();renderSoccerScout();
@@ -5645,8 +5646,8 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     $('soccerScoutPoints').textContent=sc.points;$('scoutSchoolRank').textContent=rank.name;$('scoutScholarship').textContent=sc.scholarshipUsed+' / '+limit;$('scoutCommittedCount').textContent=sc.committed.length+' / '+SCOUT_INTAKE_LIMIT;$('scoutHomeArea').textContent=sc.homePrefecture||'北海道';$('scoutRangeLabel').textContent=access>=4?'全国':(REGION_LABELS[currentLeagueRegion()]+'中心');
     $('scoutZoneButtons').innerHTML=SCOUT_ZONES.map(z=>{const d=scoutZoneDisplay(z);return '<button class="scout-zone-btn'+(sc.selectedZone===z.id?' active':'')+'" data-scout-zone="'+z.id+'" '+(z.unlock>access?'disabled':'')+'><div><b>'+d.label+'</b><small>'+(z.unlock>access?'学校評判を上げると解放':'候補4名を探索 • '+z.cost+' SP')+'</small></div><em>'+(z.unlock>access?'LOCK':d.short)+'</em></button>';}).join('');
     Array.from(document.querySelectorAll('[data-scout-zone]')).forEach(btn=>btn.addEventListener('click',()=>setScoutZone(btn.dataset.scoutZone)));
-    $('scoutSearchBtn').disabled=zone.unlock>access||sc.points<zone.cost;$('scoutBoardMeta').textContent=zone.label+' • '+(sc.candidates.length?sc.candidates.length+'名':'未探索');
-    $('scoutAccessNote').innerHTML='現在の遠征範囲：<b>'+SCOUT_ZONES[access].label+'</b><br>評判が「名門」になると全国スカウトが解放。特待生枠は学校ランクで増加します。';
+    $('scoutSearchBtn').disabled=zone.unlock>access||sc.points<zone.cost;$('scoutBoardMeta').textContent=scoutZoneDisplay(zone).label+' • '+(sc.candidates.length?sc.candidates.length+'名':'未探索');
+    $('scoutAccessNote').innerHTML='現在の遠征範囲：<b>'+scoutZoneDisplay(SCOUT_ZONES[access]).label+'</b><br>評判が「名門」になると全国スカウトが解放。特待生枠は学校ランクで増加します。';
     $('scoutCandidateGrid').innerHTML=sc.candidates.length?sc.candidates.map(scoutCandidateHtml).join(''):'<div class="scout-empty">まだ候補選手がいません。<br>左の「候補を探す」からスカウトを開始してください。</div>';
     Array.from(document.querySelectorAll('[data-scout-observe]')).forEach(btn=>btn.addEventListener('click',()=>observeScoutCandidate(btn.dataset.scoutObserve)));
     Array.from(document.querySelectorAll('[data-scout-offer]')).forEach(btn=>btn.addEventListener('click',()=>regularScoutOffer(btn.dataset.scoutOffer)));
