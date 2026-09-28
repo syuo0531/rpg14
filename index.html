@@ -5093,41 +5093,104 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   const SCOUT_POSITION_POOL=['GK','CB','CB','LSB','RSB','DMF','CMF','CMF','LMF','RMF','OMF','LWG','RWG','CF','CF'];
   const SCOUT_INTAKE_LIMIT=8;
 
+  const PREFECTURES=['北海道','青森県','岩手県','宮城県','秋田県','山形県','福島県','茨城県','栃木県','群馬県','埼玉県','千葉県','東京都','神奈川県','山梨県','新潟県','富山県','石川県','福井県','長野県','岐阜県','静岡県','愛知県','三重県','滋賀県','京都府','大阪府','兵庫県','奈良県','和歌山県','鳥取県','島根県','岡山県','広島県','山口県','徳島県','香川県','愛媛県','高知県','福岡県','佐賀県','長崎県','熊本県','大分県','宮崎県','鹿児島県','沖縄県'];
+  const REGION_PREFECTURES={
+    hokkaido:['北海道'],
+    tohoku:['青森県','岩手県','宮城県','秋田県','山形県','福島県'],
+    kanto:['茨城県','栃木県','群馬県','埼玉県','千葉県','東京都','神奈川県','山梨県'],
+    hokushinetsu:['新潟県','富山県','石川県','福井県','長野県'],
+    tokai:['岐阜県','静岡県','愛知県','三重県'],
+    kansai:['滋賀県','京都府','大阪府','兵庫県','奈良県','和歌山県'],
+    chugoku:['鳥取県','島根県','岡山県','広島県','山口県'],
+    shikoku:['徳島県','香川県','愛媛県','高知県'],
+    kyushu:['福岡県','佐賀県','長崎県','熊本県','大分県','宮崎県','鹿児島県','沖縄県']
+  };
+  const REGION_LABELS={hokkaido:'北海道',tohoku:'東北',kanto:'関東',hokushinetsu:'北信越',tokai:'東海',kansai:'関西',chugoku:'中国',shikoku:'四国',kyushu:'九州'};
+  const PREFECTURE_REGION=Object.fromEntries(Object.entries(REGION_PREFECTURES).flatMap(([region,prefs])=>prefs.map(pref=>[pref,region])));
   const LEAGUE_PYRAMIDS={
     hokkaido:[
-      {id:'sapporo4',name:'札幌ブロック4部',short:'札幌4部',base:43,promotion:'direct'},
-      {id:'sapporo3',name:'札幌ブロック3部',short:'札幌3部',base:48,promotion:'direct'},
-      {id:'sapporo2',name:'札幌ブロック2部',short:'札幌2部',base:54,promotion:'direct'},
-      {id:'sapporo1',name:'札幌ブロック1部',short:'札幌1部',base:61,promotion:'direct'},
-      {id:'prince-hokkaido',name:'プリンスリーグ北海道',short:'プリンス北海道',base:70,promotion:'playoff'},
-      {id:'premier-east',name:'プレミアリーグ EAST',short:'プレミアEAST',base:80,promotion:'top'}
+      {id:'sapporo4',name:'札幌ブロック4部',short:'札幌4部',base:43,promotion:'direct',scope:'local'},
+      {id:'sapporo3',name:'札幌ブロック3部',short:'札幌3部',base:48,promotion:'direct',scope:'local'},
+      {id:'sapporo2',name:'札幌ブロック2部',short:'札幌2部',base:54,promotion:'direct',scope:'local'},
+      {id:'sapporo1',name:'札幌ブロック1部',short:'札幌1部',base:61,promotion:'direct',scope:'local'},
+      {id:'prince-hokkaido',name:'プリンスリーグ北海道',short:'プリンス北海道',base:70,promotion:'playoff',scope:'prince'},
+      {id:'premier-east',name:'プレミアリーグ EAST',short:'プレミアEAST',base:82,promotion:'top',scope:'premier'}
+    ],
+    tohoku:[
+      {id:'pref3',division:3,short:'県3部',base:44,promotion:'direct',scope:'pref'},
+      {id:'pref2',division:2,short:'県2部',base:50,promotion:'direct',scope:'pref'},
+      {id:'pref1',division:1,short:'県1部',base:57,promotion:'direct',scope:'pref'},
+      {id:'prince-tohoku',name:'プリンスリーグ東北',short:'プリンス東北',base:70,promotion:'playoff',scope:'prince'},
+      {id:'premier-east',name:'プレミアリーグ EAST',short:'プレミアEAST',base:82,promotion:'top',scope:'premier'}
     ],
     kanto:[
-      {id:'pref3',name:'都県リーグ3部',short:'都県3部',base:45,promotion:'direct'},
-      {id:'pref2',name:'都県リーグ2部',short:'都県2部',base:51,promotion:'direct'},
-      {id:'pref1',name:'都県リーグ1部',short:'都県1部',base:58,promotion:'direct'},
-      {id:'prince-kanto2',name:'プリンスリーグ関東2部',short:'関東2部',base:67,promotion:'direct'},
-      {id:'prince-kanto1',name:'プリンスリーグ関東1部',short:'関東1部',base:74,promotion:'playoff'},
-      {id:'premier-east',name:'プレミアリーグ EAST',short:'プレミアEAST',base:82,promotion:'top'}
+      {id:'pref3',division:3,short:'都県3部',base:45,promotion:'direct',scope:'pref'},
+      {id:'pref2',division:2,short:'都県2部',base:51,promotion:'direct',scope:'pref'},
+      {id:'pref1',division:1,short:'都県1部',base:58,promotion:'direct',scope:'pref'},
+      {id:'prince-kanto2',name:'プリンスリーグ関東2部',short:'プリンス関東2部',base:67,promotion:'direct',scope:'prince'},
+      {id:'prince-kanto1',name:'プリンスリーグ関東1部',short:'プリンス関東1部',base:75,promotion:'playoff',scope:'prince'},
+      {id:'premier-east',name:'プレミアリーグ EAST',short:'プレミアEAST',base:83,promotion:'top',scope:'premier'}
+    ],
+    hokushinetsu:[
+      {id:'pref3',division:3,short:'県3部',base:44,promotion:'direct',scope:'pref'},
+      {id:'pref2',division:2,short:'県2部',base:50,promotion:'direct',scope:'pref'},
+      {id:'pref1',division:1,short:'県1部',base:57,promotion:'direct',scope:'pref'},
+      {id:'prince-hokushinetsu2',name:'プリンスリーグ北信越2部',short:'プリンス北信越2部',base:66,promotion:'direct',scope:'prince'},
+      {id:'prince-hokushinetsu1',name:'プリンスリーグ北信越1部',short:'プリンス北信越1部',base:74,promotion:'playoff',scope:'prince'},
+      {id:'premier-east',name:'プレミアリーグ EAST',short:'プレミアEAST',base:82,promotion:'top',scope:'premier'}
+    ],
+    tokai:[
+      {id:'pref3',division:3,short:'県3部',base:45,promotion:'direct',scope:'pref'},
+      {id:'pref2',division:2,short:'県2部',base:51,promotion:'direct',scope:'pref'},
+      {id:'pref1',division:1,short:'県1部',base:59,promotion:'direct',scope:'pref'},
+      {id:'prince-tokai',name:'プリンスリーグ東海',short:'プリンス東海',base:72,promotion:'playoff',scope:'prince'},
+      {id:'premier-west',name:'プレミアリーグ WEST',short:'プレミアWEST',base:83,promotion:'top',scope:'premier'}
+    ],
+    kansai:[
+      {id:'pref3',division:3,short:'府県3部',base:45,promotion:'direct',scope:'pref'},
+      {id:'pref2',division:2,short:'府県2部',base:51,promotion:'direct',scope:'pref'},
+      {id:'pref1',division:1,short:'府県1部',base:59,promotion:'direct',scope:'pref'},
+      {id:'prince-kansai2',name:'プリンスリーグ関西2部',short:'プリンス関西2部',base:68,promotion:'direct',scope:'prince'},
+      {id:'prince-kansai1',name:'プリンスリーグ関西1部',short:'プリンス関西1部',base:76,promotion:'playoff',scope:'prince'},
+      {id:'premier-west',name:'プレミアリーグ WEST',short:'プレミアWEST',base:84,promotion:'top',scope:'premier'}
+    ],
+    chugoku:[
+      {id:'pref3',division:3,short:'県3部',base:44,promotion:'direct',scope:'pref'},
+      {id:'pref2',division:2,short:'県2部',base:50,promotion:'direct',scope:'pref'},
+      {id:'pref1',division:1,short:'県1部',base:57,promotion:'direct',scope:'pref'},
+      {id:'prince-chugoku',name:'プリンスリーグ中国',short:'プリンス中国',base:70,promotion:'playoff',scope:'prince'},
+      {id:'premier-west',name:'プレミアリーグ WEST',short:'プレミアWEST',base:83,promotion:'top',scope:'premier'}
+    ],
+    shikoku:[
+      {id:'pref3',division:3,short:'県3部',base:43,promotion:'direct',scope:'pref'},
+      {id:'pref2',division:2,short:'県2部',base:49,promotion:'direct',scope:'pref'},
+      {id:'pref1',division:1,short:'県1部',base:56,promotion:'direct',scope:'pref'},
+      {id:'prince-shikoku',name:'プリンスリーグ四国',short:'プリンス四国',base:69,promotion:'playoff',scope:'prince'},
+      {id:'premier-west',name:'プレミアリーグ WEST',short:'プレミアWEST',base:82,promotion:'top',scope:'premier'}
+    ],
+    kyushu:[
+      {id:'pref3',division:3,short:'県3部',base:45,promotion:'direct',scope:'pref'},
+      {id:'pref2',division:2,short:'県2部',base:51,promotion:'direct',scope:'pref'},
+      {id:'pref1',division:1,short:'県1部',base:59,promotion:'direct',scope:'pref'},
+      {id:'prince-kyushu2',name:'プリンスリーグ九州2部',short:'プリンス九州2部',base:68,promotion:'direct',scope:'prince'},
+      {id:'prince-kyushu1',name:'プリンスリーグ九州1部',short:'プリンス九州1部',base:76,promotion:'playoff',scope:'prince'},
+      {id:'premier-west',name:'プレミアリーグ WEST',short:'プレミアWEST',base:84,promotion:'top',scope:'premier'}
     ]
   };
-  const LEAGUE_TEAM_NAMES={
-    hokkaido:[
-      ['北都高校','札幌南陵','新川学院','石狩中央','手稲北高','月寒高校','藻岩学園'],
-      ['札幌工科','北星第二','東陵高校','白石学院','琴似高校','大麻学園','真駒内高'],
-      ['道央学院','札幌西高','北海第二','創成第二','丘珠高校','札幌第一B','山の手B'],
-      ['北星附属','札幌光星B','科学大高','札幌山の手','創成B','北海B','札幌大谷C'],
-      ['札幌大谷','北海道コンサU-18','北海高校','旭川実業','札幌創成','帯広北','札幌光星'],
-      ['青森山田','尚志','前橋育英','流経大柏','昌平','鹿島ユース','川崎U-18']
-    ],
-    kanto:[
-      ['東都第五','南葛学園','武蔵野北','城東高校','多摩中央','県央学院','湘南工科B'],
-      ['帝都第二','武南B','市立船橋C','桐光B','前橋東','浦和南B','横浜創英B'],
-      ['都立東高','国学院久我山B','成立学園B','日大藤沢B','武南','桐生第一B','八千代B'],
-      ['山梨学院','帝京','桐光学園','西武台','前橋育英B','流経大柏B','矢板中央B'],
-      ['東京Vユース','浦和ユース','鹿島学園','健大高崎','桐生第一','帝京第三','國學院久我山'],
-      ['青森山田','尚志','前橋育英','流経大柏','昌平','鹿島ユース','川崎U-18']
-    ]
+  const LEAGUE_TEAM_POOLS={
+    hokkaido:['北都高校','札幌南陵','新川学院','石狩中央','手稲北高','月寒高校','藻岩学園'],
+    tohoku:['奥羽学院','青葉学園','盛岡中央','仙台北陵','秋田城南','山形東雲','磐城学院'],
+    kanto:['東都学院','武蔵野学園','湘南中央','浦和城北','房総学院','上州第一','甲斐学園'],
+    hokushinetsu:['北越学院','越後中央','富山北陵','加賀学園','福井明成','信州学院','松本中央'],
+    tokai:['東海中央','駿河学院','遠州学園','尾張中央','三河学院','美濃学園','伊勢中央'],
+    kansai:['京洛学院','浪速学園','神戸港南','近江中央','奈良青翔','紀州学院','摂津学園'],
+    chugoku:['山陽学院','瀬戸内中央','出雲学園','因幡学院','備前中央','安芸学園','長州学院'],
+    shikoku:['阿波学院','讃岐中央','伊予学園','土佐学院','四国中央','鳴門学園','松山城南'],
+    kyushu:['筑紫学院','肥前学園','長崎海星','火の国学院','豊後中央','日向学園','薩摩学院']
+  };
+  const PREMIER_TEAM_POOLS={
+    east:['北日本ユース','東都ユース','武蔵学院','鹿島中央','柏育成高','青森第一','関東学園'],
+    west:['東海ユース','浪速学院','神戸育成高','瀬戸内学院','九州第一','博多ユース','西日本学園']
   };
   const SEASON_LEAGUE_TEAMS=[
     {id:'north',name:'市立北高',strength:54},
