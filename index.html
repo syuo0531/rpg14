@@ -1240,11 +1240,7 @@ button.match-athlete{cursor:pointer}
   user-select:none;
   -webkit-touch-callout:none;
 }
-main.soccer-gesture-lock{
-  overflow-y:hidden!important;
-  overscroll-behavior:none!important;
-  touch-action:none!important;
-}
+/* Page scrolling stays enabled outside the pitch. iOS gesture blocking is pitch-local. */
 
 
 /* ===== HIGH SCHOOL SOCCER â€¢ PHASE 2 SCOUTING ===== */
@@ -3936,6 +3932,12 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"è²§è¡
     setTimeout(() => item.remove(), 2800);
   }
 
+  function recoverSoccerScrollState(){
+    const host=document.querySelector('main');if(host)host.classList.remove('soccer-gesture-lock');
+    const active=document.querySelector('.screen.active')?.dataset.screen;
+    const shell=$('appShell');if(shell&&active!=='soccer-match')shell.classList.remove('match-focus');
+  }
+
   function navigate(screen) {
     $('.screen').forEach(el => el.classList.toggle('active', el.dataset.screen === screen));
     $('appShell')?.classList.toggle('match-focus',screen==='soccer-match');
@@ -5294,7 +5296,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"è²§è¡
     if(rt.minute>=90){finishSoccerMatch();return;}renderSoccerMatch();
   }
   function setSoccerGestureScrollLock(locked){
-    const host=document.querySelector('main');if(!host)return;host.classList.toggle('soccer-gesture-lock',!!locked);
+    const host=document.querySelector('main');if(host)host.classList.remove('soccer-gesture-lock');
   }
   function stopPitchNativeScroll(e){if(e.cancelable)e.preventDefault();}
   function startSoccerChance(){
@@ -5551,6 +5553,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"è²§è¡
     if(!['off','lite','full'].includes(state.settings.fxMode)) state.settings.fxMode='lite';
     normalizePhase4State();
     normalizePhase5State(); normalizePhase10State(); normalizeSoccerState();
+    recoverSoccerScrollState();
     bindEvents();
     await loadQuestions();
     rebuildQuestionIndex(); normalizePhase10State();
@@ -5576,8 +5579,9 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"è²§è¡
   }
 
   init();
+  window.addEventListener('pageshow',()=>{recoverSoccerScrollState();});
   window.addEventListener('pagehide', saveState);
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')saveState();});
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')saveState();else recoverSoccerScrollState();});
   if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(regs=>regs.forEach(reg=>reg.unregister().catch(()=>{}))).catch(()=>{});}
 })();
 
