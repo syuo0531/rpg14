@@ -1446,7 +1446,8 @@ button.match-athlete{cursor:pointer}
 .phase6-estimate strong{color:#dcebe2}.phase6-rivals{margin-top:7px;padding:7px 8px;border-left:2px solid rgba(255,115,115,.38);background:rgba(255,80,80,.035);font-size:6px;line-height:1.45;color:#ab918f}
 .phase6-offer-chance{margin-top:7px;display:grid;grid-template-columns:1fr 1fr;gap:5px}.phase6-offer-chance span{padding:5px;border:1px solid var(--line);border-radius:7px;text-align:center;font-size:6px;color:#89958f}.phase6-offer-chance b{font-size:8px;color:#dfeae4}
 .scout-candidate.lost{opacity:.55;filter:saturate(.6)}.scout-candidate.lost .scout-actions-row button{cursor:not-allowed}
-@media(max-width:760px){.phase6-watchlist{grid-template-columns:repeat(2,1fr)}}@media(max-width:480px){.phase6-watchlist{grid-template-columns:1fr}}
+.scout-candidate .scout-actions-row:not(.one){grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:760px){.phase6-watchlist{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.scout-candidate .scout-actions-row:not(.one){grid-template-columns:1fr}}@media(max-width:480px){.phase6-watchlist{grid-template-columns:1fr}}
 
 </style>
 </head>
@@ -5386,7 +5387,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   }
   function normalizeScoutCandidate(p){
     if(!p||typeof p!=='object')return p;const seed=soccerHashSeed(p.id||p.name||'scout'),source=scoutSourceProfile(p.origin,seed);
-    p.scoutVisits=clamp(Math.round(Number(p.scoutVisits)||0),0,3);p.sourceType=p.sourceType||source.type;p.sourceName=p.sourceName||source.name;p.selection=p.selection===undefined?scoutSelectionLabel(Number(p.stars)||1,seed):p.selection;p.nationalRank=p.nationalRank===undefined?scoutNationalRank(Number(p.stars)||1,seed):p.nationalRank;
+    p.scoutVisits=clamp(Math.round(p.scoutVisits===undefined?(p.observed?3:0):(Number(p.scoutVisits)||0)),0,3);p.observed=p.scoutVisits>0;p.sourceType=p.sourceType||source.type;p.sourceName=p.sourceName||source.name;p.selection=p.selection===undefined?scoutSelectionLabel(Number(p.stars)||1,seed):p.selection;p.nationalRank=p.nationalRank===undefined?scoutNationalRank(Number(p.stars)||1,seed):p.nationalRank;
     p.rivalSchools=Array.isArray(p.rivalSchools)?p.rivalSchools:scoutRivalList(Number(p.stars)||1,seed);p.rivalPressure=clamp(Math.round(Number(p.rivalPressure)||0),0,4);p.scoutNoise=Number.isFinite(Number(p.scoutNoise))?Number(p.scoutNoise):((seed%11)-5);p.status=p.status||'candidate';
     return p;
   }
@@ -5400,7 +5401,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     const err=visits===0?9:visits===1?6:3,center=clamp(Math.round(pot+noise*(visits<=1?.7:.3)),60,99);return Math.max(60,center-err)+'–'+Math.min(99,center+err);
   }
   function scoutOverallEstimate(p){return scoutEstimate(Number(p.ovr)||soccerPlayerOvr(p),p,scoutVisibility(p)===0?7:5);}
-  function scoutLocalBonus(c){return c.origin===(state.soccer.scouting.homePrefecture||'北海道')?.08:0;}
+  function scoutLocalBonus(c){return c.origin===(state.soccer.scouting.homePrefecture||'北海道') ? .08 : 0;}
   function scoutOfferProbability(c,type='regular'){
     normalizeScoutCandidate(c);const rank=scoutAccessLevel(),rep=Math.min(.14,(state.soccer.reputation||0)/5000),visits=scoutVisibility(c),interest=Number(c.interest)||1,rivals=(c.rivalSchools?.length||0),pressure=c.rivalPressure||0;
     let chance=.17+interest*.105+rank*.045+rep+visits*.035+scoutLocalBonus(c)-rivals*.025-pressure*.055-(Number(c.stars)||1)*.012;
@@ -5933,21 +5934,21 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   }
   function createScoutCandidate(zone){
     const rank=scoutAccessLevel(),primaryPos=SCOUT_POSITION_POOL[Math.floor(Math.random()*SCOUT_POSITION_POOL.length)],origins=scoutOriginsForZone(zone);
-    const hot=Math.random(),stars=clamp(1+zone.quality+(hot>.82?1:0)+(hot>.96?1:0),1,5);
+    const hot=Math.random(),stars=clamp(1+Math.floor(Math.random()*2)+Math.floor((zone.quality+1)/2)+(hot>.82?1:0)+(hot>.97?1:0),1,5);
     const base=41+zone.quality*2+stars*3+Math.floor(Math.random()*5),stats=scoutBuildStats(primaryPos,base);
     const p={id:'sc-'+Date.now().toString(36)+'-'+state.soccer.scouting.searchSerial+'-'+Math.random().toString(36).slice(2,6),name:SOCCER_SURNAMES[Math.floor(Math.random()*SOCCER_SURNAMES.length)]+' '+SOCCER_GIVEN[Math.floor(Math.random()*SOCCER_GIVEN.length)],primaryPos,pos:primaryPos,aptitudes:{...SOCCER_APTITUDE_MAP[primaryPos]},grade:0,number:0,talent:+(0.9+Math.random()*.25).toFixed(2),potential:clamp(66+zone.quality*3+stars*3+Math.floor(Math.random()*7),70,96),trait:scoutTrait(),origin:origins[Math.floor(Math.random()*origins.length)],height:160+Math.floor(Math.random()*30),foot:Math.random()<.2?'左':'右',stars,observed:false,scoutVisits:0,interest:clamp(2+rank-zone.quality+(Math.random()<.45?1:0),1,4),status:'candidate',...stats};
     p.ovr=soccerPlayerOvr(p);p.label=stars>=5?'全国トップ級':stars===4?'地域選抜級':stars===3?'県内有力':'将来性候補';normalizeScoutCandidate(p);return p;
   }
   function searchScoutCandidates(){
     normalizeSoccerState();const sc=state.soccer.scouting,zone=scoutZone();if(zone.unlock>scoutAccessLevel())return toast('<b>SCOUT LOCKED</b> 学校評判を上げて遠征範囲を広げてください');if(sc.points<zone.cost)return toast('<b>SCOUT PT不足</b> 勉強してSCOUT PTを獲得してください');
-    sc.points-=zone.cost;sc.searchSerial++;sc.candidates=Array.from({length:4},()=>createScoutCandidate(zone));saveState();renderSoccerScout();renderSoccerHome();toast('<b>SCOUT REPORT</b> '+scoutZoneDisplay(zone).label+'で4名を発見');
+    sc.points-=zone.cost;sc.searchSerial++;const fresh=Array.from({length:4},()=>createScoutCandidate(zone)),kept=sc.candidates.filter(c=>c.status==='candidate').slice(-8);sc.candidates=[...kept,...fresh];saveState();renderSoccerScout();renderSoccerHome();toast('<b>SCOUT REPORT</b> '+scoutZoneDisplay(zone).label+'で4名を発見 • 候補リスト '+sc.candidates.length+'名');
   }
   function setScoutZone(id){
     const zone=SCOUT_ZONES.find(z=>z.id===id);if(!zone||zone.unlock>scoutAccessLevel())return;state.soccer.scouting.selectedZone=id;saveState();renderSoccerScout();
   }
   function observeScoutCandidate(id){
     const sc=state.soccer.scouting,c=sc.candidates.find(x=>x.id===id);if(!c||c.status!=='candidate')return;normalizeScoutCandidate(c);if(c.scoutVisits>=3)return toast('<b>SCOUT COMPLETE</b> 能力調査は完了しています');if(sc.points<3)return toast('<b>SCOUT PT不足</b> 視察には3 SP必要です');
-    sc.points-=3;c.scoutVisits++;c.observed=c.scoutVisits>0;c.interest=clamp(c.interest+(c.scoutVisits===2?1:0),1,5);const lost=scoutRivalAdvance(c);saveState();renderSoccerScout();renderSoccerHome();
+    sc.points-=3;c.scoutVisits++;c.observed=c.scoutVisits>0;c.interest=clamp(c.interest+(c.scoutVisits===2?1:0),1,5);const lost=scoutRivalAdvance(c);if(lost)sc.recruitLosses++;saveState();renderSoccerScout();renderSoccerHome();
     if(lost)return toast('<b>RECRUITING BATTLE</b> '+escapeHtml(c.name)+' は '+escapeHtml(c.lostTo)+' への進学を決めました');
     toast('<b>SCOUT '+c.scoutVisits+'/3</b> '+escapeHtml(c.name)+' の調査精度が上がりました');
   }
