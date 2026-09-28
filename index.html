@@ -1200,6 +1200,37 @@ button.match-athlete{cursor:pointer}
 .dribble-gesture-pop.fail{border-color:rgba(255,92,92,.5);color:#ffd1d1}
 @keyframes dribblePop{0%{opacity:0;transform:translate(-50%,-35%) scale(.75)}20%{opacity:1}100%{opacity:0;transform:translate(-50%,-110%) scale(1.04)}}
 
+
+/* ===== MOBILE MATCH VISIBILITY FIX ===== */
+.soccer-chance-overlay.is-compact{
+  left:10px;right:auto;top:10px;bottom:auto;
+  max-width:min(310px,calc(100% - 20px));
+  padding:7px 10px;border-radius:9px;
+  background:rgba(3,13,8,.76);
+  backdrop-filter:blur(4px);
+}
+.soccer-chance-overlay.is-compact b{font-size:8px;letter-spacing:.08em}
+.soccer-chance-overlay.is-compact span{display:none}
+.soccer-chance-overlay.is-chance{
+  left:10px;right:10px;top:auto;bottom:8px;
+  max-width:none;padding:9px 11px;
+  background:rgba(3,13,8,.9)
+}
+.match-athlete .athlete-name{display:block}
+@media(max-width:560px){
+  .soccer-match-main{padding:12px}
+  .soccer-pitch{height:430px;margin-top:10px}
+  .match-athlete:not(.focus){transform:translate(-50%,-50%) scale(.82)}
+  .match-athlete .athlete-label{top:47px;min-width:42px;padding:2px 3px;font-size:5.5px}
+  .match-athlete .athlete-pos{font-size:5.5px}
+  .match-athlete.opponent:not(.focus) .athlete-name{display:none}
+  .match-athlete.opponent:not(.focus) .athlete-label{min-width:28px}
+  .soccer-chance-overlay.is-compact{top:7px;left:7px;padding:6px 8px}
+  .soccer-chance-overlay.is-chance{left:7px;right:7px;bottom:7px;padding:8px 9px}
+  .soccer-chance-overlay.is-chance b{font-size:9px}
+  .soccer-chance-overlay.is-chance span{font-size:7px;line-height:1.45}
+}
+
 </style>
 </head>
 <body>
@@ -4945,11 +4976,15 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     const tag=interactive?'button':'div',chanceAttr=interactive&&p?' data-chance-player="'+p.id+'"':'',actorAttr=(actorId||p?.id)?' data-match-actor="'+escapeHtml(actorId||p.id)+'"':'';
     return '<'+tag+' type="'+(interactive?'button':'button')+'"'+chanceAttr+actorAttr+' class="'+classes+'" style="left:'+x+'%;top:'+y+'%"><span class="athlete-head"></span><span class="athlete-hair"></span><span class="athlete-shirt"></span><span class="athlete-number">'+shirtNo+'</span><span class="athlete-shorts"></span><span class="athlete-legs"></span><span class="athlete-label"><span class="athlete-pos">'+position+'</span>'+escapeHtml((athleteName||position).split(' ')[0])+'</span>'+(ball?'<span class="match-ball"></span>':'')+'</'+tag+'>';
   }
+  function soccerIdleY(slotY,home=true){
+    const homeY=clamp(46+(slotY-20)*.56,46,85);return home?homeY:100-homeY;
+  }
   function renderSoccerPitchIdle(){
     if(!$('soccerPitchActors'))return;normalizeSoccerState();const slots=soccerFormationSlots(),live=!!(soccerMatchRuntime&&!soccerMatchRuntime.finished);
-    const home=slots.map(slot=>{const p=state.soccer.players.find(x=>x.id===state.soccer.lineupSlots[slot.id]);if(!p)return'';return soccerAthleteMarkup({p,x:slot.x,y:50+(slot.y-20)*.6,team:'home'});}).join('');
-    const oppSlots=SOCCER_FORMATIONS['4-3-3'].slots,opp=oppSlots.map((slot,i)=>soccerAthleteMarkup({x:slot.x,y:50-(slot.y-20)*.6,team:'opponent',pos:slot.pos,number:i+1,name:'相手'})).join('');
+    const home=slots.map(slot=>{const p=state.soccer.players.find(x=>x.id===state.soccer.lineupSlots[slot.id]);if(!p)return'';return soccerAthleteMarkup({p,x:slot.x,y:soccerIdleY(slot.y,true),team:'home'});}).join('');
+    const oppSlots=SOCCER_FORMATIONS['4-3-3'].slots,opp=oppSlots.map((slot,i)=>soccerAthleteMarkup({x:slot.x,y:soccerIdleY(slot.y,false),team:'opponent',pos:slot.pos,number:i+1,name:'相手'})).join('');
     $('soccerPitchActors').className=live?'match-live':'';$('soccerPitchActors').innerHTML=home+opp;
+    $('soccerChanceHelp').className='soccer-chance-overlay is-compact';
     $('soccerChanceHelp').innerHTML='<b>'+(live?'AUTO MATCH':'MATCH READY')+'</b><span>'+(live?'22人の配置を反映して自動進行中。決定機になると操作へ切り替わります。':'KICK OFFで試合開始。スタメンの配置と適性が試合力に反映されます。')+'</span>';
   }
   function soccerLog(text){
@@ -5029,7 +5064,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     const attackers=rt.attackers.map((p,i)=>{const c=rt.actorPos[p.id]||soccerChanceCoordinates(p,i),isHolder=p.id===rt.ballHolder;return soccerAthleteMarkup({p,x:c.x,y:c.y,team:'home',focus:true,ball:isHolder,interactive:!rt.actionLocked&&!isHolder,extraClass:isHolder&&!rt.actionLocked?'dribble-ready':''});}).join('');
     $('soccerPitchActors').className='match-live';$('soccerPitchActors').innerHTML=defenders+attackers;
     const holder=state.soccer.players.find(p=>p.id===rt.ballHolder),holderPos=rt.actorPos[rt.ballHolder],pressure=nearestSoccerDefender(holderPos).distance;
-    $('soccerChanceHelp').innerHTML='<b>CHANCE • '+escapeHtml(holder?.name||'')+' / '+(holder?.primaryPos||'')+'</b><span>保持者を左右スワイプ＝切り返し　↑＝縦突破　↓＝キープ　／　味方タップ＝パス　／　ピッチ空白を上スワイプ＝シュート。DF距離 '+Math.round(pressure)+'m相当。</span>';
+    $('soccerChanceHelp').className='soccer-chance-overlay is-chance';$('soccerChanceHelp').innerHTML='<b>CHANCE • '+escapeHtml(holder?.name||'')+' / '+(holder?.primaryPos||'')+'</b><span>保持者を左右スワイプ＝切り返し　↑＝縦突破　↓＝キープ　／　味方タップ＝パス　／　ピッチ空白を上スワイプ＝シュート。DF距離 '+Math.round(pressure)+'m相当。</span>';
     Array.from(document.querySelectorAll('#soccerPitchActors [data-chance-player]')).forEach(btn=>btn.addEventListener('click',()=>soccerChancePass(btn.dataset.chancePlayer)));
     bindSoccerDribbleHolder();
   }
