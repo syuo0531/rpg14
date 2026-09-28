@@ -5187,7 +5187,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"è²§è¡
   function endSoccerChance(goal){
     const rt=soccerMatchRuntime;if(!rt)return;rt.inChance=false;setSoccerGestureScrollLock(false);rt.nextChance=rt.minute+19+Math.floor(Math.random()*9);renderSoccerMatch();setTimeout(()=>{if(soccerMatchRuntime&&!soccerMatchRuntime.finished)renderSoccerPitchIdle();},250);
   }
-  function soccerPitchPointerDown(e){if(!soccerMatchRuntime?.inChance||e.target.closest?.('.dribble-ready'))return;if(e.cancelable)e.preventDefault();soccerPointerStart={x:e.clientX,y:e.clientY,pointerId:e.pointerId};try{e.currentTarget.setPointerCapture(e.pointerId);}catch(_){}}
+  function soccerPitchPointerDown(e){if(!soccerMatchRuntime?.inChance||e.target.closest?.('.match-athlete'))return;if(e.cancelable)e.preventDefault();soccerPointerStart={x:e.clientX,y:e.clientY,pointerId:e.pointerId};try{e.currentTarget.setPointerCapture(e.pointerId);}catch(_){}}
   function soccerPitchPointerUp(e){if(!soccerMatchRuntime?.inChance||soccerMatchRuntime?.actionLocked||!soccerPointerStart)return;if(e.cancelable)e.preventDefault();const dx=e.clientX-soccerPointerStart.x,dy=e.clientY-soccerPointerStart.y;try{e.currentTarget.releasePointerCapture(soccerPointerStart.pointerId);}catch(_){}soccerPointerStart=null;if(dy<-45){const lane=dx<-35?'left':dx>35?'right':'center';soccerChanceShoot(lane);}}
   function finishSoccerMatch(){
     const rt=soccerMatchRuntime;if(!rt||rt.finished)return;setSoccerGestureScrollLock(false);rt.finished=true;if(soccerMatchTimer){clearInterval(soccerMatchTimer);soccerMatchTimer=null;}
@@ -5204,7 +5204,6 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"è²§è¡
     pitch?.addEventListener('pointerdown',soccerPitchPointerDown);
     pitch?.addEventListener('pointerup',soccerPitchPointerUp);
     pitch?.addEventListener('pointermove',e=>{if(soccerMatchRuntime?.inChance&&e.cancelable)e.preventDefault();});
-    pitch?.addEventListener('touchstart',stopPitchNativeScroll,{passive:false});
     pitch?.addEventListener('touchmove',stopPitchNativeScroll,{passive:false});
   }
 
