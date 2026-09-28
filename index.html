@@ -1397,6 +1397,27 @@ button.match-athlete{cursor:pointer}
 .season-region-box label{display:block;margin-bottom:6px;color:#8d9992;font-size:7px;font-weight:1000;letter-spacing:.08em}
 .season-region-box small{display:block;margin-top:6px;color:#727e77;font-size:7px;line-height:1.4}
 
+
+/* ===== HIGH SCHOOL SOCCER • PHASE 4 TACTICS ===== */
+.soccer-tactic-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:7px}
+.soccer-tactic-btn{min-height:48px;padding:8px 9px;border:1px solid var(--line);border-radius:10px;background:#0d1215;color:#b7c1bb;text-align:left;cursor:pointer}
+.soccer-tactic-btn b{display:block;font-size:9px;color:#e8f3ec}.soccer-tactic-btn small{display:block;margin-top:3px;font-size:6px;line-height:1.35;color:#77857d}
+.soccer-tactic-btn.active{border-color:rgba(69,212,131,.52);background:rgba(69,212,131,.1);box-shadow:inset 0 0 0 1px rgba(69,212,131,.08)}
+.soccer-tactic-readout{margin-top:8px;padding:9px 10px;border:1px solid rgba(111,183,255,.18);border-radius:9px;background:rgba(111,183,255,.05);font-size:7px;line-height:1.5;color:#aebcb4}
+.soccer-tactic-readout b{color:#dff8e8}
+.soccer-condition-chip{display:inline-flex;align-items:center;gap:4px;padding:4px 6px;border:1px solid var(--line);border-radius:999px;font-size:7px;font-weight:900}
+.soccer-condition-chip.good{border-color:rgba(69,212,131,.35);color:#9cebbb}.soccer-condition-chip.mid{border-color:rgba(242,209,122,.35);color:#e9d584}.soccer-condition-chip.low{border-color:rgba(255,102,102,.38);color:#ffaaaa}
+.soccer-phase4-match{margin-top:7px;padding:10px;border:1px solid rgba(111,183,255,.17);border-radius:12px;background:rgba(5,11,14,.72)}
+.soccer-phase4-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:7px}.soccer-phase4-head span{font-size:8px;font-weight:1000;letter-spacing:.1em;color:#b9c7bf}.soccer-phase4-head b{font-size:8px;color:#8fe5ad}
+.soccer-match-tactic-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.soccer-match-tactic-grid .soccer-tactic-btn{min-height:42px;padding:6px}.soccer-match-tactic-grid .soccer-tactic-btn small{display:none}
+.soccer-phase4-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:7px}
+.soccer-phase4-stat{padding:7px;border:1px solid var(--line);border-radius:8px;background:#0b1013;text-align:center}.soccer-phase4-stat span{display:block;font-size:6px;color:#76847c}.soccer-phase4-stat b{display:block;margin-top:3px;font-size:11px}
+.soccer-sub-panel{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;margin-top:8px;align-items:end}
+.soccer-sub-panel label{font-size:6px;color:#7f8c85;font-weight:900}.soccer-sub-panel select{width:100%;min-height:38px;margin-top:3px;padding:6px;border:1px solid var(--line);border-radius:8px;background:#080c0e;color:#e7f1eb;font:inherit;font-size:8px}
+.soccer-sub-panel button{min-height:38px;padding:7px 10px}.soccer-sub-note{grid-column:1/-1;font-size:6px;color:#75827b;line-height:1.4}
+@media(max-width:560px){.soccer-match-tactic-grid{grid-template-columns:repeat(2,1fr)}.soccer-sub-panel{grid-template-columns:1fr 1fr}.soccer-sub-panel button{grid-column:1/-1}.soccer-phase4-stats{grid-template-columns:repeat(3,1fr)}}
+
 </style>
 </head>
 <body>
@@ -2230,7 +2251,10 @@ button.match-athlete{cursor:pointer}
           <aside class="soccer-control-panel metal-panel">
             <div class="panel-head"><span>FORMATION</span><small>変更時は自動で最適編成</small></div>
             <div class="soccer-formations" id="soccerFormationButtons"></div>
-            <button class="secondary-btn" id="soccerAutoLineupBtn" style="width:100%;margin-top:10px">適性込みでベストXIを自動編成</button>
+            <div class="panel-head" style="margin-top:13px"><span>TEAM TACTIC</span><small>試合中も変更可能</small></div>
+            <div class="soccer-tactic-grid" id="soccerTacticButtons"></div>
+            <div class="soccer-tactic-readout" id="soccerTacticReadout">戦術を選択してください。</div>
+            <button class="secondary-btn" id="soccerAutoLineupBtn" style="width:100%;margin-top:10px">適性・コンディション込みでベストXIを自動編成</button>
             <div class="soccer-selected-slot-note" id="soccerSelectedSlotNote">配置したいポジション枠をタップ → 右の選手を選択</div>
             <div class="soccer-lineup-pitch" id="soccerLineupPitch" aria-label="フォーメーション配置"></div>
             <div class="panel-head" style="margin-top:16px"><span>STARTING XI</span><small id="soccerStarterCount">11 / 11</small></div>
@@ -2266,6 +2290,21 @@ button.match-athlete{cursor:pointer}
               <div class="soccer-gk" id="soccerMatchGoalkeeper"></div>
               <div id="soccerPitchActors"></div>
               <div class="soccer-chance-overlay" id="soccerChanceHelp"><b>試合開始前</b><span>スタートすると自動進行します。チャンス時だけ操作してください。</span></div>
+            </div>
+            <div class="soccer-phase4-match">
+              <div class="soccer-phase4-head"><span>LIVE TACTICS</span><b id="soccerMatchTacticEdge">相性 ±0</b></div>
+              <div class="soccer-match-tactic-grid" id="soccerMatchTacticButtons"></div>
+              <div class="soccer-phase4-stats">
+                <div class="soccer-phase4-stat"><span>MATCH POWER</span><b id="soccerMatchPower">0</b></div>
+                <div class="soccer-phase4-stat"><span>CONDITION</span><b id="soccerMatchCondition">100%</b></div>
+                <div class="soccer-phase4-stat"><span>SUBS</span><b id="soccerSubsUsed">0 / 5</b></div>
+              </div>
+              <div class="soccer-sub-panel">
+                <label>OUT<select id="soccerSubOut"></select></label>
+                <label>IN<select id="soccerSubIn"></select></label>
+                <button type="button" class="secondary-btn" id="soccerSubBtn">交代</button>
+                <div class="soccer-sub-note">試合中5人まで。チャンス操作中は交代できません。疲れた選手を休ませると次戦のコンディションが回復しやすくなります。</div>
+              </div>
             </div>
             <div class="soccer-match-controls">
               <button class="primary-btn" id="soccerStartMatchBtn">KICK OFF</button>
@@ -5097,6 +5136,96 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
       {id:'lcf',pos:'CF',x:39,y:19},{id:'rcf',pos:'CF',x:61,y:19}
     ]}
   };
+  /* HIGH SCHOOL SOCCER • PHASE 4 TACTICS */
+  SOCCER_FORMATIONS['3-4-2-1']={slots:[
+    {id:'gk',pos:'GK',x:50,y:90},{id:'lcb',pos:'CB',x:25,y:74},{id:'cb',pos:'CB',x:50,y:78},{id:'rcb',pos:'CB',x:75,y:74},
+    {id:'lmf',pos:'LMF',x:14,y:51},{id:'ldmf',pos:'DMF',x:39,y:56},{id:'rdmf',pos:'DMF',x:61,y:56},{id:'rmf',pos:'RMF',x:86,y:51},
+    {id:'lomf',pos:'OMF',x:37,y:34},{id:'romf',pos:'OMF',x:63,y:34},{id:'cf',pos:'CF',x:50,y:17}
+  ]};
+  const SOCCER_TACTICS={
+    balanced:{name:'バランス',short:'BAL',desc:'攻守の基準。相手を見て試合中に切り替えやすい。',attack:1,defense:1,chance:1,fatigue:1},
+    possession:{name:'ポゼッション',short:'POS',desc:'保持とパスで前進。守備ブロックには強いがハイプレスに注意。',attack:1.02,defense:1.03,chance:1.12,fatigue:1.04},
+    counter:{name:'カウンター',short:'CTR',desc:'奪って速く攻める。ハイプレスの背後を狙いやすい。',attack:1.08,defense:.98,chance:1.1,fatigue:1.03},
+    high_press:{name:'ハイプレス',short:'PRESS',desc:'高い位置から奪う。強力だが終盤の消耗が大きい。',attack:1.06,defense:1.06,chance:1.09,fatigue:1.18},
+    long_counter:{name:'ロングカウンター',short:'LONG',desc:'低めに構えて一気に背後へ。保持型への奇襲に向く。',attack:1.1,defense:.97,chance:1.04,fatigue:1.08},
+    defensive:{name:'守備重視',short:'DEF',desc:'失点を抑えて耐える。攻撃機会は減るがリード時に有効。',attack:.9,defense:1.15,chance:.86,fatigue:.94}
+  };
+  const SOCCER_TACTIC_KEYS=Object.keys(SOCCER_TACTICS);
+  const SOCCER_TACTIC_RULES=[
+    ['high_press','possession',5],['counter','high_press',5],['possession','defensive',4],
+    ['long_counter','possession',4],['defensive','counter',4],['high_press','long_counter',3],['counter','long_counter',2]
+  ];
+  function soccerTacticKey(){const key=state.soccer?.tactic;return SOCCER_TACTICS[key]?key:'balanced';}
+  function soccerTacticInfo(key=soccerTacticKey()){return SOCCER_TACTICS[key]||SOCCER_TACTICS.balanced;}
+  function soccerOpponentTactic(opponent=soccerMatchRuntime?.opponent||soccerSeasonOpponent(currentSeasonEvent())){
+    const alias={BALANCED:'balanced',POSSESSION:'possession',COUNTER:'counter',PRESS:'high_press',HIGH_PRESS:'high_press',DEFENSIVE:'defensive',LONG_COUNTER:'long_counter'};
+    if(alias[opponent?.style])return alias[opponent.style];
+    const name=String(opponent?.name||'opponent');let h=0;for(let i=0;i<name.length;i++)h=(h*31+name.charCodeAt(i))>>>0;
+    return ['possession','counter','high_press','long_counter','defensive'][h%5];
+  }
+  function soccerTacticEdge(homeKey=soccerTacticKey(),awayKey=soccerOpponentTactic()){
+    if(homeKey===awayKey||homeKey==='balanced'||awayKey==='balanced')return 0;
+    for(const [winner,loser,value] of SOCCER_TACTIC_RULES){if(homeKey===winner&&awayKey===loser)return value;if(homeKey===loser&&awayKey===winner)return -value;}
+    return 0;
+  }
+  function soccerConditionValue(p){return clamp(Math.round(Number(p?.condition)||100),35,100);}
+  function soccerConditionFactor(p){return .78+.22*(soccerConditionValue(p)/100);}
+  function soccerMatchLineup(){return soccerMatchRuntime?.liveLineup||state.soccer.lineupSlots||{};}
+  function soccerLineupOvr(lineup=soccerMatchLineup()){
+    const vals=soccerFormationSlots().map(slot=>{const p=state.soccer.players.find(x=>x.id===lineup[slot.id]);return p?soccerEffectiveOvr(p,slot.pos):0;});
+    return Math.round(vals.reduce((a,b)=>a+b,0)/Math.max(1,vals.length));
+  }
+  function soccerAverageCondition(lineup=soccerMatchLineup()){
+    const ids=[...new Set(Object.values(lineup||{}))],players=ids.map(id=>state.soccer.players.find(p=>p.id===id)).filter(Boolean);
+    return players.length?Math.round(players.reduce((s,p)=>s+soccerConditionValue(p),0)/players.length):100;
+  }
+  function soccerMatchNumbers(){
+    const rt=soccerMatchRuntime,homeKey=soccerTacticKey(),awayKey=soccerOpponentTactic(rt?.opponent),profile=soccerTacticInfo(homeKey),oppProfile=soccerTacticInfo(awayKey),edge=soccerTacticEdge(homeKey,awayKey),minute=rt?.minute||0;
+    const base=Math.max(35,soccerLineupOvr()),fatigue=Math.max(.88,1-Math.max(0,profile.fatigue-1)*(minute/90)*.25);
+    const attack=base*profile.attack*fatigue*(1+edge/100),defense=base*profile.defense*fatigue*(1+edge/120);
+    const oppBase=Math.max(35,Number(rt?.opponent?.strength)||soccerSeasonOpponent(currentSeasonEvent()).strength||50);
+    return {homeKey,awayKey,profile,oppProfile,edge,base,attack,defense,overall:Math.round((attack+defense)/2),oppAttack:oppBase*oppProfile.attack,oppDefense:oppBase*oppProfile.defense,chance:profile.chance};
+  }
+  function soccerNextChanceGap(){const p=soccerTacticInfo();return Math.max(13,Math.round((19+Math.floor(Math.random()*9))/p.chance));}
+  function soccerAccumulateMinutes(step=3){
+    const rt=soccerMatchRuntime;if(!rt?.liveLineup)return;rt.minutesPlayed=rt.minutesPlayed||{};
+    [...new Set(Object.values(rt.liveLineup))].forEach(id=>rt.minutesPlayed[id]=(rt.minutesPlayed[id]||0)+step);
+  }
+  function setSoccerTactic(key){
+    if(!SOCCER_TACTICS[key])return;if(soccerMatchRuntime?.inChance)return toast('<b>TACTIC</b> チャンス操作終了後に変更できます');
+    const before=soccerTacticKey();state.soccer.tactic=key;saveState();
+    if(soccerMatchRuntime&&!soccerMatchRuntime.finished&&before!==key){soccerMatchRuntime.tacticalChanges=(soccerMatchRuntime.tacticalChanges||0)+1;soccerLog('戦術変更：'+SOCCER_TACTICS[key].name);}
+    renderSoccerTacticControls();renderSoccerMatch();
+  }
+  function renderSoccerTacticControls(){
+    const selected=soccerTacticKey(),info=soccerTacticInfo(selected),team=$('soccerTacticButtons');
+    const markup=SOCCER_TACTIC_KEYS.map(k=>'<button type="button" class="soccer-tactic-btn'+(k===selected?' active':'')+'" data-soccer-tactic="'+k+'"><b>'+SOCCER_TACTICS[k].name+'</b><small>'+SOCCER_TACTICS[k].desc+'</small></button>').join('');
+    if(team){team.innerHTML=markup;team.querySelectorAll('[data-soccer-tactic]').forEach(btn=>btn.addEventListener('click',()=>setSoccerTactic(btn.dataset.soccerTactic)));}
+    const read=$('soccerTacticReadout');if(read)read.innerHTML='<b>'+info.name+'</b> • 攻撃 '+Math.round(info.attack*100)+' / 守備 '+Math.round(info.defense*100)+' / 消耗 '+Math.round(info.fatigue*100)+'<br>先発平均コンディション '+soccerAverageCondition(state.soccer.lineupSlots)+'%';
+    const live=$('soccerMatchTacticButtons');if(live){live.innerHTML=markup;live.querySelectorAll('[data-soccer-tactic]').forEach(btn=>btn.addEventListener('click',()=>setSoccerTactic(btn.dataset.soccerTactic)));}
+  }
+  function renderSoccerSubstitutionControls(){
+    const rt=soccerMatchRuntime,outSel=$('soccerSubOut'),inSel=$('soccerSubIn'),btn=$('soccerSubBtn');if(!outSel||!inSel||!btn)return;
+    const live=!!(rt&&!rt.finished),lineup=live?rt.liveLineup:state.soccer.lineupSlots,liveIds=[...new Set(Object.values(lineup||{}))],bench=state.soccer.players.filter(p=>!liveIds.includes(p.id));
+    const outSig=liveIds.join('|'),inSig=bench.map(p=>p.id).join('|');
+    if(outSel.dataset.sig!==outSig){outSel.dataset.sig=outSig;outSel.innerHTML=liveIds.map(id=>{const p=state.soccer.players.find(x=>x.id===id);const slot=soccerFormationSlots().find(s=>lineup[s.id]===id);return p?'<option value="'+p.id+'">'+escapeHtml(p.name)+' • '+(slot?.pos||p.primaryPos)+' • CON '+soccerConditionValue(p)+'</option>':'';}).join('');}
+    if(inSel.dataset.sig!==inSig){inSel.dataset.sig=inSig;inSel.innerHTML=bench.map(p=>'<option value="'+p.id+'">'+escapeHtml(p.name)+' • '+p.primaryPos+' • CON '+soccerConditionValue(p)+'</option>').join('');}
+    const blocked=!live||rt.inChance||rt.actionLocked||rt.minute>=90||(rt.substitutions||0)>=5||!bench.length;outSel.disabled=!live;inSel.disabled=!live;btn.disabled=blocked;
+    if($('soccerSubsUsed'))$('soccerSubsUsed').textContent=(rt?.substitutions||0)+' / 5';
+  }
+  function substituteSoccerPlayer(){
+    const rt=soccerMatchRuntime;if(!rt||rt.finished)return toast('<b>SUB</b> 試合中のみ交代できます');if(rt.inChance||rt.actionLocked)return toast('<b>SUB</b> チャンス操作中は交代できません');if((rt.substitutions||0)>=5)return toast('<b>SUB</b> 交代枠5人を使い切りました');
+    const outId=$('soccerSubOut')?.value,inId=$('soccerSubIn')?.value;if(!outId||!inId||outId===inId)return;
+    const slotId=Object.keys(rt.liveLineup||{}).find(k=>rt.liveLineup[k]===outId);if(!slotId)return;
+    if(Object.values(rt.liveLineup).includes(inId))return;const outP=state.soccer.players.find(p=>p.id===outId),inP=state.soccer.players.find(p=>p.id===inId),slot=soccerFormationSlots().find(s=>s.id===slotId);if(!outP||!inP)return;
+    rt.liveLineup[slotId]=inId;rt.substitutions=(rt.substitutions||0)+1;rt.subHistory=rt.subHistory||[];rt.subHistory.push({minute:rt.minute,out:outId,in:inId,slot:slotId});
+    soccerLog('交代 '+outP.name+' → '+inP.name+'（'+(slot?.pos||'')+'）');renderSoccerMatch();renderSoccerPitchIdle();
+  }
+  function applySoccerMatchCondition(){
+    const rt=soccerMatchRuntime;if(!rt)return;const profile=soccerTacticInfo(),cost90=10+Math.max(-.08,profile.fatigue-1)*32;
+    state.soccer.players.forEach(p=>{const mins=Math.min(90,rt.minutesPlayed?.[p.id]||0),recovery=mins>0?4:10,cost=(mins/90)*cost90;p.condition=clamp(Math.round(soccerConditionValue(p)+recovery-cost),35,100);});
+  }
+
   const SCOUT_ZONES=[
     {id:'local',label:'道内スカウト',short:'道内',unlock:0,cost:5,quality:0,origins:['北海道']},
     {id:'nearby',label:'北日本スカウト',short:'近隣',unlock:1,cost:5,quality:1,origins:['青森','岩手','秋田','北海道']},
@@ -5315,6 +5444,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     p.aptitudes=(p.aptitudes&&typeof p.aptitudes==='object')?p.aptitudes:{...SOCCER_APTITUDE_MAP[p.primaryPos]};
     if(!p.aptitudes[p.primaryPos])p.aptitudes[p.primaryPos]='S';
     if(!Number.isInteger(p.number))p.number=index===0?1:index+2;
+    p.condition=clamp(Number.isFinite(Number(p.condition))?Math.round(Number(p.condition)):100,35,100);
     SOCCER_ATTRS.forEach(a=>p[a]=clamp(Number(p[a])||45,25,99));p.ovr=soccerPlayerOvr(p);return p;
   }
   function normalizeSoccerState(){
@@ -5323,6 +5453,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if(!Array.isArray(state.soccer.players)||state.soccer.players.length<11){state.soccer.players=generateSoccerRoster();state.soccer.initialized=true;}
     state.soccer.players.forEach(ensureSoccerPlayerProfile);
     if(!SOCCER_FORMATIONS[state.soccer.formation])state.soccer.formation='4-3-3';
+    if(!SOCCER_TACTICS[state.soccer.tactic])state.soccer.tactic='balanced';
     const validIds=new Set(state.soccer.players.map(p=>p.id)),slots=SOCCER_FORMATIONS[state.soccer.formation].slots,slotIds=new Set(slots.map(x=>x.id));
     Object.keys(state.soccer.lineupSlots).forEach(k=>{if(!slotIds.has(k)||!validIds.has(state.soccer.lineupSlots[k]))delete state.soccer.lineupSlots[k];});
     const lineupValues=Object.values(state.soccer.lineupSlots),unique=new Set(lineupValues);
@@ -5355,7 +5486,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     const w=SOCCER_POSITION_WEIGHTS[pos]||SOCCER_POSITION_WEIGHTS.CMF;return Math.round(SOCCER_ATTRS.reduce((sum,a)=>sum+(Number(p[a])||0)*w[a],0));
   }
   function soccerAptitudeGrade(p,pos){return p?.aptitudes?.[pos]||'-';}
-  function soccerEffectiveOvr(p,pos){return Math.round(soccerPositionOvr(p,pos)*(SOCCER_APTITUDE_MULT[soccerAptitudeGrade(p,pos)]||.56));}
+  function soccerEffectiveOvr(p,pos){return Math.round(soccerPositionOvr(p,pos)*(SOCCER_APTITUDE_MULT[soccerAptitudeGrade(p,pos)]||.56)*soccerConditionFactor(p));}
   function soccerPlayerOvr(p){return soccerPositionOvr(p,p.primaryPos||p.pos||'CMF');}
 
   function currentLeagueRegion(){
@@ -5512,7 +5643,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
       const pool=generateSoccerRoster();walkons=pool.slice(0,16-nextPlayers.length).map((p,i)=>{p.grade=1;p.id='walk-y'+(state.soccer.year+1)+'-'+Date.now().toString(36)+'-'+i;return p;});nextPlayers.push(...walkons);
     }
     const leagueRegion=ss.league.region,nextLeagueTier=Number.isInteger(ss.league.nextTier)?ss.league.nextTier:ss.league.tier;
-    state.soccer.players=nextPlayers;state.soccer.year++;state.soccer.month=4;state.soccer.lineupSlots={};state.soccer.starterIds=[];
+    nextPlayers.forEach(p=>p.condition=100);state.soccer.players=nextPlayers;state.soccer.year++;state.soccer.month=4;state.soccer.lineupSlots={};state.soccer.starterIds=[];
     state.soccer.scouting.candidates=[];state.soccer.scouting.committed=[];state.soccer.scouting.scholarshipUsed=0;
     state.soccer.season={currentIndex:0,gradesSeeded:true,history:[],skipped:[],news:'新年度スタート。'+graduates.length+'名が卒業、'+(committed.length+walkons.length)+'名が入学。',league:{region:leagueRegion,tier:nextLeagueTier,nextTier:nextLeagueTier,table:[],roundsPlayed:0,finalized:false,finalRank:null,promotionPlayoffEligible:false,promotionPlayoffWon:false,movement:''},tournaments:{interhigh:{alive:true,champion:false,best:'未出場'},championship:{alive:true,champion:false,best:'未出場'}},lastGraduates:graduates.map(p=>({name:p.name,pos:p.primaryPos,ovr:p.ovr})),lastIntake:[...committed,...walkons].map(p=>({name:p.name,pos:p.primaryPos,ovr:p.ovr,scouted:!!p.scouted}))};
     state.soccer.season.league.table=seasonInitialLeagueTable();state.soccer.season.news+=' 所属：'+currentLeagueInfo().name;
@@ -5571,7 +5702,8 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   }
   function soccerPlayerCard(p,{selected=false,slotPos=null}={}){
     const starter=state.soccer.starterIds.includes(p.id),effective=slotPos?soccerEffectiveOvr(p,slotPos):p.ovr,grade=slotPos?soccerAptitudeGrade(p,slotPos):'';
-    return '<button type="button" class="soccer-player-card'+(starter?' starter':'')+(selected?' selected':'')+'" data-soccer-player="'+p.id+'">'+(starter?'<span class="starter-tag">STARTING XI</span>':'')+'<div class="soccer-player-main"><span class="soccer-pos">'+p.primaryPos+'</span><div><b>'+escapeHtml(p.name)+'</b><small>'+p.grade+'年 • '+escapeHtml(p.trait)+' • POT '+p.potential+'</small></div><span class="soccer-ovr">'+effective+'</span></div>'+(slotPos?'<div class="soccer-position-chips"><span class="soccer-position-chip grade-'+String(grade).toLowerCase()+'"><strong>'+grade+'</strong> '+slotPos+'適性</span></div>':'<div class="soccer-position-chips">'+soccerAptitudeChips(p)+'</div>')+'<div class="soccer-attrs">'+SOCCER_ATTRS.map(a=>'<div class="soccer-attr"><span>'+a+'</span><b>'+p[a]+'</b></div>').join('')+'</div></button>';
+    const con=soccerConditionValue(p),conClass=con>=80?'good':con>=60?'mid':'low';
+    return '<button type="button" class="soccer-player-card'+(starter?' starter':'')+(selected?' selected':'')+'" data-soccer-player="'+p.id+'">'+(starter?'<span class="starter-tag">STARTING XI</span>':'')+'<div class="soccer-player-main"><span class="soccer-pos">'+p.primaryPos+'</span><div><b>'+escapeHtml(p.name)+'</b><small>'+p.grade+'年 • '+escapeHtml(p.trait)+' • POT '+p.potential+'</small></div><span class="soccer-ovr">'+effective+'</span></div><div class="soccer-position-chips"><span class="soccer-condition-chip '+conClass+'">CON '+con+'</span>'+(slotPos?'<span class="soccer-position-chip grade-'+String(grade).toLowerCase()+'"><strong>'+grade+'</strong> '+slotPos+'適性</span>':soccerAptitudeChips(p))+'</div><div class="soccer-attrs">'+SOCCER_ATTRS.map(a=>'<div class="soccer-attr"><span>'+a+'</span><b>'+p[a]+'</b></div>').join('')+'</div></button>';
   }
   function renderSoccerHome(){
     if(!$('soccerHomeSchool'))return;normalizeSoccerState();const rank=soccerRankInfo(),team=soccerTeamOvr(),event=currentSeasonEvent(),next=soccerSeasonOpponent(event);
@@ -5676,7 +5808,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     $('soccerTeamOvr').textContent=soccerTeamOvr();$('soccerStarterCount').textContent=state.soccer.starterIds.length+' / 11';
     $('soccerFormationButtons').innerHTML=Object.keys(SOCCER_FORMATIONS).map(f=>'<button class="soccer-formation-btn'+(state.soccer.formation===f?' active':'')+'" data-soccer-formation="'+f+'">'+f+'</button>').join('');
     Array.from(document.querySelectorAll('[data-soccer-formation]')).forEach(btn=>btn.addEventListener('click',()=>{state.soccer.formation=btn.dataset.soccerFormation;state.soccer.lineupSlots={};autoSelectSoccerStarters();renderSoccerTeam();}));
-    renderSoccerLineupPitch();$('soccerSelectedSlotNote').innerHTML='選択中：<b>'+selectedSlot.pos+'</b>　右の選手をタップして配置。適性S/A/Bほど本来の能力を発揮します。';
+    renderSoccerTacticControls();renderSoccerLineupPitch();$('soccerSelectedSlotNote').innerHTML='選択中：<b>'+selectedSlot.pos+'</b>　右の選手をタップして配置。適性とコンディションが実効OVRに反映されます。';
     const starters=soccerFormationSlots().map(slot=>({slot,p:state.soccer.players.find(x=>x.id===state.soccer.lineupSlots[slot.id])})).filter(x=>x.p);
     $('soccerStartingList').innerHTML=starters.map(({slot,p})=>'<div class="soccer-lineup-row"><span class="soccer-pos">'+slot.pos+'</span><div><b>'+escapeHtml(p.name)+'</b><small>本職 '+p.primaryPos+' • 適性 '+soccerAptitudeGrade(p,slot.pos)+'</small></div><em>'+soccerEffectiveOvr(p,slot.pos)+'</em></div>').join('');
     $('soccerTeamRoster').innerHTML=state.soccer.players.slice().sort((a,b)=>soccerEffectiveOvr(b,selectedSlot.pos)-soccerEffectiveOvr(a,selectedSlot.pos)).map(p=>soccerPlayerCard(p,{slotPos:selectedSlot.pos})).join('');
@@ -5706,13 +5838,14 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   function currentSoccerOpponent(){normalizeSoccerState();return soccerSeasonOpponent(currentSeasonEvent());}
   function soccerMatchEvent(){if(soccerMatchRuntime?.eventId)return SEASON_EVENTS.find(e=>e.id===soccerMatchRuntime.eventId)||currentSeasonEvent();return currentSeasonEvent();}
   function renderSoccerMatch(){
-    if(!$('soccerScoreHomeName'))return;normalizeSoccerState();const event=soccerMatchEvent(),opp=soccerMatchRuntime?.opponent||soccerSeasonOpponent(event),team=soccerTeamOvr(),rt=soccerMatchRuntime;
+    if(!$('soccerScoreHomeName'))return;normalizeSoccerState();const event=soccerMatchEvent(),opp=soccerMatchRuntime?.opponent||soccerSeasonOpponent(event),rt=soccerMatchRuntime,numbers=soccerMatchNumbers(),team=rt?numbers.overall:soccerTeamOvr();
     $('soccerMatchCompetition').textContent=seasonCompetitionLabel(event);$('soccerMatchTitle').textContent=event?.title||'公式戦';
-    $('soccerScoreHomeName').textContent=state.soccer.schoolName;$('soccerScoreAwayName').textContent=event?.type==='graduation'?'新年度':opp.name;$('soccerScoreHomeOvr').textContent='OVR '+team;$('soccerScoreAwayOvr').textContent=event?.type==='graduation'?'—':'OVR '+opp.strength;$('soccerMatchFormation').textContent=state.soccer.formation;$('soccerMatchRank').textContent=soccerRankInfo().name;
+    $('soccerScoreHomeName').textContent=state.soccer.schoolName;$('soccerScoreAwayName').textContent=event?.type==='graduation'?'新年度':opp.name;$('soccerScoreHomeOvr').textContent=(rt?'MATCH ':'OVR ')+team;$('soccerScoreAwayOvr').textContent=event?.type==='graduation'?'—':'OVR '+opp.strength;$('soccerMatchFormation').textContent=state.soccer.formation+' • '+soccerTacticInfo().name;$('soccerMatchRank').textContent=soccerRankInfo().name;
     $('soccerMinute').textContent=rt?Math.min(90,rt.minute):0;$('soccerHomeGoals').textContent=rt?rt.home:0;$('soccerAwayGoals').textContent=rt?rt.away:0;$('soccerMatchProgress').style.width=((rt?Math.min(90,rt.minute):0)/90*100)+'%';$('soccerChanceCount').textContent=rt?rt.chances:0;$('soccerUserGoals').textContent=rt?rt.userGoals:0;if($('soccerDribbleCount'))$('soccerDribbleCount').textContent=rt?(rt.dribbleSuccess+' / '+rt.dribbles):'0 / 0';
     $('soccerMatchStatus').textContent=rt?(rt.finished?'FULL TIME':rt.inChance?'CHANCE!':'LIVE'):(event?.type==='graduation'?'NO MATCH':'READY');
     $('soccerStartMatchBtn').disabled=!!(rt&&!rt.finished)||event?.type==='graduation';$('soccerStartMatchBtn').textContent=rt&&rt.finished?'日程へ戻る':'KICK OFF';$('soccerShootBtn').disabled=!(rt&&rt.inChance);
-    if(!rt||!rt.inChance)renderSoccerPitchIdle();
+    renderSoccerTacticControls();if($('soccerMatchPower'))$('soccerMatchPower').textContent=rt?numbers.overall:soccerTeamOvr();if($('soccerMatchCondition'))$('soccerMatchCondition').textContent=soccerAverageCondition(rt?.liveLineup||state.soccer.lineupSlots)+'%';if($('soccerMatchTacticEdge'))$('soccerMatchTacticEdge').textContent='vs '+soccerTacticInfo(numbers.awayKey).name+' • 相性 '+(numbers.edge>0?'+':'')+numbers.edge;
+    renderSoccerSubstitutionControls();if(!rt||!rt.inChance)renderSoccerPitchIdle();
   }
   function soccerAthleteMarkup({p=null,x=50,y=50,team='home',focus=false,ball=false,interactive=false,pos='',number=0,name='',actorId='',extraClass=''}={}){
     const athleteName=name||(p?.name||''),position=pos||(p?.primaryPos||''),shirtNo=number||(p?.number||0),classes=['match-athlete',team,focus?'focus':'',ball?'ball-holder':'',interactive?'selectable':'',extraClass].filter(Boolean).join(' ');
@@ -5728,8 +5861,8 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   }
   function renderSoccerPitchIdle(){
     if(!$('soccerPitchActors'))return;normalizeSoccerState();ensureMatchLineupReady();
-    const slots=soccerFormationSlots(),live=!!(soccerMatchRuntime&&!soccerMatchRuntime.finished);
-    const home=slots.map(slot=>{const p=state.soccer.players.find(x=>x.id===state.soccer.lineupSlots[slot.id]);if(!p)return'';return soccerAthleteMarkup({p,x:slot.x,y:soccerIdleY(slot.y,true),team:'home'});}).join('');
+    const slots=soccerFormationSlots(),live=!!(soccerMatchRuntime&&!soccerMatchRuntime.finished),liveLineup=soccerMatchLineup();
+    const home=slots.map(slot=>{const p=state.soccer.players.find(x=>x.id===liveLineup[slot.id]);if(!p)return'';return soccerAthleteMarkup({p,x:slot.x,y:soccerIdleY(slot.y,true),team:'home'});}).join('');
     const oppSlots=SOCCER_FORMATIONS['4-3-3'].slots,opp=oppSlots.map((slot,i)=>soccerAthleteMarkup({x:slot.x,y:soccerIdleY(slot.y,false),team:'opponent',pos:slot.pos,number:i+1,name:'相手'})).join('');
     $('soccerPitchActors').className=live?'match-live':'';$('soccerPitchActors').innerHTML=home+opp;
     $('soccerChanceHelp').className='soccer-chance-overlay is-compact';
@@ -5743,14 +5876,14 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   function startSoccerMatch(){
     normalizeSoccerState();const event=currentSeasonEvent();if(event.type==='graduation')return toast('<b>SEASON</b> 年間日程から卒業式を進めてください');if(state.soccer.starterIds.length!==11)return toast('<b>LINEUP ERROR</b> スタメンを11人選んでください');
     if(soccerMatchTimer){clearInterval(soccerMatchTimer);soccerMatchTimer=null;}
-    const opp=soccerSeasonOpponent(event);soccerMatchRuntime={eventId:event.id,eventType:event.type,opponent:opp,minute:0,home:0,away:0,chances:0,userGoals:0,dribbles:0,dribbleSuccess:0,nextChance:15+Math.floor(Math.random()*9),inChance:false,finished:false,stage:0,ballHolder:null,attackers:[],actorPos:{},defenderPos:{},actionLocked:false,pk:null};
+    const opp=soccerSeasonOpponent(event);soccerMatchRuntime={eventId:event.id,eventType:event.type,opponent:opp,minute:0,home:0,away:0,chances:0,userGoals:0,dribbles:0,dribbleSuccess:0,nextChance:Math.max(10,Math.round((15+Math.floor(Math.random()*9))/soccerTacticInfo().chance)),inChance:false,finished:false,stage:0,ballHolder:null,attackers:[],actorPos:{},defenderPos:{},actionLocked:false,pk:null,liveLineup:{...state.soccer.lineupSlots},startingLineup:{...state.soccer.lineupSlots},substitutions:0,subHistory:[],minutesPlayed:{},tacticalChanges:0};
     $('soccerMatchResult').classList.add('hidden');$('soccerMatchResult').innerHTML='';$('soccerMatchLog').innerHTML='<b>'+escapeHtml(seasonCompetitionLabel(event))+'</b><br>'+escapeHtml(state.soccer.schoolName)+' vs '+escapeHtml(opp.name);renderSoccerMatch();
     soccerMatchTimer=setInterval(soccerMatchTick,520);
   }
   function soccerMatchTick(){
-    const rt=soccerMatchRuntime;if(!rt||rt.finished||rt.inChance)return;rt.minute=Math.min(90,rt.minute+3);const team=Math.max(35,soccerTeamOvr()),opp=rt.opponent.strength;
-    if(Math.random()<.012*(team/opp)){rt.home++;soccerLog('連係からゴール！ 自動得点');}
-    if(Math.random()<.014*(opp/team)){rt.away++;soccerLog(rt.opponent.name+'が得点');}
+    const rt=soccerMatchRuntime;if(!rt||rt.finished||rt.inChance)return;soccerAccumulateMinutes(3);rt.minute=Math.min(90,rt.minute+3);const n=soccerMatchNumbers();
+    if(Math.random()<.0115*(n.attack/Math.max(35,n.oppDefense))){rt.home++;soccerLog('戦術から崩してゴール！ 自動得点');}
+    if(Math.random()<.0135*(n.oppAttack/Math.max(35,n.defense))){rt.away++;soccerLog(rt.opponent.name+'が得点');}
     if(rt.minute>=rt.nextChance&&rt.minute<87&&rt.chances<3){startSoccerChance();return;}
     if(rt.minute>=90){finishSoccerMatch();return;}renderSoccerMatch();
   }
@@ -5760,7 +5893,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   function stopPitchNativeScroll(e){if(e.cancelable)e.preventDefault();}
   function startSoccerChance(){
     const rt=soccerMatchRuntime;if(!rt)return;rt.inChance=true;setSoccerGestureScrollLock(true);rt.chances++;rt.stage=0;rt.actionLocked=false;
-    const pool=soccerFormationSlots().map(slot=>({p:state.soccer.players.find(x=>x.id===state.soccer.lineupSlots[slot.id]),slot})).filter(x=>x.p&&x.slot.pos!=='GK').sort((a,b)=>(b.p.SHO+b.p.DRI+b.p.PAS)-(a.p.SHO+a.p.DRI+a.p.PAS));
+    const liveLineup=soccerMatchLineup(),pool=soccerFormationSlots().map(slot=>({p:state.soccer.players.find(x=>x.id===liveLineup[slot.id]),slot})).filter(x=>x.p&&x.slot.pos!=='GK').sort((a,b)=>(b.p.SHO+b.p.DRI+b.p.PAS)-(a.p.SHO+a.p.DRI+a.p.PAS));
     rt.attackers=pool.slice(0,7).sort(()=>Math.random()-.5).slice(0,4).map(x=>x.p);rt.ballHolder=rt.attackers[0]?.id||null;
     rt.actorPos={};rt.attackers.forEach((p,i)=>{rt.actorPos[p.id]=soccerChanceCoordinates(p,i);});
     rt.defenderPos={lsb:{x:24,y:27},lcb:{x:41,y:32},rcb:{x:59,y:32},rsb:{x:76,y:27},dmf:{x:50,y:44},gk:{x:50,y:10}};
@@ -5919,13 +6052,13 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     setTimeout(()=>{setSoccerActionLock(false);endSoccerChance(goal);},260);
   }
   function endSoccerChance(goal){
-    const rt=soccerMatchRuntime;if(!rt)return;rt.inChance=false;setSoccerGestureScrollLock(false);rt.nextChance=rt.minute+19+Math.floor(Math.random()*9);renderSoccerMatch();setTimeout(()=>{if(soccerMatchRuntime&&!soccerMatchRuntime.finished)renderSoccerPitchIdle();},250);
+    const rt=soccerMatchRuntime;if(!rt)return;rt.inChance=false;setSoccerGestureScrollLock(false);rt.nextChance=rt.minute+soccerNextChanceGap();renderSoccerMatch();setTimeout(()=>{if(soccerMatchRuntime&&!soccerMatchRuntime.finished)renderSoccerPitchIdle();},250);
   }
   function soccerPitchPointerDown(e){if(!soccerMatchRuntime?.inChance||e.target.closest?.('.match-athlete'))return;if(e.cancelable)e.preventDefault();soccerPointerStart={x:e.clientX,y:e.clientY,pointerId:e.pointerId};try{e.currentTarget.setPointerCapture(e.pointerId);}catch(_){}}
   function soccerPitchPointerUp(e){if(!soccerMatchRuntime?.inChance||soccerMatchRuntime?.actionLocked||!soccerPointerStart)return;if(e.cancelable)e.preventDefault();const dx=e.clientX-soccerPointerStart.x,dy=e.clientY-soccerPointerStart.y;try{e.currentTarget.releasePointerCapture(soccerPointerStart.pointerId);}catch(_){}soccerPointerStart=null;if(dy<-45){const lane=dx<-35?'left':dx>35?'right':'center';soccerChanceShoot(lane);}}
   function finishSoccerMatch(){
     const rt=soccerMatchRuntime;if(!rt||rt.finished)return;setSoccerGestureScrollLock(false);rt.finished=true;if(soccerMatchTimer){clearInterval(soccerMatchTimer);soccerMatchTimer=null;}
-    const event=SEASON_EVENTS.find(e=>e.id===rt.eventId)||currentSeasonEvent(),knockout=event.type==='interhigh'||event.type==='championship'||event.type==='minor'||event.type==='promotion',team=soccerTeamOvr(),opp=rt.opponent.strength;
+    const event=SEASON_EVENTS.find(e=>e.id===rt.eventId)||currentSeasonEvent(),knockout=event.type==='interhigh'||event.type==='championship'||event.type==='minor'||event.type==='promotion',team=soccerMatchNumbers().overall,opp=rt.opponent.strength;
     let won=rt.home>rt.away,draw=rt.home===rt.away,pk=null;
     if(draw&&knockout){
       const pkWon=Math.random()<clamp(.5+(team-opp)/110,.3,.7),base=3+Math.floor(Math.random()*2);pk=pkWon?{home:base+1,away:base}:{home:base,away:base+1};won=pkWon;draw=false;rt.pk=pk;
@@ -5936,7 +6069,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     else if(draw){r.draws++;result='DRAW';rep=4;}
     else{r.losses++;result=pk?'LOSE (PK)':'LOSE';rep=event.type==='league'?1:3;}
     const trainingReward=won?12:draw?8:6;state.soccer.reputation+=rep;state.soccer.trainingPoints+=trainingReward;state.soccer.lastResult={result,home:rt.home,away:rt.away,opponent:rt.opponent.name,eventId:event.id,at:Date.now()};
-    seasonRecordResult(event,{won,draw,home:rt.home,away:rt.away,pk,opponent:rt.opponent.name});
+    applySoccerMatchCondition();seasonRecordResult(event,{won,draw,home:rt.home,away:rt.away,pk,opponent:rt.opponent.name});
     saveState();
     const box=$('soccerMatchResult');box.classList.remove('hidden');box.innerHTML='<h3>'+result+' '+rt.home+' - '+rt.away+(pk?' <small>PK '+pk.home+'-'+pk.away+'</small>':'')+'</h3><p>'+escapeHtml(event.title)+' • 学校評判 +'+rep+' / 育成PT +'+trainingReward+'</p>';soccerLog('FULL TIME • '+result);renderSoccerMatch();renderSoccerHome();
   }
@@ -5950,6 +6083,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     $('soccerPlayerNameSaveBtn')?.addEventListener('click',saveSoccerPlayerName);
     $('soccerPlayerNameKeepBtn')?.addEventListener('click',closeSoccerPlayerNameModal);
     $('soccerShootBtn')?.addEventListener('click',()=>soccerChanceShoot('center'));
+    $('soccerSubBtn')?.addEventListener('click',substituteSoccerPlayer);
     const pitch=$('soccerPitch');
     pitch?.addEventListener('pointerdown',soccerPitchPointerDown);
     pitch?.addEventListener('pointerup',soccerPitchPointerUp);
