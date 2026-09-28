@@ -1377,6 +1377,18 @@ button.match-athlete{cursor:pointer}
 @media(max-width:900px){.season-layout{grid-template-columns:1fr}.season-calendar{max-height:none}}
 @media(max-width:560px){.season-panel,.season-board{padding:14px}.season-current h3{font-size:19px}.season-table th,.season-table td{padding:7px 3px;font-size:7px}.season-event{grid-template-columns:42px 1fr auto}}
 
+
+/* ===== U18 LEAGUE PYRAMID ===== */
+.league-tier-banner{margin:10px 0 12px;padding:12px 13px;border:1px solid rgba(69,212,131,.28);border-radius:12px;background:linear-gradient(135deg,rgba(69,212,131,.08),rgba(0,0,0,.12))}
+.league-tier-banner span{display:block;color:#86d9a6;font-size:7px;font-weight:1000;letter-spacing:.12em}
+.league-tier-banner b{display:block;margin-top:4px;font-size:15px;color:#f1fff6}
+.league-tier-banner small{display:block;margin-top:5px;color:#87968e;font-size:7px;line-height:1.45}
+.league-path{display:flex;gap:5px;overflow:auto;padding:3px 0 2px;margin-top:9px;scrollbar-width:none}.league-path::-webkit-scrollbar{display:none}
+.league-step{flex:0 0 auto;padding:6px 8px;border:1px solid var(--line);border-radius:999px;background:#11161a;color:#78837c;font-size:6px;font-weight:900;white-space:nowrap}
+.league-step.current{border-color:rgba(69,212,131,.48);color:#b9f4ce;background:rgba(69,212,131,.09)}
+.league-step.cleared{color:#aeb8b2;border-color:rgba(255,255,255,.14)}
+.league-movement{margin-top:9px;padding:8px 9px;border-radius:9px;background:rgba(242,209,122,.06);border:1px solid rgba(242,209,122,.18);color:#dbc985;font-size:7px;line-height:1.45}
+
 </style>
 </head>
 <body>
@@ -2137,7 +2149,8 @@ button.match-athlete{cursor:pointer}
             <div class="season-news" id="seasonNews">4月から10月まではリーグ戦。夏はインターハイ、秋〜冬は選手権を戦います。</div>
           </aside>
           <section class="season-board metal-panel">
-            <div class="panel-head"><span>LEAGUE TABLE</span><small>4月–10月 • 8校総当たり</small></div>
+            <div class="panel-head"><span>LEAGUE TABLE</span><small id="seasonLeagueMeta">4月–10月 • 8校総当たり</small></div>
+            <div class="league-tier-banner" id="seasonLeagueTierBanner"></div>
             <div id="seasonLeagueTable"></div>
             <div class="panel-head" style="margin-top:18px"><span>YEAR CALENDAR</span><small>主要大会＋小大会</small></div>
             <div class="season-calendar" id="seasonCalendar"></div>
@@ -5080,6 +5093,42 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   const SCOUT_POSITION_POOL=['GK','CB','CB','LSB','RSB','DMF','CMF','CMF','LMF','RMF','OMF','LWG','RWG','CF','CF'];
   const SCOUT_INTAKE_LIMIT=8;
 
+  const LEAGUE_PYRAMIDS={
+    hokkaido:[
+      {id:'sapporo4',name:'札幌ブロック4部',short:'札幌4部',base:43,promotion:'direct'},
+      {id:'sapporo3',name:'札幌ブロック3部',short:'札幌3部',base:48,promotion:'direct'},
+      {id:'sapporo2',name:'札幌ブロック2部',short:'札幌2部',base:54,promotion:'direct'},
+      {id:'sapporo1',name:'札幌ブロック1部',short:'札幌1部',base:61,promotion:'direct'},
+      {id:'prince-hokkaido',name:'プリンスリーグ北海道',short:'プリンス北海道',base:70,promotion:'playoff'},
+      {id:'premier-east',name:'プレミアリーグ EAST',short:'プレミアEAST',base:80,promotion:'top'}
+    ],
+    kanto:[
+      {id:'pref3',name:'都県リーグ3部',short:'都県3部',base:45,promotion:'direct'},
+      {id:'pref2',name:'都県リーグ2部',short:'都県2部',base:51,promotion:'direct'},
+      {id:'pref1',name:'都県リーグ1部',short:'都県1部',base:58,promotion:'direct'},
+      {id:'prince-kanto2',name:'プリンスリーグ関東2部',short:'関東2部',base:67,promotion:'direct'},
+      {id:'prince-kanto1',name:'プリンスリーグ関東1部',short:'関東1部',base:74,promotion:'playoff'},
+      {id:'premier-east',name:'プレミアリーグ EAST',short:'プレミアEAST',base:82,promotion:'top'}
+    ]
+  };
+  const LEAGUE_TEAM_NAMES={
+    hokkaido:[
+      ['北都高校','札幌南陵','新川学院','石狩中央','手稲北高','月寒高校','藻岩学園'],
+      ['札幌工科','北星第二','東陵高校','白石学院','琴似高校','大麻学園','真駒内高'],
+      ['道央学院','札幌西高','北海第二','創成第二','丘珠高校','札幌第一B','山の手B'],
+      ['北星附属','札幌光星B','科学大高','札幌山の手','創成B','北海B','札幌大谷C'],
+      ['札幌大谷','北海道コンサU-18','北海高校','旭川実業','札幌創成','帯広北','札幌光星'],
+      ['青森山田','尚志','前橋育英','流経大柏','昌平','鹿島ユース','川崎U-18']
+    ],
+    kanto:[
+      ['東都第五','南葛学園','武蔵野北','城東高校','多摩中央','県央学院','湘南工科B'],
+      ['帝都第二','武南B','市立船橋C','桐光B','前橋東','浦和南B','横浜創英B'],
+      ['都立東高','国学院久我山B','成立学園B','日大藤沢B','武南','桐生第一B','八千代B'],
+      ['山梨学院','帝京','桐光学園','西武台','前橋育英B','流経大柏B','矢板中央B'],
+      ['東京Vユース','浦和ユース','鹿島学園','健大高崎','桐生第一','帝京第三','國學院久我山'],
+      ['青森山田','尚志','前橋育英','流経大柏','昌平','鹿島ユース','川崎U-18']
+    ]
+  };
   const SEASON_LEAGUE_TEAMS=[
     {id:'north',name:'市立北高',strength:54},
     {id:'seiryo',name:'西陵学園',strength:58},
@@ -5112,6 +5161,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     {id:'rookie-cup',month:11,type:'minor',title:'新人戦',label:'ROOKIE CUP',strength:60},
     {id:'cs-nat-r1',month:12,type:'championship',title:'全国高校選手権 1回戦',stage:'nat-r1',strength:70},
     {id:'cs-nat-r2',month:12,type:'championship',title:'全国高校選手権 2回戦',stage:'nat-r2',strength:72},
+    {id:'premier-playoff',month:12,type:'promotion',title:'プレミアリーグ参入プレーオフ',strength:82},
     {id:'cs-nat-qf',month:1,type:'championship',title:'全国高校選手権 準々決勝',stage:'nat-qf',strength:75},
     {id:'cs-nat-sf',month:1,type:'championship',title:'全国高校選手権 準決勝',stage:'nat-sf',strength:78},
     {id:'cs-nat-final',month:1,type:'championship',title:'全国高校選手権 決勝',stage:'nat-final',strength:82},
@@ -5142,7 +5192,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   const SOCCER_ACTION_MS=430;
 
   function soccerDefaultState(){
-    return {initialized:false,identitySetupDone:false,schoolName:'FORGE高校',year:1,month:4,reputation:0,schoolExp:0,trainingPoints:0,formation:'4-3-3',players:[],starterIds:[],lineupSlots:{},selectedSlotId:null,selectedPlayerId:null,scouting:{points:30,selectedZone:'local',candidates:[],committed:[],scholarshipUsed:0,searchSerial:0,homePrefecture:'北海道'},season:{currentIndex:0,gradesSeeded:false,history:[],skipped:[],news:'新シーズン開幕。',league:{table:[],roundsPlayed:0,finalized:false,finalRank:null},tournaments:{interhigh:{alive:true,champion:false,best:'未出場'},championship:{alive:true,champion:false,best:'未出場'}},lastGraduates:[],lastIntake:[]},record:{played:0,wins:0,draws:0,losses:0,gf:0,ga:0},lastResult:null};
+    return {initialized:false,identitySetupDone:false,schoolName:'FORGE高校',year:1,month:4,reputation:0,schoolExp:0,trainingPoints:0,formation:'4-3-3',players:[],starterIds:[],lineupSlots:{},selectedSlotId:null,selectedPlayerId:null,scouting:{points:30,selectedZone:'local',candidates:[],committed:[],scholarshipUsed:0,searchSerial:0,homePrefecture:'北海道'},season:{currentIndex:0,gradesSeeded:false,history:[],skipped:[],news:'新シーズン開幕。',league:{region:'hokkaido',tier:0,nextTier:0,table:[],roundsPlayed:0,finalized:false,finalRank:null,promotionPlayoffEligible:false,promotionPlayoffWon:false,movement:'札幌ブロック4部からスタート'},tournaments:{interhigh:{alive:true,champion:false,best:'未出場'},championship:{alive:true,champion:false,best:'未出場'}},lastGraduates:[],lastIntake:[]},record:{played:0,wins:0,draws:0,losses:0,gf:0,ga:0},lastResult:null};
   }
 
   let pendingSoccerRename=null;
@@ -5227,15 +5277,23 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   function soccerEffectiveOvr(p,pos){return Math.round(soccerPositionOvr(p,pos)*(SOCCER_APTITUDE_MULT[soccerAptitudeGrade(p,pos)]||.56));}
   function soccerPlayerOvr(p){return soccerPositionOvr(p,p.primaryPos||p.pos||'CMF');}
 
+  function currentLeagueRegion(){
+    const saved=state.soccer.season?.league?.region;if(saved&&LEAGUE_PYRAMIDS[saved])return saved;
+    return (state.soccer.scouting?.homePrefecture==='北海道')?'hokkaido':'kanto';
+  }
+  function leaguePyramid(){return LEAGUE_PYRAMIDS[currentLeagueRegion()]||LEAGUE_PYRAMIDS.hokkaido;}
+  function currentLeagueTier(){const p=leaguePyramid(),n=Number(state.soccer.season?.league?.tier)||0;return clamp(n,0,p.length-1);}
+  function currentLeagueInfo(){return leaguePyramid()[currentLeagueTier()];}
+  function currentLeagueTeams(){
+    const region=currentLeagueRegion(),tier=currentLeagueTier(),info=currentLeagueInfo(),names=(LEAGUE_TEAM_NAMES[region]?.[tier]||LEAGUE_TEAM_NAMES.hokkaido[0]);
+    return names.map((name,i)=>({id:'l'+tier+'-'+i,name,strength:info.base+[0,2,-1,4,1,3,5][i]+Math.min(6,(state.soccer.year-1))}));
+  }
   function seasonInitialLeagueTable(){
-    return [{id:'user',strength:0,p:0,w:0,d:0,l:0,gf:0,ga:0,pts:0},...SEASON_LEAGUE_TEAMS.map(t=>({id:t.id,strength:t.strength,p:0,w:0,d:0,l:0,gf:0,ga:0,pts:0}))];
+    return [{id:'user',strength:0,p:0,w:0,d:0,l:0,gf:0,ga:0,pts:0},...currentLeagueTeams().map(t=>({id:t.id,strength:t.strength,p:0,w:0,d:0,l:0,gf:0,ga:0,pts:0}))];
   }
   function seasonLeagueRounds(){
-    let arr=['user',...SEASON_LEAGUE_TEAMS.map(t=>t.id)],rounds=[];
-    for(let r=0;r<7;r++){
-      const pairs=[];for(let i=0;i<4;i++)pairs.push([arr[i],arr[arr.length-1-i]]);
-      rounds.push(pairs);arr=[arr[0],arr[arr.length-1],...arr.slice(1,-1)];
-    }
+    let arr=['user',...currentLeagueTeams().map(t=>t.id)],rounds=[];
+    for(let r=0;r<7;r++){const pairs=[];for(let i=0;i<4;i++)pairs.push([arr[i],arr[arr.length-1-i]]);rounds.push(pairs);arr=[arr[0],arr[arr.length-1],...arr.slice(1,-1)];}
     return rounds;
   }
   function normalizeSoccerSeason(){
@@ -5245,7 +5303,8 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
       state.soccer.players.forEach((p,i)=>{p.grade=i<6?3:i<12?2:1;});ss.gradesSeeded=true;
     }
     state.soccer.players.forEach(p=>{if(![1,2,3].includes(Number(p.grade)))p.grade=1;});
-    if(!Array.isArray(ss.league.table)||ss.league.table.length!==8)ss.league.table=seasonInitialLeagueTable();
+    ss.league.region=LEAGUE_PYRAMIDS[ss.league.region]?ss.league.region:currentLeagueRegion();ss.league.tier=clamp(Math.round(Number(ss.league.tier)||0),0,leaguePyramid().length-1);if(!Number.isInteger(ss.league.nextTier))ss.league.nextTier=ss.league.tier;
+    const expectedIds=['user',...currentLeagueTeams().map(t=>t.id)],tableIds=Array.isArray(ss.league.table)?ss.league.table.map(t=>t.id):[];if(ss.league.table.length!==8||expectedIds.some(id=>!tableIds.includes(id)))ss.league.table=seasonInitialLeagueTable();
     ss.currentIndex=clamp(Math.round(Number(ss.currentIndex)||0),0,SEASON_EVENTS.length-1);
     while(ss.currentIndex<SEASON_EVENTS.length-1&&seasonEventUnavailable(SEASON_EVENTS[ss.currentIndex])){
       const id=SEASON_EVENTS[ss.currentIndex].id;if(!ss.skipped.includes(id))ss.skipped.push(id);ss.currentIndex++;
@@ -5256,20 +5315,21 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if(!event)return false;
     if(event.type==='interhigh')return state.soccer.season?.tournaments?.interhigh?.alive===false;
     if(event.type==='championship')return state.soccer.season?.tournaments?.championship?.alive===false;
+    if(event.type==='promotion')return !state.soccer.season?.league?.promotionPlayoffEligible;
     return false;
   }
   function currentSeasonEvent(){return SEASON_EVENTS[state.soccer.season?.currentIndex||0]||SEASON_EVENTS[0];}
   function seasonEventDone(id){return state.soccer.season.history.some(h=>h.eventId===id);}
-  function seasonTeamName(id){if(id==='user')return state.soccer.schoolName;return SEASON_LEAGUE_TEAMS.find(t=>t.id===id)?.name||id;}
-  function seasonTeamStrength(id){if(id==='user')return soccerTeamOvr();return (SEASON_LEAGUE_TEAMS.find(t=>t.id===id)?.strength||58)+Math.min(8,(state.soccer.year-1)*2);}
+  function seasonTeamName(id){if(id==='user')return state.soccer.schoolName;return currentLeagueTeams().find(t=>t.id===id)?.name||id;}
+  function seasonTeamStrength(id){if(id==='user')return soccerTeamOvr();return currentLeagueTeams().find(t=>t.id===id)?.strength||currentLeagueInfo().base;}
   function seasonLeagueOpponent(round){
-    const pair=seasonLeagueRounds()[clamp(round-1,0,6)]?.find(p=>p.includes('user'));if(!pair)return SEASON_LEAGUE_TEAMS[0];
-    const id=pair[0]==='user'?pair[1]:pair[0],team=SEASON_LEAGUE_TEAMS.find(t=>t.id===id)||SEASON_LEAGUE_TEAMS[0];
-    return {...team,strength:seasonTeamStrength(id)};
+    const teams=currentLeagueTeams(),pair=seasonLeagueRounds()[clamp(round-1,0,6)]?.find(p=>p.includes('user'));if(!pair)return teams[0];
+    const id=pair[0]==='user'?pair[1]:pair[0],team=teams.find(t=>t.id===id)||teams[0];return {...team,strength:seasonTeamStrength(id)};
   }
   function soccerSeasonOpponent(event=currentSeasonEvent()){
     if(!event||event.type==='graduation')return {name:'新年度',strength:0,style:'—'};
     if(event.type==='league'){const t=seasonLeagueOpponent(event.leagueRound);return {name:t.name,strength:t.strength,style:'LEAGUE',teamId:t.id};}
+    if(event.type==='promotion')return {name:'地域代表強豪校',strength:event.strength+Math.min(6,(state.soccer.year-1)*2),style:'PLAYOFF'};
     const yearBoost=Math.min(8,(state.soccer.year-1)*2);
     if(event.type==='interhigh'){
       const list=SEASON_EVENTS.filter(e=>e.type==='interhigh'),idx=Math.max(0,list.findIndex(e=>e.id===event.id));
@@ -5283,7 +5343,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     return {name:TOURNAMENT_OPPONENTS.minor[idx]||'招待校',strength:event.strength+yearBoost,style:'CUP'};
   }
   function seasonCompetitionLabel(event){
-    if(!event)return 'SEASON';if(event.type==='league')return 'LEAGUE';if(event.type==='interhigh')return 'INTERHIGH';if(event.type==='championship')return 'CHAMPIONSHIP';if(event.type==='minor')return event.label||'CUP';return 'SCHOOL YEAR';
+    if(!event)return 'SEASON';if(event.type==='league')return currentLeagueInfo().short;if(event.type==='promotion')return 'PREMIER PLAYOFF';if(event.type==='interhigh')return 'INTERHIGH';if(event.type==='championship')return 'CHAMPIONSHIP';if(event.type==='minor')return event.label||'CUP';return 'SCHOOL YEAR';
   }
   function leagueSortTable(){
     return state.soccer.season.league.table.slice().sort((a,b)=>b.pts-a.pts||((b.gf-b.ga)-(a.gf-a.ga))||b.gf-a.gf);
@@ -5301,15 +5361,23 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     pairs.filter(p=>!p.includes('user')).forEach(([a,b])=>{const [ga,gb]=simulateLeagueScore(seasonTeamStrength(a),seasonTeamStrength(b));updateLeagueRow(a,ga,gb);updateLeagueRow(b,gb,ga);});
   }
   function finalizeSoccerLeague(){
-    const lg=state.soccer.season.league;if(lg.finalized)return;const table=leagueSortTable(),rank=table.findIndex(t=>t.id==='user')+1;lg.finalized=true;lg.finalRank=rank;
-    const bonus=rank===1?35:rank<=3?18:rank<=5?8:3;state.soccer.reputation+=bonus;state.soccer.season.news='リーグ戦終了：'+rank+'位。学校評判 +'+bonus;
-    if(rank===1)showMoment('LEAGUE CHAMPION','7節を制覇','legendary');
+    const lg=state.soccer.season.league;if(lg.finalized)return;const table=leagueSortTable(),rank=table.findIndex(t=>t.id==='user')+1,info=currentLeagueInfo(),tier=currentLeagueTier(),max=leaguePyramid().length-1;lg.finalized=true;lg.finalRank=rank;lg.nextTier=tier;
+    const bonus=rank===1?35:rank<=3?18:rank<=5?8:3;state.soccer.reputation+=bonus;
+    if(rank===1&&tier<max){
+      if(info.promotion==='playoff'){lg.promotionPlayoffEligible=true;lg.movement=info.name+'優勝。プレミア参入プレーオフ進出！';state.soccer.season.news=lg.movement;showMoment('PLAYOFF QUALIFIED','プレミア昇格まであと1勝','legendary');}
+      else{lg.nextTier=tier+1;lg.movement=info.name+'優勝 → '+leaguePyramid()[tier+1].name+'へ昇格決定';state.soccer.season.news=lg.movement;showMoment('PROMOTION',leaguePyramid()[tier+1].short+'へ昇格','legendary');}
+    }else if(rank===8&&tier>0){lg.nextTier=tier-1;lg.movement=info.name+' 8位 → '+leaguePyramid()[tier-1].name+'へ降格';state.soccer.season.news=lg.movement;}
+    else if(rank===1&&tier===max){lg.movement=info.name+' 優勝！国内最高峰リーグ制覇';state.soccer.season.news=lg.movement;showMoment('LEAGUE CHAMPION','PREMIER EAST','legendary');}
+    else{lg.movement=info.name+' '+rank+'位。来季も同リーグ';state.soccer.season.news=lg.movement;}
   }
+
   function seasonRecordResult(event,result){
     const ss=state.soccer.season;if(!event||seasonEventDone(event.id))return;
     ss.history.push({eventId:event.id,year:state.soccer.year,month:event.month,type:event.type,title:event.title,opponent:result.opponent,home:result.home,away:result.away,won:result.won,draw:result.draw,pk:result.pk||null,at:Date.now()});
     if(event.type==='league'){
       const opp=seasonLeagueOpponent(event.leagueRound);updateLeagueRow('user',result.home,result.away);updateLeagueRow(opp.id,result.away,result.home);simulateOtherLeagueMatches(event.leagueRound);ss.league.roundsPlayed=Math.max(ss.league.roundsPlayed,event.leagueRound);if(event.leagueRound===7)finalizeSoccerLeague();
+    }else if(event.type==='promotion'){
+      const lg=ss.league;if(result.won){lg.promotionPlayoffWon=true;lg.nextTier=Math.min(currentLeagueTier()+1,leaguePyramid().length-1);lg.movement='プレミア参入プレーオフ勝利 → '+leaguePyramid()[lg.nextTier].name+'昇格決定';ss.news=lg.movement;showMoment('PROMOTED','PREMIER LEAGUE','legendary');}else{lg.nextTier=currentLeagueTier();lg.movement='プレミア参入プレーオフ敗退。来季も'+currentLeagueInfo().name;ss.news=lg.movement;}
     }else if(event.type==='interhigh'||event.type==='championship'){
       const t=ss.tournaments[event.type];if(result.won){t.best=event.title;if(event.stage==='nat-final'){t.champion=true;t.alive=false;state.soccer.reputation+=45;ss.news=TOURNAMENT_NAMES[event.type]+' 全国制覇！';showMoment('NATIONAL CHAMPION',TOURNAMENT_NAMES[event.type],'legendary');}}
       else {t.alive=false;t.best=event.title+'敗退';ss.news=TOURNAMENT_NAMES[event.type]+'は'+event.title.replace(TOURNAMENT_NAMES[event.type],'')+'で敗退。';}
@@ -5340,9 +5408,11 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if(nextPlayers.length<16){
       const pool=generateSoccerRoster();walkons=pool.slice(0,16-nextPlayers.length).map((p,i)=>{p.grade=1;p.id='walk-y'+(state.soccer.year+1)+'-'+Date.now().toString(36)+'-'+i;return p;});nextPlayers.push(...walkons);
     }
+    const leagueRegion=ss.league.region,nextLeagueTier=Number.isInteger(ss.league.nextTier)?ss.league.nextTier:ss.league.tier;
     state.soccer.players=nextPlayers;state.soccer.year++;state.soccer.month=4;state.soccer.lineupSlots={};state.soccer.starterIds=[];
     state.soccer.scouting.candidates=[];state.soccer.scouting.committed=[];state.soccer.scouting.scholarshipUsed=0;
-    state.soccer.season={currentIndex:0,gradesSeeded:true,history:[],skipped:[],news:'新年度スタート。'+graduates.length+'名が卒業、'+(committed.length+walkons.length)+'名が入学。',league:{table:seasonInitialLeagueTable(),roundsPlayed:0,finalized:false,finalRank:null},tournaments:{interhigh:{alive:true,champion:false,best:'未出場'},championship:{alive:true,champion:false,best:'未出場'}},lastGraduates:graduates.map(p=>({name:p.name,pos:p.primaryPos,ovr:p.ovr})),lastIntake:[...committed,...walkons].map(p=>({name:p.name,pos:p.primaryPos,ovr:p.ovr,scouted:!!p.scouted}))};
+    state.soccer.season={currentIndex:0,gradesSeeded:true,history:[],skipped:[],news:'新年度スタート。'+graduates.length+'名が卒業、'+(committed.length+walkons.length)+'名が入学。',league:{region:leagueRegion,tier:nextLeagueTier,nextTier:nextLeagueTier,table:[],roundsPlayed:0,finalized:false,finalRank:null,promotionPlayoffEligible:false,promotionPlayoffWon:false,movement:''},tournaments:{interhigh:{alive:true,champion:false,best:'未出場'},championship:{alive:true,champion:false,best:'未出場'}},lastGraduates:graduates.map(p=>({name:p.name,pos:p.primaryPos,ovr:p.ovr})),lastIntake:[...committed,...walkons].map(p=>({name:p.name,pos:p.primaryPos,ovr:p.ovr,scouted:!!p.scouted}))};
+    state.soccer.season.league.table=seasonInitialLeagueTable();state.soccer.season.news+=' 所属：'+currentLeagueInfo().name;
     state.soccer.selectedPlayerId=state.soccer.players[0]?.id||null;autoSelectSoccerStarters(false);saveState();renderSoccerShell();showMoment('NEW SCHOOL YEAR','YEAR '+state.soccer.year,'good');navigate('soccer-season');
   }
   function renderSoccerSeason(){
@@ -5356,6 +5426,8 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     $('seasonInterhighCard').className='season-trophy '+(ih.champion?'champion':ih.alive?'alive':'out');$('seasonInterhighCard').querySelector('b').textContent=seasonStatusText('interhigh');
     $('seasonChampionshipCard').className='season-trophy '+(cs.champion?'champion':cs.alive?'alive':'out');$('seasonChampionshipCard').querySelector('b').textContent=seasonStatusText('championship');
     $('seasonNews').textContent=ss.news||'シーズン進行中。';
+    const leagueInfo=currentLeagueInfo(),path=leaguePyramid();$('seasonLeagueMeta').textContent=leagueInfo.name+' • 4月–10月 • 8校総当たり';
+    $('seasonLeagueTierBanner').innerHTML='<span>CURRENT LEAGUE</span><b>'+escapeHtml(leagueInfo.name)+'</b><small>1位：昇格'+(leagueInfo.promotion==='playoff'?'プレーオフへ':'')+' / 8位：降格'+(currentLeagueTier()===0?'なし':'')+'</small><div class="league-path">'+path.map((l,i)=>'<span class="league-step '+(i===currentLeagueTier()?'current':i<currentLeagueTier()?'cleared':'')+'">'+escapeHtml(l.short)+'</span>').join('')+'</div>'+(ss.league.movement?'<div class="league-movement">'+escapeHtml(ss.league.movement)+'</div>':'');
     $('seasonLeagueTable').innerHTML='<table class="season-table"><thead><tr><th>#</th><th style="text-align:left">TEAM</th><th>試</th><th>勝</th><th>分</th><th>敗</th><th>得失</th><th>勝点</th></tr></thead><tbody>'+table.map((r,i)=>'<tr class="'+(r.id==='user'?'user':'')+'"><td class="rank">'+(i+1)+'</td><td class="team">'+escapeHtml(seasonTeamName(r.id))+'</td><td>'+r.p+'</td><td>'+r.w+'</td><td>'+r.d+'</td><td>'+r.l+'</td><td>'+((r.gf-r.ga)>=0?'+':'')+(r.gf-r.ga)+'</td><td><b>'+r.pts+'</b></td></tr>').join('')+'</tbody></table>';
     $('seasonCalendar').innerHTML=SEASON_EVENTS.map((ev,i)=>{const done=seasonEventDone(ev.id),skipped=ss.skipped.includes(ev.id),current=i===ss.currentIndex;return '<div class="season-event'+(current?' current':'')+(done?' done':'')+(skipped?' skipped':'')+'"><span class="month">'+ev.month+'月</span><div><b>'+escapeHtml(ev.title)+'</b><small>'+seasonCompetitionLabel(ev)+(ev.type==='league'?' • 第'+ev.leagueRound+'節':'')+'</small></div><em>'+(current?'NEXT':done?'DONE':skipped?'敗退':'UPCOMING')+'</em></div>';}).join('');
   }
@@ -5728,7 +5800,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   function soccerPitchPointerUp(e){if(!soccerMatchRuntime?.inChance||soccerMatchRuntime?.actionLocked||!soccerPointerStart)return;if(e.cancelable)e.preventDefault();const dx=e.clientX-soccerPointerStart.x,dy=e.clientY-soccerPointerStart.y;try{e.currentTarget.releasePointerCapture(soccerPointerStart.pointerId);}catch(_){}soccerPointerStart=null;if(dy<-45){const lane=dx<-35?'left':dx>35?'right':'center';soccerChanceShoot(lane);}}
   function finishSoccerMatch(){
     const rt=soccerMatchRuntime;if(!rt||rt.finished)return;setSoccerGestureScrollLock(false);rt.finished=true;if(soccerMatchTimer){clearInterval(soccerMatchTimer);soccerMatchTimer=null;}
-    const event=SEASON_EVENTS.find(e=>e.id===rt.eventId)||currentSeasonEvent(),knockout=event.type==='interhigh'||event.type==='championship'||event.type==='minor',team=soccerTeamOvr(),opp=rt.opponent.strength;
+    const event=SEASON_EVENTS.find(e=>e.id===rt.eventId)||currentSeasonEvent(),knockout=event.type==='interhigh'||event.type==='championship'||event.type==='minor'||event.type==='promotion',team=soccerTeamOvr(),opp=rt.opponent.strength;
     let won=rt.home>rt.away,draw=rt.home===rt.away,pk=null;
     if(draw&&knockout){
       const pkWon=Math.random()<clamp(.5+(team-opp)/110,.3,.7),base=3+Math.floor(Math.random()*2);pk=pkWon?{home:base+1,away:base}:{home:base,away:base+1};won=pkWon;draw=false;rt.pk=pk;
