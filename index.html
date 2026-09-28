@@ -1340,6 +1340,11 @@ button.match-athlete{cursor:pointer}
 }
 @media(max-width:560px){.soccer-roster-name-list{grid-template-columns:1fr}.soccer-setup-card{padding:15px}.soccer-setup-head h2{font-size:21px}}
 
+
+/* Emergency-stable soccer navigation: keep the six main tabs tappable above app layers. */
+.bottom-nav-shell{z-index:250!important}
+.bottom-nav,.bottom-nav .nav-btn{pointer-events:auto!important}
+
 </style>
 </head>
 <body>
@@ -5578,6 +5583,30 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"è²§è¡
     refreshBankDiagnostics(true);
     navigator.storage?.persist?.().catch(()=>{});
   }
+
+  function hardSoccerNavigate(screen){
+    const target=document.querySelector('[data-screen="'+screen+'"]');if(!target)return false;
+    document.querySelectorAll('.screen').forEach(el=>el.classList.toggle('active',el===target));
+    document.querySelectorAll('.nav-btn').forEach(el=>el.classList.toggle('active',el.dataset.nav===screen));
+    const shell=document.getElementById('appShell');if(shell)shell.classList.toggle('match-focus',screen==='soccer-match');
+    const main=document.querySelector('main');if(main){main.classList.remove('soccer-gesture-lock');try{main.scrollTo({top:0,behavior:'auto'});}catch(_){main.scrollTop=0;}}
+    try{
+      if(screen==='study'&&typeof nextStudyQuestion==='function'&&!currentQuestion)nextStudyQuestion();
+      if(screen==='soccer-training'&&typeof renderSoccerTraining==='function')renderSoccerTraining();
+      if(screen==='soccer-team'&&typeof renderSoccerTeam==='function')renderSoccerTeam();
+      if(screen==='soccer-match'&&typeof renderSoccerMatch==='function')renderSoccerMatch();
+      if(screen==='soccer-scout'&&typeof renderSoccerScout==='function')renderSoccerScout();
+      if(screen==='home'&&typeof renderSoccerHome==='function')renderSoccerHome();
+    }catch(err){console.error('screen render error',screen,err);}
+    return true;
+  }
+  document.addEventListener('click',event=>{
+    const btn=event.target?.closest?.('[data-nav]');if(!btn)return;
+    const screen=btn.dataset.nav;if(!screen)return;
+    if(['home','study','soccer-training','soccer-team','soccer-match','soccer-scout'].includes(screen)){
+      event.preventDefault();event.stopImmediatePropagation();hardSoccerNavigate(screen);
+    }
+  },true);
 
   init();
   window.addEventListener('pageshow',()=>{recoverSoccerScrollState();});
