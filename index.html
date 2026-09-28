@@ -5517,6 +5517,31 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     $('soccerStartMatchBtn').disabled=!!(rt&&!rt.finished)||event?.type==='graduation';$('soccerStartMatchBtn').textContent=rt&&rt.finished?'日程へ戻る':'KICK OFF';$('soccerShootBtn').disabled=!(rt&&rt.inChance);
     if(!rt||!rt.inChance)renderSoccerPitchIdle();
   }
+  function soccerAthleteMarkup({p=null,x=50,y=50,team='home',focus=false,ball=false,interactive=false,pos='',number=0,name='',actorId='',extraClass=''}={}){
+    const athleteName=name||(p?.name||''),position=pos||(p?.primaryPos||''),shirtNo=number||(p?.number||0),classes=['match-athlete',team,focus?'focus':'',ball?'ball-holder':'',interactive?'selectable':'',extraClass].filter(Boolean).join(' ');
+    const tag=interactive?'button':'div',chanceAttr=interactive&&p?' data-chance-player="'+p.id+'"':'',actorAttr=(actorId||p?.id)?' data-match-actor="'+escapeHtml(actorId||p.id)+'"':'';
+    return '<'+tag+' type="'+(interactive?'button':'button')+'"'+chanceAttr+actorAttr+' class="'+classes+'" style="left:'+x+'%;top:'+y+'%"><span class="athlete-head"></span><span class="athlete-hair"></span><span class="athlete-shirt"></span><span class="athlete-number">'+shirtNo+'</span><span class="athlete-shorts"></span><span class="athlete-legs"></span><span class="athlete-label"><span class="athlete-pos">'+position+'</span>'+escapeHtml((athleteName||position).split(' ')[0])+'</span>'+(ball?'<span class="match-ball"></span>':'')+'</'+tag+'>';
+  }
+  function soccerIdleY(slotY,home=true){
+    const homeY=clamp(46+(slotY-20)*.56,46,85);return home?homeY:100-homeY;
+  }
+  function ensureMatchLineupReady(){
+    const slots=soccerFormationSlots(),valid=slots.every(slot=>state.soccer.players.some(p=>p.id===state.soccer.lineupSlots?.[slot.id]));
+    if(!valid)autoSelectSoccerStarters(false);
+  }
+  function renderSoccerPitchIdle(){
+    if(!$('soccerPitchActors'))return;normalizeSoccerState();ensureMatchLineupReady();
+    const slots=soccerFormationSlots(),live=!!(soccerMatchRuntime&&!soccerMatchRuntime.finished);
+    const home=slots.map(slot=>{const p=state.soccer.players.find(x=>x.id===state.soccer.lineupSlots[slot.id]);if(!p)return'';return soccerAthleteMarkup({p,x:slot.x,y:soccerIdleY(slot.y,true),team:'home'});}).join('');
+    const oppSlots=SOCCER_FORMATIONS['4-3-3'].slots,opp=oppSlots.map((slot,i)=>soccerAthleteMarkup({x:slot.x,y:soccerIdleY(slot.y,false),team:'opponent',pos:slot.pos,number:i+1,name:'相手'})).join('');
+    $('soccerPitchActors').className=live?'match-live':'';$('soccerPitchActors').innerHTML=home+opp;
+    $('soccerChanceHelp').className='soccer-chance-overlay is-compact';
+    $('soccerChanceHelp').innerHTML='<b>'+(live?'AUTO MATCH':'MATCH READY')+'</b><span>'+(live?'22人の配置を反映して自動進行中。決定機になると操作へ切り替わります。':'KICK OFFで試合開始。スタメンの配置と適性が試合力に反映されます。')+'</span>';
+  }
+  function soccerLog(text){
+    if(!$('soccerMatchLog'))return;const line=document.createElement('div');line.innerHTML='<b>'+Math.min(90,soccerMatchRuntime?.minute||0)+"'</b> "+escapeHtml(text);$('soccerMatchLog').prepend(line);
+  }
+
   function soccerPrimaryMatchAction(){if(soccerMatchRuntime?.finished)return navigate('soccer-season');startSoccerMatch();}
   function startSoccerMatch(){
     normalizeSoccerState();const event=currentSeasonEvent();if(event.type==='graduation')return toast('<b>SEASON</b> 年間日程から卒業式を進めてください');if(state.soccer.starterIds.length!==11)return toast('<b>LINEUP ERROR</b> スタメンを11人選んでください');
