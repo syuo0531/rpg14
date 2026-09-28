@@ -1295,6 +1295,55 @@ main.soccer-gesture-lock{
 @media(max-width:900px){.soccer-actions{grid-template-columns:repeat(2,1fr)}.soccer-metrics{grid-template-columns:repeat(2,1fr)}.scout-layout{grid-template-columns:1fr}.scout-commit-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.bottom-nav{grid-template-columns:repeat(6,minmax(0,1fr))!important}.bottom-nav .nav-btn{padding:5px 1px}.bottom-nav .nav-btn b{font-size:6px}.scout-candidate-grid{grid-template-columns:1fr}.scout-commit-grid{grid-template-columns:1fr}.scout-panel,.scout-board{padding:14px}}
 
+
+/* ===== TEAM IDENTITY SETUP + MATCH UX ===== */
+.soccer-setup-modal,.soccer-name-modal{
+  position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:18px;
+  background:rgba(2,4,6,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)
+}
+.soccer-setup-modal.hidden,.soccer-name-modal.hidden{display:none}
+.soccer-setup-card{width:min(720px,100%);max-height:min(88dvh,820px);overflow:auto;padding:20px;border:1px solid var(--line-strong);border-radius:18px;background:#0f1317;box-shadow:0 28px 90px rgba(0,0,0,.65)}
+.soccer-setup-card.compact{width:min(430px,100%);max-height:none}
+.soccer-setup-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.soccer-setup-head h2{margin:4px 0 5px;font-size:24px}.soccer-setup-head p{margin:0;color:var(--muted);font-size:9px;line-height:1.5}
+.soccer-name-field{margin-top:16px}.soccer-name-field label{display:block;margin-bottom:6px;color:#aeb7b1;font-size:8px;font-weight:1000;letter-spacing:.08em}
+.soccer-name-field input{width:100%;min-height:46px;padding:10px 12px;border:1px solid var(--line);border-radius:11px;background:#090d10;color:#fff;font:inherit;font-size:14px;outline:none}
+.soccer-name-field input:focus{border-color:rgba(69,212,131,.55);box-shadow:0 0 0 3px rgba(69,212,131,.09)}
+.soccer-roster-name-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}
+.soccer-roster-name-row{display:grid;grid-template-columns:42px 1fr;gap:7px;align-items:center;padding:7px;border:1px solid var(--line);border-radius:10px;background:#0b0f12}
+.soccer-roster-name-row span{display:grid;place-items:center;height:34px;border-radius:8px;background:#17211c;color:#8be8ae;font-size:8px;font-weight:1000}
+.soccer-roster-name-row input{min-width:0;width:100%;height:34px;padding:6px 8px;border:0;border-radius:7px;background:#151a1f;color:#fff;font-size:10px;outline:none}
+.soccer-setup-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}.soccer-setup-actions button{min-height:44px}
+.scout-rename-btn{margin-top:7px;width:100%;min-height:32px;border:1px solid var(--line);border-radius:8px;background:#12181c;color:#bcd4c4;font-size:7px;font-weight:900;cursor:pointer}
+.soccer-match-details{padding:0;border:1px solid var(--line);border-radius:13px;background:#0f1317;overflow:hidden}
+.soccer-match-details summary{cursor:pointer;list-style:none;padding:13px 14px;font-size:9px;font-weight:1000;letter-spacing:.07em;color:#d8e1dc}
+.soccer-match-details summary::-webkit-details-marker{display:none}.soccer-match-details summary:after{content:"＋";float:right;color:#7e8a83}.soccer-match-details[open] summary:after{content:"−"}
+.soccer-match-details-body{padding:0 13px 13px}
+@media(max-width:900px){
+  .app-shell.match-focus .topbar,.app-shell.match-focus .bottom-nav-shell{display:none!important}
+  .app-shell.match-focus main{padding:0 7px 10px;overflow-y:auto}
+  .app-shell.match-focus #screen-soccer-match{width:100%;max-width:760px;margin:0 auto;padding-top:5px}
+  .app-shell.match-focus .soccer-screen-head{position:sticky;top:0;z-index:45;margin:0 0 5px;padding:7px 6px;background:rgba(7,9,11,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .app-shell.match-focus .soccer-screen-head .eyebrow{display:none}
+  .app-shell.match-focus .soccer-screen-head h2{margin:0;font-size:14px}
+  .app-shell.match-focus .soccer-screen-head .icon-btn{width:38px;height:38px}
+  .app-shell.match-focus .soccer-pill{padding:6px 9px;font-size:8px}
+  .app-shell.match-focus .soccer-match-shell{display:grid;grid-template-columns:1fr;gap:7px}
+  .app-shell.match-focus .soccer-match-main{padding:8px;border-radius:13px}
+  .app-shell.match-focus .soccer-scoreboard{gap:5px;padding:1px 2px}
+  .app-shell.match-focus .soccer-score-team b{font-size:10px}.app-shell.match-focus .soccer-score-team small{font-size:6px}
+  .app-shell.match-focus .soccer-score{font-size:24px}
+  .app-shell.match-focus .soccer-minute{margin-top:2px;font-size:8px}
+  .app-shell.match-focus .soccer-match-progress{margin-top:4px;height:5px}
+  .app-shell.match-focus .soccer-pitch{height:min(60dvh,455px);min-height:350px;margin-top:6px}
+  .app-shell.match-focus .soccer-match-controls{position:sticky;bottom:0;z-index:35;display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:6px;padding:6px;background:rgba(7,9,11,.94);border:1px solid var(--line);border-radius:12px;backdrop-filter:blur(8px)}
+  .app-shell.match-focus .soccer-match-controls button{min-height:50px;font-size:13px}
+  .app-shell.match-focus #soccerShootBtn:not(:disabled){border-color:rgba(69,212,131,.55);background:rgba(69,212,131,.14);color:#caffdc}
+  .app-shell.match-focus .soccer-match-details{order:2}
+  .app-shell.match-focus .soccer-match-log{max-height:110px}
+}
+@media(max-width:560px){.soccer-roster-name-list{grid-template-columns:1fr}.soccer-setup-card{padding:15px}.soccer-setup-head h2{font-size:21px}}
+
 </style>
 </head>
 <body>
@@ -2137,17 +2186,19 @@ main.soccer-gesture-lock{
             </div>
             <div class="soccer-result hidden" id="soccerMatchResult"></div>
           </section>
-          <aside class="soccer-match-side metal-panel">
-            <div class="panel-head"><span>MATCH INFO</span><small>AUTO + CHANCE PLAY</small></div>
-            <div class="soccer-side-stats">
-              <div class="soccer-side-stat"><span>FORMATION</span><b id="soccerMatchFormation">4-3-3</b></div>
-              <div class="soccer-side-stat"><span>SCHOOL RANK</span><b id="soccerMatchRank">無名</b></div>
-              <div class="soccer-side-stat"><span>CHANCES</span><b id="soccerChanceCount">0</b></div>
-              <div class="soccer-side-stat"><span>USER GOALS</span><b id="soccerUserGoals">0</b></div>
-              <div class="soccer-side-stat"><span>DRIBBLE</span><b id="soccerDribbleCount">0 / 0</b></div>
+          <details class="soccer-match-details">
+            <summary>試合情報・プレーログ</summary>
+            <div class="soccer-match-details-body">
+              <div class="soccer-side-stats">
+                <div class="soccer-side-stat"><span>FORMATION</span><b id="soccerMatchFormation">4-3-3</b></div>
+                <div class="soccer-side-stat"><span>SCHOOL RANK</span><b id="soccerMatchRank">無名</b></div>
+                <div class="soccer-side-stat"><span>CHANCES</span><b id="soccerChanceCount">0</b></div>
+                <div class="soccer-side-stat"><span>USER GOALS</span><b id="soccerUserGoals">0</b></div>
+                <div class="soccer-side-stat"><span>DRIBBLE</span><b id="soccerDribbleCount">0 / 0</b></div>
+              </div>
+              <div class="soccer-match-log" id="soccerMatchLog"><b>MATCH READY</b><br>スタメンを確認して試合を開始してください。</div>
             </div>
-            <div class="soccer-match-log" id="soccerMatchLog"><b>MATCH READY</b><br>スタメンを確認して試合を開始してください。</div>
-          </aside>
+          </details>
         </div>
       </section>
 
@@ -2163,6 +2214,33 @@ main.soccer-gesture-lock{
         <button class="nav-btn" data-nav="soccer-match"><span>⚽</span><b>MATCH</b></button>
         <button class="nav-btn" data-nav="soccer-scout"><span>🔎</span><b>SCOUT</b></button>
       </nav>
+    </div>
+
+
+    <div class="soccer-setup-modal hidden" id="soccerIdentitySetupModal" role="dialog" aria-modal="true" aria-labelledby="soccerIdentityTitle">
+      <div class="soccer-setup-card">
+        <div class="soccer-setup-head">
+          <div><span class="eyebrow">NEW GAME SETUP</span><h2 id="soccerIdentityTitle">高校と選手の名前を決める</h2><p>自動生成名はそのまま使っても、好きな名前へ変更してもOKです。</p></div>
+        </div>
+        <div class="soccer-name-field"><label for="soccerSetupSchoolName">高校名</label><input id="soccerSetupSchoolName" maxlength="20" autocomplete="off" /></div>
+        <div class="panel-head" style="margin-top:16px"><span>INITIAL ROSTER</span><small>18名</small></div>
+        <div class="soccer-roster-name-list" id="soccerSetupRosterNames"></div>
+        <div class="soccer-setup-actions">
+          <button type="button" class="secondary-btn" id="soccerRandomizeNamesBtn">名前を再生成</button>
+          <button type="button" class="primary-btn" id="soccerSaveIdentityBtn">この名前で始める</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="soccer-name-modal hidden" id="soccerPlayerNameModal" role="dialog" aria-modal="true" aria-labelledby="soccerPlayerNameTitle">
+      <div class="soccer-setup-card compact">
+        <div class="soccer-setup-head"><div><span class="eyebrow">PLAYER NAME</span><h2 id="soccerPlayerNameTitle">選手名を決める</h2><p id="soccerPlayerNameMeta">入部する選手の名前を変更できます。</p></div></div>
+        <div class="soccer-name-field"><label for="soccerPlayerNameInput">選手名</label><input id="soccerPlayerNameInput" maxlength="18" autocomplete="off" /></div>
+        <div class="soccer-setup-actions">
+          <button type="button" class="secondary-btn" id="soccerPlayerNameKeepBtn">このまま</button>
+          <button type="button" class="primary-btn" id="soccerPlayerNameSaveBtn">名前を決定</button>
+        </div>
+      </div>
     </div>
 
     <div class="toast-stack" id="toastStack" aria-live="polite"></div>
@@ -3859,7 +3937,8 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   }
 
   function navigate(screen) {
-    $$('.screen').forEach(el => el.classList.toggle('active', el.dataset.screen === screen));
+    $('.screen').forEach(el => el.classList.toggle('active', el.dataset.screen === screen));
+    $('appShell')?.classList.toggle('match-focus',screen==='soccer-match');
     $$('.nav-btn').forEach(el => el.classList.toggle('active', el.dataset.nav === screen));
     if (screen === 'study' && !currentQuestion) nextStudyQuestion();
     if (screen === 'dungeon') renderDungeon();
@@ -4945,7 +5024,35 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   const SOCCER_ACTION_MS=430;
 
   function soccerDefaultState(){
-    return {initialized:false,schoolName:'FORGE高校',year:1,month:4,reputation:0,schoolExp:0,trainingPoints:0,formation:'4-3-3',players:[],starterIds:[],lineupSlots:{},selectedSlotId:null,selectedPlayerId:null,scouting:{points:30,selectedZone:'local',candidates:[],committed:[],scholarshipUsed:0,searchSerial:0,homePrefecture:'北海道'},record:{played:0,wins:0,draws:0,losses:0,gf:0,ga:0},lastResult:null};
+    return {initialized:false,identitySetupDone:false,schoolName:'FORGE高校',year:1,month:4,reputation:0,schoolExp:0,trainingPoints:0,formation:'4-3-3',players:[],starterIds:[],lineupSlots:{},selectedSlotId:null,selectedPlayerId:null,scouting:{points:30,selectedZone:'local',candidates:[],committed:[],scholarshipUsed:0,searchSerial:0,homePrefecture:'北海道'},record:{played:0,wins:0,draws:0,losses:0,gf:0,ga:0},lastResult:null};
+  }
+
+  let pendingSoccerRename=null;
+  function randomSoccerName(){return SOCCER_SURNAMES[Math.floor(Math.random()*SOCCER_SURNAMES.length)]+' '+SOCCER_GIVEN[Math.floor(Math.random()*SOCCER_GIVEN.length)];}
+  function renderSoccerIdentitySetup(){
+    if(!$('soccerSetupRosterNames'))return;normalizeSoccerState();$('soccerSetupSchoolName').value=state.soccer.schoolName||'FORGE高校';
+    $('soccerSetupRosterNames').innerHTML=state.soccer.players.map((p,i)=>'<label class="soccer-roster-name-row"><span>'+p.primaryPos+'</span><input data-setup-player-id="'+p.id+'" maxlength="18" value="'+escapeHtml(p.name)+'" aria-label="'+(i+1)+'人目の選手名" /></label>').join('');
+  }
+  function openSoccerIdentitySetup(){renderSoccerIdentitySetup();$('soccerIdentitySetupModal')?.classList.remove('hidden');}
+  function saveSoccerIdentitySetup(){
+    normalizeSoccerState();const school=($('soccerSetupSchoolName')?.value||'').trim();if(!school)return toast('<b>高校名を入力してください</b>');
+    state.soccer.schoolName=school.slice(0,20);
+    Array.from(document.querySelectorAll('[data-setup-player-id]')).forEach(input=>{const p=state.soccer.players.find(x=>x.id===input.dataset.setupPlayerId),name=input.value.trim();if(p&&name)p.name=name.slice(0,18);});
+    state.soccer.identitySetupDone=true;saveState();$('soccerIdentitySetupModal')?.classList.add('hidden');renderSoccerShell();toast('<b>'+escapeHtml(state.soccer.schoolName)+'</b> でスタート');
+  }
+  function randomizeSoccerSetupNames(){
+    state.soccer.players.forEach(p=>p.name=randomSoccerName());renderSoccerIdentitySetup();
+  }
+  function openSoccerPlayerNameModal(id,source='scout'){
+    normalizeSoccerState();let p=null;if(source==='scout')p=state.soccer.scouting.committed.find(x=>x.id===id);else p=state.soccer.players.find(x=>x.id===id);if(!p)return;
+    pendingSoccerRename={id,source};$('soccerPlayerNameInput').value=p.name||'';$('soccerPlayerNameMeta').textContent=(p.primaryPos||'')+' • '+(p.origin?escapeHtml(p.origin)+' • ':'')+(source==='scout'?'入部が決まりました。名前を変更できます。':'選手名を変更できます。');$('soccerPlayerNameModal').classList.remove('hidden');setTimeout(()=>$('soccerPlayerNameInput')?.focus(),50);
+  }
+  function closeSoccerPlayerNameModal(){pendingSoccerRename=null;$('soccerPlayerNameModal')?.classList.add('hidden');}
+  function saveSoccerPlayerName(){
+    if(!pendingSoccerRename)return closeSoccerPlayerNameModal();const name=($('soccerPlayerNameInput')?.value||'').trim();if(!name)return toast('<b>選手名を入力してください</b>');
+    if(pendingSoccerRename.source==='scout'){const sc=state.soccer.scouting,committed=sc.committed.find(x=>x.id===pendingSoccerRename.id),candidate=sc.candidates.find(x=>x.id===pendingSoccerRename.id);if(committed)committed.name=name.slice(0,18);if(candidate)candidate.name=name.slice(0,18);}
+    else {const p=state.soccer.players.find(x=>x.id===pendingSoccerRename.id);if(p)p.name=name.slice(0,18);}
+    saveState();closeSoccerPlayerNameModal();renderSoccerShell();toast('<b>PLAYER NAME</b> '+escapeHtml(name.slice(0,18)));
   }
   function hashSoccerText(text=''){let h=0;for(let i=0;i<text.length;i++)h=(h*31+text.charCodeAt(i))>>>0;return h;}
   function legacyDetailedPosition(p,index){
@@ -5078,7 +5185,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   }
   function commitScoutCandidate(c,type){
     const sc=state.soccer.scouting;if(sc.committed.length>=SCOUT_INTAKE_LIMIT)return toast('<b>INTAKE FULL</b> 今季の入部内定は8名までです');
-    if(sc.committed.some(x=>x.id===c.id))return;c.status='committed';c.commitType=type;c.committedAt=Date.now();sc.committed.push(JSON.parse(JSON.stringify(c)));if(type==='scholarship')sc.scholarshipUsed++;saveState();renderSoccerScout();renderSoccerHome();showMoment('COMMITTED',c.name,type==='scholarship'?'legendary':'good');
+    if(sc.committed.some(x=>x.id===c.id))return;c.status='committed';c.commitType=type;c.committedAt=Date.now();sc.committed.push(JSON.parse(JSON.stringify(c)));if(type==='scholarship')sc.scholarshipUsed++;saveState();renderSoccerScout();renderSoccerHome();showMoment('COMMITTED',c.name,type==='scholarship'?'legendary':'good');setTimeout(()=>openSoccerPlayerNameModal(c.id,'scout'),80);
   }
   function regularScoutOffer(id){
     const sc=state.soccer.scouting,c=sc.candidates.find(x=>x.id===id);if(!c||!c.observed||c.status==='committed')return;if(sc.committed.length>=SCOUT_INTAKE_LIMIT)return toast('<b>INTAKE FULL</b> 今季の内定枠が埋まっています');if(sc.points<6)return toast('<b>SCOUT PT不足</b> 勧誘には6 SP必要です');
@@ -5105,7 +5212,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     Array.from(document.querySelectorAll('[data-scout-observe]')).forEach(btn=>btn.addEventListener('click',()=>observeScoutCandidate(btn.dataset.scoutObserve)));
     Array.from(document.querySelectorAll('[data-scout-offer]')).forEach(btn=>btn.addEventListener('click',()=>regularScoutOffer(btn.dataset.scoutOffer)));
     Array.from(document.querySelectorAll('[data-scout-scholar]')).forEach(btn=>btn.addEventListener('click',()=>scholarshipScoutOffer(btn.dataset.scoutScholar)));
-    $('scoutCommittedGrid').innerHTML=sc.committed.length?sc.committed.map(c=>'<div class="scout-commit-card"><b>'+c.primaryPos+'</b><strong>'+escapeHtml(c.name)+'</strong><span>'+escapeHtml(c.origin)+' • OVR '+c.ovr+' • POT '+c.potential+' • '+(c.commitType==='scholarship'?'特待生':'一般入部')+'</span></div>').join(''):'<div class="scout-empty">入部内定者はまだいません。</div>';
+    $('scoutCommittedGrid').innerHTML=sc.committed.length?sc.committed.map(c=>'<div class="scout-commit-card"><b>'+c.primaryPos+'</b><strong>'+escapeHtml(c.name)+'</strong><span>'+escapeHtml(c.origin)+' • OVR '+c.ovr+' • POT '+c.potential+' • '+(c.commitType==='scholarship'?'特待生':'一般入部')+'</span><button type="button" class="scout-rename-btn" data-rename-scout="'+c.id+'">名前変更</button></div>').join(''):'<div class="scout-empty">入部内定者はまだいません。</div>';Array.from(document.querySelectorAll('[data-rename-scout]')).forEach(btn=>btn.addEventListener('click',()=>openSoccerPlayerNameModal(btn.dataset.renameScout,'scout')));
   }
 
   function renderSoccerLineupPitch(){
@@ -5366,6 +5473,10 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     $('soccerAutoLineupBtn')?.addEventListener('click',()=>{autoSelectSoccerStarters();renderSoccerTeam();});
     $('soccerStartMatchBtn')?.addEventListener('click',startSoccerMatch);
     $('scoutSearchBtn')?.addEventListener('click',searchScoutCandidates);
+    $('soccerSaveIdentityBtn')?.addEventListener('click',saveSoccerIdentitySetup);
+    $('soccerRandomizeNamesBtn')?.addEventListener('click',randomizeSoccerSetupNames);
+    $('soccerPlayerNameSaveBtn')?.addEventListener('click',saveSoccerPlayerName);
+    $('soccerPlayerNameKeepBtn')?.addEventListener('click',closeSoccerPlayerNameModal);
     $('soccerShootBtn')?.addEventListener('click',()=>soccerChanceShoot('center'));
     const pitch=$('soccerPitch');
     pitch?.addEventListener('pointerdown',soccerPitchPointerDown);
@@ -5459,6 +5570,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     nextStudyQuestion();
     renderAll();
     saveState();
+    if(!state.soccer.identitySetupDone)setTimeout(openSoccerIdentitySetup,120);
     refreshBankDiagnostics(true);
     navigator.storage?.persist?.().catch(()=>{});
   }
