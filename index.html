@@ -5076,6 +5076,54 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   ];
   const SCOUT_POSITION_POOL=['GK','CB','CB','LSB','RSB','DMF','CMF','CMF','LMF','RMF','OMF','LWG','RWG','CF','CF'];
   const SCOUT_INTAKE_LIMIT=8;
+
+  const SEASON_LEAGUE_TEAMS=[
+    {id:'north',name:'市立北高',strength:54},
+    {id:'seiryo',name:'西陵学園',strength:58},
+    {id:'sora',name:'蒼空学院',strength:63},
+    {id:'kosei',name:'皇星高校',strength:69},
+    {id:'minato',name:'港南高校',strength:57},
+    {id:'hakuyo',name:'白楊学園',strength:61},
+    {id:'ryusei',name:'流星学院',strength:66}
+  ];
+  const SEASON_EVENTS=[
+    {id:'league-1',month:4,type:'league',title:'リーグ戦 第1節',leagueRound:1},
+    {id:'spring-cup',month:5,type:'minor',title:'地区春季大会',label:'SPRING CUP',strength:55},
+    {id:'league-2',month:5,type:'league',title:'リーグ戦 第2節',leagueRound:2},
+    {id:'ih-pref-qf',month:6,type:'interhigh',title:'インターハイ予選 準々決勝',stage:'pref-qf',strength:57},
+    {id:'league-3',month:6,type:'league',title:'リーグ戦 第3節',leagueRound:3},
+    {id:'ih-pref-sf',month:6,type:'interhigh',title:'インターハイ予選 準決勝',stage:'pref-sf',strength:61},
+    {id:'ih-pref-final',month:7,type:'interhigh',title:'インターハイ予選 決勝',stage:'pref-final',strength:65},
+    {id:'ih-nat-r16',month:7,type:'interhigh',title:'インターハイ全国 R16',stage:'nat-r16',strength:68},
+    {id:'league-4',month:7,type:'league',title:'リーグ戦 第4節',leagueRound:4},
+    {id:'ih-nat-qf',month:7,type:'interhigh',title:'インターハイ全国 準々決勝',stage:'nat-qf',strength:72},
+    {id:'ih-nat-sf',month:7,type:'interhigh',title:'インターハイ全国 準決勝',stage:'nat-sf',strength:76},
+    {id:'ih-nat-final',month:7,type:'interhigh',title:'インターハイ全国 決勝',stage:'nat-final',strength:80},
+    {id:'summer-cup',month:8,type:'minor',title:'サマーカップ',label:'SUMMER CUP',strength:62},
+    {id:'league-5',month:8,type:'league',title:'リーグ戦 第5節',leagueRound:5},
+    {id:'cs-pref-qf',month:9,type:'championship',title:'選手権予選 準々決勝',stage:'pref-qf',strength:59},
+    {id:'league-6',month:9,type:'league',title:'リーグ戦 第6節',leagueRound:6},
+    {id:'cs-pref-sf',month:9,type:'championship',title:'選手権予選 準決勝',stage:'pref-sf',strength:64},
+    {id:'cs-pref-final',month:10,type:'championship',title:'選手権予選 決勝',stage:'pref-final',strength:68},
+    {id:'league-7',month:10,type:'league',title:'リーグ戦 第7節',leagueRound:7},
+    {id:'rookie-cup',month:11,type:'minor',title:'新人戦',label:'ROOKIE CUP',strength:60},
+    {id:'cs-nat-r1',month:12,type:'championship',title:'全国高校選手権 1回戦',stage:'nat-r1',strength:70},
+    {id:'cs-nat-r2',month:12,type:'championship',title:'全国高校選手権 2回戦',stage:'nat-r2',strength:72},
+    {id:'cs-nat-qf',month:1,type:'championship',title:'全国高校選手権 準々決勝',stage:'nat-qf',strength:75},
+    {id:'cs-nat-sf',month:1,type:'championship',title:'全国高校選手権 準決勝',stage:'nat-sf',strength:78},
+    {id:'cs-nat-final',month:1,type:'championship',title:'全国高校選手権 決勝',stage:'nat-final',strength:82},
+    {id:'winter-cup',month:2,type:'minor',title:'冬季交流大会',label:'WINTER CUP',strength:63},
+    {id:'graduation',month:3,type:'graduation',title:'卒業式・新年度準備'}
+  ];
+  const TOURNAMENT_NAMES={
+    interhigh:'インターハイ',
+    championship:'全国高校選手権'
+  };
+  const TOURNAMENT_OPPONENTS={
+    interhigh:['東雲高校','札幌栄南','北海星陵','青葉学院','帝都大附属','桜峰学園','鳳凰学院'],
+    championship:['南ヶ丘高校','北陵学院','旭星高校','明成学園','東海第一','聖南学院','鳳凰学院','王城高校'],
+    minor:['中央工業','緑ヶ丘高校','北斗学園','海星高校']
+  };
   const SOCCER_OPPONENTS=[
     {name:'市立北高',strength:54,style:'BALANCED'},
     {name:'西陵学園',strength:58,style:'COUNTER'},
@@ -5091,7 +5139,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   const SOCCER_ACTION_MS=430;
 
   function soccerDefaultState(){
-    return {initialized:false,identitySetupDone:false,schoolName:'FORGE高校',year:1,month:4,reputation:0,schoolExp:0,trainingPoints:0,formation:'4-3-3',players:[],starterIds:[],lineupSlots:{},selectedSlotId:null,selectedPlayerId:null,scouting:{points:30,selectedZone:'local',candidates:[],committed:[],scholarshipUsed:0,searchSerial:0,homePrefecture:'北海道'},record:{played:0,wins:0,draws:0,losses:0,gf:0,ga:0},lastResult:null};
+    return {initialized:false,identitySetupDone:false,schoolName:'FORGE高校',year:1,month:4,reputation:0,schoolExp:0,trainingPoints:0,formation:'4-3-3',players:[],starterIds:[],lineupSlots:{},selectedSlotId:null,selectedPlayerId:null,scouting:{points:30,selectedZone:'local',candidates:[],committed:[],scholarshipUsed:0,searchSerial:0,homePrefecture:'北海道'},season:{currentIndex:0,gradesSeeded:false,history:[],skipped:[],news:'新シーズン開幕。',league:{table:[],roundsPlayed:0,finalized:false,finalRank:null},tournaments:{interhigh:{alive:true,champion:false,best:'未出場'},championship:{alive:true,champion:false,best:'未出場'}},lastGraduates:[],lastIntake:[]},record:{played:0,wins:0,draws:0,losses:0,gf:0,ga:0},lastResult:null};
   }
 
   let pendingSoccerRename=null;
@@ -5137,7 +5185,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   }
   function normalizeSoccerState(){
     const base=soccerDefaultState();
-    const prev=state.soccer||{};state.soccer={...base,...prev,record:{...base.record,...(prev.record||{})},lineupSlots:{...base.lineupSlots,...(prev.lineupSlots||{})},scouting:{...base.scouting,...(prev.scouting||{})}};
+    const prev=state.soccer||{},prevSeason=prev.season||{},prevTournaments=prevSeason.tournaments||{};state.soccer={...base,...prev,record:{...base.record,...(prev.record||{})},lineupSlots:{...base.lineupSlots,...(prev.lineupSlots||{})},scouting:{...base.scouting,...(prev.scouting||{})},season:{...base.season,...prevSeason,league:{...base.season.league,...(prevSeason.league||{})},tournaments:{interhigh:{...base.season.tournaments.interhigh,...(prevTournaments.interhigh||{})},championship:{...base.season.tournaments.championship,...(prevTournaments.championship||{})}}}};
     if(!Array.isArray(state.soccer.players)||state.soccer.players.length<11){state.soccer.players=generateSoccerRoster();state.soccer.initialized=true;}
     state.soccer.players.forEach(ensureSoccerPlayerProfile);
     if(!SOCCER_FORMATIONS[state.soccer.formation])state.soccer.formation='4-3-3';
@@ -5150,6 +5198,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if(!validIds.has(state.soccer.selectedPlayerId))state.soccer.selectedPlayerId=state.soccer.players[0]?.id||null;
     state.soccer.trainingPoints=Math.max(0,Math.round(Number(state.soccer.trainingPoints)||0));state.soccer.reputation=Math.max(0,Math.round(Number(state.soccer.reputation)||0));
     const sc=state.soccer.scouting;sc.points=Math.max(0,Math.round(Number(sc.points)||0));sc.searchSerial=Math.max(0,Math.round(Number(sc.searchSerial)||0));sc.scholarshipUsed=Math.max(0,Math.round(Number(sc.scholarshipUsed)||0));sc.candidates=Array.isArray(sc.candidates)?sc.candidates:[];sc.committed=Array.isArray(sc.committed)?sc.committed:[];if(!SCOUT_ZONES.some(z=>z.id===sc.selectedZone))sc.selectedZone='local';
+    normalizeSoccerSeason();
   }
   function generateSoccerRoster(){
     const positions=['GK','GK','CB','CB','CB','LSB','RSB','DMF','DMF','CMF','CMF','OMF','LMF','RMF','LWG','RWG','CF','CF'];
