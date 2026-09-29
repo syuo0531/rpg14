@@ -5516,7 +5516,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   function soccerWorldLeagueSchools(region,tier){return (state.soccer.world?.leagues?.[region]?.[tier]||[]).map(soccerWorldSchool).filter(Boolean);}
   function soccerWorldPowerScore(s,year=state.soccer.year){const seed=soccerHashSeed(s.id+':power:'+year);return s.strength+s.prestige*.06+((seed%700)/100-3.5);}
   function soccerWorldRanking(){
-    const schools=Object.values(state.soccer.world?.schools||{});return schools.slice().sort((a,b)=>soccerWorldPowerScore(b)-soccerWorldPowerScore(a)||b.prestige-a.prestige);
+    const schools=Object.values(state.soccer.world?.schools||{}),bestByName=new Map();schools.forEach(s=>{const prev=bestByName.get(s.name);if(!prev||soccerWorldPowerScore(s)>soccerWorldPowerScore(prev))bestByName.set(s.name,s);});return [...bestByName.values()].sort((a,b)=>soccerWorldPowerScore(b)-soccerWorldPowerScore(a)||b.prestige-a.prestige);
   }
   function soccerWorldRegionTop(region){return Object.values(state.soccer.world?.schools||{}).filter(s=>s.region===region).sort((a,b)=>soccerWorldPowerScore(b)-soccerWorldPowerScore(a))[0]||null;}
   function soccerWorldPickNationalChampion(kind,year){
@@ -5546,7 +5546,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
       for(let tier=0;tier<pyramid.length-1;tier++){
         const lower=snapshot[tier].map(soccerWorldSchool).filter(Boolean).sort((a,b)=>soccerWorldPowerScore(b,year)-soccerWorldPowerScore(a,year));
         const upper=snapshot[tier+1].map(soccerWorldSchool).filter(Boolean).sort((a,b)=>soccerWorldPowerScore(a,year)-soccerWorldPowerScore(b,year));
-        if(lower[0]&&upper[0]){soccerWorldSwap(region,tier,tier+1,lower[0].id,upper[0].id);news.push(REGION_LABELS[region]+'：'+lower[0].name+' 昇格 / '+upper[0].name+' 降格');}
+        if(lower[0]&&upper[0]){lower[0].titles=(lower[0].titles||0)+1;soccerWorldSwap(region,tier,tier+1,lower[0].id,upper[0].id);news.push(REGION_LABELS[region]+'：'+lower[0].name+' 昇格 / '+upper[0].name+' 降格');}
       }
     });
     const userIH=!!state.soccer.season?.tournaments?.interhigh?.champion,userCS=!!state.soccer.season?.tournaments?.championship?.champion,ih=userIH?null:soccerWorldPickNationalChampion('interhigh',year),cs=userCS?null:soccerWorldPickNationalChampion('championship',year);
@@ -6069,7 +6069,13 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     }
     state.soccer.players.forEach(p=>{if(![1,2,3].includes(Number(p.grade)))p.grade=1;});
     ss.league.region=LEAGUE_PYRAMIDS[ss.league.region]?ss.league.region:currentLeagueRegion();ss.league.tier=clamp(Math.round(Number(ss.league.tier)||0),0,leaguePyramid().length-1);if(!Number.isInteger(ss.league.nextTier))ss.league.nextTier=ss.league.tier;
-    const expectedIds=['user',...currentLeagueTeams().map(t=>t.id)],tableIds=Array.isArray(ss.league.table)?ss.league.table.map(t=>t.id):[];if(ss.league.table.length!==8||expectedIds.some(id=>!tableIds.includes(id)))ss.league.table=seasonInitialLeagueTable();
+    const expectedTeams=currentLeagueTeams(),expectedIds=['user',...expectedTeams.map(t=>t.id)],table=Array.isArray(ss.league.table)?ss.league.table:[],tableIds=table.map(t=>t.id);
+    if(table.length!==8||expectedIds.some(id=>!tableIds.includes(id))){
+      if(table.length===8&&table.some(t=>t.id==='user')){
+        const userRow=table.find(t=>t.id==='user')||{id:'user',strength:0,p:0,w:0,d:0,l:0,gf:0,ga:0,pts:0},oldAi=table.filter(t=>t.id!=='user');
+        ss.league.table=[userRow,...expectedTeams.map((team,i)=>{const prev=oldAi[i]||{};return {id:team.id,strength:team.strength,p:Number(prev.p)||0,w:Number(prev.w)||0,d:Number(prev.d)||0,l:Number(prev.l)||0,gf:Number(prev.gf)||0,ga:Number(prev.ga)||0,pts:Number(prev.pts)||0};})];
+      }else ss.league.table=seasonInitialLeagueTable();
+    }
     ss.currentIndex=clamp(Math.round(Number(ss.currentIndex)||0),0,SEASON_EVENTS.length-1);
     while(ss.currentIndex<SEASON_EVENTS.length-1&&seasonEventUnavailable(SEASON_EVENTS[ss.currentIndex])){
       const id=SEASON_EVENTS[ss.currentIndex].id;if(!ss.skipped.includes(id))ss.skipped.push(id);ss.currentIndex++;
