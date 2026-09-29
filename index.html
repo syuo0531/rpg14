@@ -6244,15 +6244,15 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     $('soccerSelectedPlayer').innerHTML='<span class="soccer-pos">'+p.primaryPos+'</span><h3>'+escapeHtml(p.name)+' <small style="color:var(--soccer-gold)">OVR '+p.ovr+'</small></h3><p>'+p.grade+'年 • '+escapeHtml(p.trait)+' • POT '+p.potential+' • '+curve.name+' ×'+soccerGrowthMultiplier(p).toFixed(2)+(inj?' • <span style="color:#ffaaaa">'+escapeHtml(p.injuryLabel||'ケガ')+' '+inj+'試合</span>':'')+'</p><div class="soccer-position-chips">'+soccerAptitudeChips(p)+'</div>';
     $('soccerGrowthCurveLabel').textContent=curve.code+' • '+curve.name;$('soccerDevXpText').textContent=(p.developmentXp||0)+' / 100';$('soccerDevXpBar').style.width=clamp((p.developmentXp||0),0,100)+'%';$('soccerCareerMinutes').textContent=p.careerMinutes||0;$('soccerAppearances').textContent=p.appearances||0;$('soccerPotentialGap').textContent=room>0?'+'+room:'MAX';
     $('soccerDevelopmentPlanButtons').innerHTML=Object.entries(SOCCER_DEV_PLANS).map(([key,x])=>'<button type="button" class="phase5-plan-btn'+(p.developmentPlan===key?' active':'')+'" data-dev-plan="'+key+'"><b>'+x.name+'</b><small>'+x.desc+'</small></button>').join('');
-    $('[data-dev-plan]').forEach(btn=>btn.addEventListener('click',()=>setSoccerDevelopmentPlan(btn.dataset.devPlan)));
+    Array.from(document.querySelectorAll('[data-dev-plan]')).forEach(btn=>btn.addEventListener('click',()=>setSoccerDevelopmentPlan(btn.dataset.devPlan)));
     $('soccerPositionTarget').innerHTML=SOCCER_POSITIONS.filter(pos=>pos!==p.primaryPos).map(pos=>'<option value="'+pos+'">'+pos+' • 現在 '+soccerAptitudeGrade(p,pos)+'</option>').join('');$('soccerPositionTrainBtn').disabled=state.soccer.trainingPoints<60||inj>0;
     $('soccerSpecialTraits').innerHTML=traits.length?traits.map(t=>'<span class="phase5-trait">'+escapeHtml(t)+'</span>').join(''):'<span class="phase5-trait empty">特性は試合経験で解放</span>';
     $('soccerDevelopmentNote').textContent='育成方針：'+plan.name+'。試合出場でMATCH XPを獲得し、100到達で方針に沿って自動成長。全国大会は経験値ボーナス。';
     const labels={PAC:'スプリント',SHO:'シュート',PAS:'パス',DRI:'1対1',DEF:'守備',PHY:'フィジカル'};
     $('soccerDrillGrid').innerHTML=SOCCER_ATTRS.map(a=>'<button class="soccer-drill" data-soccer-drill="'+a+'" '+(state.soccer.trainingPoints<20||p[a]>=99||inj>0||room<=0?'disabled':'')+'><b>'+labels[a]+'</b><span>'+a+' '+p[a]+' → UP</span><small>20 PT / 方針一致で成長UP</small></button>').join('');
-    $('[data-soccer-drill]').forEach(btn=>btn.addEventListener('click',()=>trainSoccerPlayer(btn.dataset.soccerDrill)));
+    Array.from(document.querySelectorAll('[data-soccer-drill]')).forEach(btn=>btn.addEventListener('click',()=>trainSoccerPlayer(btn.dataset.soccerDrill)));
     $('soccerTrainingRoster').innerHTML=state.soccer.players.slice().sort((a,b)=>b.ovr-a.ovr).map(x=>soccerPlayerCard(x,{selected:x.id===p.id})).join('');
-    $('#soccerTrainingRoster [data-soccer-player]').forEach(btn=>btn.addEventListener('click',()=>{state.soccer.selectedPlayerId=btn.dataset.soccerPlayer;saveState();renderSoccerTraining();}));
+    Array.from(document.querySelectorAll('#soccerTrainingRoster [data-soccer-player]')).forEach(btn=>btn.addEventListener('click',()=>{state.soccer.selectedPlayerId=btn.dataset.soccerPlayer;saveState();renderSoccerTraining();}));
   }
   function trainSoccerPlayer(attr){
     normalizeSoccerState();const p=state.soccer.players.find(x=>x.id===state.soccer.selectedPlayerId);if(!p||!SOCCER_ATTRS.includes(attr)||state.soccer.trainingPoints<20||p[attr]>=99)return;
