@@ -1483,6 +1483,19 @@ button.match-athlete{cursor:pointer}
 .phase8-school-news{margin-top:12px;padding:9px 10px;border:1px solid rgba(111,183,255,.16);border-radius:9px;background:rgba(111,183,255,.04);font-size:7px;line-height:1.5;color:#93a49a}
 @media(max-width:860px){.phase8-school-layout{grid-template-columns:1fr}}@media(max-width:560px){.phase8-facility-grid{grid-template-columns:1fr}}
 
+
+/* ===== HIGH SCHOOL SOCCER • PHASE 9 WORLD SIMULATION ===== */
+.phase9-world-layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr);gap:14px}
+.phase9-world-board,.phase9-world-side{padding:18px}
+.phase9-world-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:10px 0 14px}
+.phase9-world-metric{padding:10px;border:1px solid var(--line);border-radius:10px;background:#0b1013;text-align:center}.phase9-world-metric span{display:block;font-size:6px;color:#74817a;font-weight:900}.phase9-world-metric b{display:block;margin-top:4px;font-size:13px;color:#e9f4ed}
+.phase9-ranking{display:grid;gap:5px;margin-top:10px}.phase9-rank-row{display:grid;grid-template-columns:30px 1fr auto auto;gap:8px;align-items:center;padding:8px 9px;border:1px solid var(--line);border-radius:9px;background:#0c1114}.phase9-rank-row.top{border-color:rgba(242,209,122,.28);background:rgba(242,209,122,.04)}.phase9-rank-row .rank{color:#f0d77f;font-size:10px;font-weight:1000}.phase9-rank-row b{font-size:9px}.phase9-rank-row small{display:block;margin-top:2px;color:#748079;font-size:6px}.phase9-rank-row em{font-style:normal;font-size:7px;color:#8bd8a8}.phase9-rank-row strong{font-size:11px}
+.phase9-region-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:10px}.phase9-region-card{padding:9px;border:1px solid var(--line);border-radius:9px;background:#0d1215}.phase9-region-card span{display:block;font-size:6px;color:#748079}.phase9-region-card b{display:block;margin-top:3px;font-size:8px}.phase9-region-card small{display:block;margin-top:3px;color:#89978f;font-size:6px}
+.phase9-news-list{display:grid;gap:6px;margin-top:10px}.phase9-news-item{padding:8px 9px;border-left:2px solid rgba(111,183,255,.32);background:rgba(111,183,255,.035);font-size:7px;line-height:1.45;color:#a4b2aa}
+.phase9-history{display:grid;gap:6px;margin-top:10px}.phase9-history-row{display:grid;grid-template-columns:42px 1fr 1fr;gap:6px;padding:8px;border:1px solid var(--line);border-radius:8px;background:#0b1013}.phase9-history-row span{font-size:7px;color:#f0d77f;font-weight:1000}.phase9-history-row b{font-size:7px}.phase9-history-row small{font-size:6px;color:#77847d}
+.phase9-trend-up{color:#7fe0a5!important}.phase9-trend-down{color:#ff9d9d!important}.phase9-trend-flat{color:#94a098!important}
+@media(max-width:860px){.phase9-world-layout{grid-template-columns:1fr}}@media(max-width:560px){.phase9-world-metrics{grid-template-columns:repeat(2,1fr)}.phase9-region-grid{grid-template-columns:1fr}.phase9-rank-row{grid-template-columns:28px 1fr auto}.phase9-rank-row em{display:none}}
+
 </style>
 </head>
 <body>
@@ -1533,6 +1546,7 @@ button.match-athlete{cursor:pointer}
                 <button class="soccer-action" data-nav="soccer-scout"><span>🔎</span><b>スカウト</b><small>新入生・特待生を発掘</small></button>
                 <button class="soccer-action" data-nav="soccer-season"><span>🗓️</span><b>年間日程</b><small>リーグ・大会・進級を管理</small></button>
                 <button class="soccer-action" data-nav="soccer-school"><span>🏫</span><b>学校施設</b><small>設備投資で育成環境を強化</small></button>
+                <button class="soccer-action" data-nav="soccer-world"><span>🌏</span><b>高校サッカー界</b><small>全国勢力図・他校の世代交代</small></button>
               </div>
               <div class="soccer-metrics">
                 <div class="soccer-metric"><span>TRAINING PT</span><b id="soccerHomeTraining">0</b></div>
@@ -1544,6 +1558,7 @@ button.match-athlete{cursor:pointer}
                 <div class="soccer-metric"><span>NATIONAL OB</span><b id="soccerHomeNationalAlumni">0</b></div>
                 <div class="soccer-metric"><span>FACILITY PT</span><b id="soccerHomeFacilityPoints">0</b></div>
                 <div class="soccer-metric"><span>CAMPUS</span><b id="soccerHomeCampusRank">BASIC</b></div>
+                <div class="soccer-metric"><span>WORLD #1</span><b id="soccerHomeWorldTop">—</b></div>
               </div>
             </section>
             <section class="soccer-card metal-panel">
@@ -2270,6 +2285,34 @@ button.match-athlete{cursor:pointer}
               <div class="phase7-alumni-grid" id="careerAlumniGrid"></div>
             </div>
           </section>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-soccer-world" data-screen="soccer-world">
+        <div class="soccer-screen-head">
+          <button class="icon-btn" data-nav="home" aria-label="ホームへ戻る">←</button>
+          <div><span class="eyebrow">NATIONAL FOOTBALL WORLD</span><h2>高校サッカー界</h2></div>
+          <div class="soccer-pill">YEAR <span id="soccerWorldYear">1</span></div>
+        </div>
+        <div class="phase9-world-layout">
+          <section class="phase9-world-board metal-panel">
+            <div class="panel-head"><span>NATIONAL POWER RANKING</span><small>世代交代で毎年変動</small></div>
+            <div class="phase9-world-metrics">
+              <div class="phase9-world-metric"><span>SIM SCHOOLS</span><b id="worldSchoolCount">0</b></div>
+              <div class="phase9-world-metric"><span>TOP POWER</span><b id="worldTopPower">0</b></div>
+              <div class="phase9-world-metric"><span>INTERHIGH</span><b id="worldInterhighChampion">—</b></div>
+              <div class="phase9-world-metric"><span>CHAMPIONSHIP</span><b id="worldChampionshipChampion">—</b></div>
+            </div>
+            <div class="phase9-ranking" id="soccerWorldRanking"></div>
+          </section>
+          <aside class="phase9-world-side metal-panel">
+            <div class="panel-head"><span>REGIONAL POWERS</span><small>9地域</small></div>
+            <div class="phase9-region-grid" id="soccerWorldRegions"></div>
+            <div class="panel-head" style="margin-top:16px"><span>WORLD NEWS</span><small>昇降格・世代交代</small></div>
+            <div class="phase9-news-list" id="soccerWorldNews"></div>
+            <div class="panel-head" style="margin-top:16px"><span>NATIONAL HISTORY</span><small>歴代王者</small></div>
+            <div class="phase9-history" id="soccerWorldHistory"></div>
+          </aside>
         </div>
       </section>
 
@@ -4217,6 +4260,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if (screen === 'soccer-scout') renderSoccerScout();
     if (screen === 'soccer-season') renderSoccerSeason();
     if (screen === 'soccer-school') renderSoccerSchool();
+    if (screen === 'soccer-world') renderSoccerWorld();
     if (screen !== 'soccer-match') setSoccerGestureScrollLock(false);
     const scrollHost = document.querySelector('main');
     if (scrollHost) scrollHost.scrollTo({top:0, behavior:'auto'});
@@ -5438,6 +5482,91 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     return notes;
   }
 
+  /* HIGH SCHOOL SOCCER • PHASE 9 WORLD SIMULATION */
+  const SOCCER_WORLD_TREND=['低迷','下降','安定','上昇','躍進'];
+  function soccerWorldPool(region,tier){
+    const info=(LEAGUE_PYRAMIDS[region]||LEAGUE_PYRAMIDS.hokkaido)[tier]||LEAGUE_PYRAMIDS.hokkaido[0];
+    if(info.scope==='premier')return info.id.includes('east')?PREMIER_TEAM_POOLS.east:PREMIER_TEAM_POOLS.west;
+    if(info.scope==='prince')return PRINCE_TEAM_POOLS[region]||PRINCE_TEAM_POOLS.hokkaido;
+    return LEAGUE_TEAM_POOLS[region]||LEAGUE_TEAM_POOLS.hokkaido;
+  }
+  function soccerWorldSchoolName(region,tier,index){
+    const pool=soccerWorldPool(region,tier),root=pool[index%pool.length],info=(LEAGUE_PYRAMIDS[region]||[])[tier],sameScopeCount=(LEAGUE_PYRAMIDS[region]||[]).slice(0,tier).filter(x=>x.scope===info?.scope).length;
+    if(sameScopeCount===0)return root;const suffix=['B','C','D','E'][Math.min(3,sameScopeCount-1)];return root+suffix;
+  }
+  function soccerWorldSchoolId(region,tier,index){return 'ai-'+region+'-'+tier+'-'+index;}
+  function soccerSeedWorld(){
+    const world=state.soccer.world;world.schools={};world.leagues={};const offsets=[0,2,-1,4,1,3,5];
+    Object.entries(LEAGUE_PYRAMIDS).forEach(([region,pyramid])=>{
+      world.leagues[region]=[];
+      pyramid.forEach((info,tier)=>{
+        const ids=[];for(let i=0;i<7;i++){const id=soccerWorldSchoolId(region,tier,i),seed=soccerHashSeed(id),strength=clamp(info.base+offsets[i]+((seed%5)-2),38,92);world.schools[id]={id,name:soccerWorldSchoolName(region,tier,i),region,tier,strength,prestige:clamp(strength+((seed>>>5)%7)-3,35,95),generation:1+((seed>>>9)%3),trend:0,lastChange:0,movement:'',titles:0,nationalTitles:0};ids.push(id);}world.leagues[region][tier]=ids;
+      });
+    });
+    world.initialized=true;world.lastSimulatedYear=Math.max(0,(state.soccer.year||1)-1);world.news=['全国高校サッカー世界が生成されました。'];world.history=Array.isArray(world.history)?world.history:[];return world;
+  }
+  function normalizeSoccerWorld(){
+    const world=state.soccer.world;if(!world||!world.initialized||!world.schools||!Object.keys(world.schools).length)return soccerSeedWorld();
+    world.news=Array.isArray(world.news)?world.news:[];world.history=Array.isArray(world.history)?world.history:[];world.leagues=world.leagues&&typeof world.leagues==='object'?world.leagues:{};
+    Object.entries(LEAGUE_PYRAMIDS).forEach(([region,pyramid])=>{if(!Array.isArray(world.leagues[region])||world.leagues[region].length!==pyramid.length){soccerSeedWorld();return;}pyramid.forEach((_,tier)=>{if(!Array.isArray(world.leagues[region][tier])||world.leagues[region][tier].length!==7)soccerSeedWorld();});});
+    Object.values(world.schools).forEach(s=>{s.strength=clamp(Math.round(Number(s.strength)||50),35,96);s.prestige=clamp(Math.round(Number(s.prestige)||s.strength),30,99);s.generation=clamp(Math.round(Number(s.generation)||1),1,3);s.trend=clamp(Math.round(Number(s.trend)||0),-2,2);s.lastChange=Math.round(Number(s.lastChange)||0);s.titles=Math.max(0,Math.round(Number(s.titles)||0));s.nationalTitles=Math.max(0,Math.round(Number(s.nationalTitles)||0));});
+    return world;
+  }
+  function soccerWorldSchool(id){return state.soccer.world?.schools?.[id]||null;}
+  function soccerWorldLeagueSchools(region,tier){return (state.soccer.world?.leagues?.[region]?.[tier]||[]).map(soccerWorldSchool).filter(Boolean);}
+  function soccerWorldPowerScore(s,year=state.soccer.year){const seed=soccerHashSeed(s.id+':power:'+year);return s.strength+s.prestige*.06+((seed%700)/100-3.5);}
+  function soccerWorldRanking(){
+    const schools=Object.values(state.soccer.world?.schools||{});return schools.slice().sort((a,b)=>soccerWorldPowerScore(b)-soccerWorldPowerScore(a)||b.prestige-a.prestige);
+  }
+  function soccerWorldRegionTop(region){return Object.values(state.soccer.world?.schools||{}).filter(s=>s.region===region).sort((a,b)=>soccerWorldPowerScore(b)-soccerWorldPowerScore(a))[0]||null;}
+  function soccerWorldPickNationalChampion(kind,year){
+    const ranked=soccerWorldRanking().slice(0,28);if(!ranked.length)return null;const salt=kind==='interhigh'?':ih:':':cs:',seed=soccerHashSeed(String(year)+salt+'champ'),limit=Math.min(12,ranked.length),index=(seed%100)<45?seed%4:seed%limit;return ranked[index];
+  }
+  function soccerWorldTournamentOpponent(event){
+    const world=state.soccer.world;if(!world?.initialized)return null;
+    if(event.type==='promotion'){const region=currentLeagueRegion(),tier=Math.min(currentLeagueTier()+1,(LEAGUE_PYRAMIDS[region]||[]).length-1),pool=soccerWorldLeagueSchools(region,tier).sort((a,b)=>b.strength-a.strength);return pool[0]||null;}
+    const region=currentLeagueRegion(),national=String(event.stage||'').startsWith('nat');
+    if(national){
+      const ranked=soccerWorldRanking(),bands={r1:22,r16:16,qf:8,sf:4,final:1},key=String(event.stage||'').split('-').pop(),start=Math.max(0,(bands[key]||10)-2),span=key==='final'?3:6,seed=soccerHashSeed(event.id+':'+state.soccer.year),pool=ranked.slice(start,start+span);return pool[seed%Math.max(1,pool.length)]||ranked[0]||null;
+    }
+    const regional=Object.values(world.schools).filter(s=>s.region===region).sort((a,b)=>b.strength-a.strength),stage=String(event.stage||''),offset=stage.includes('final')?0:stage.includes('sf')?4:8,seed=soccerHashSeed(event.id+':regional:'+state.soccer.year);return regional.slice(offset,offset+8)[seed%Math.max(1,regional.slice(offset,offset+8).length)]||regional[0]||null;
+  }
+  function soccerWorldSwap(region,lowerTier,upperTier,lowerId,upperId){
+    const lower=state.soccer.world.leagues[region][lowerTier],upper=state.soccer.world.leagues[region][upperTier],li=lower.indexOf(lowerId),ui=upper.indexOf(upperId);if(li<0||ui<0)return;
+    lower[li]=upperId;upper[ui]=lowerId;const promoted=soccerWorldSchool(lowerId),relegated=soccerWorldSchool(upperId);promoted.tier=upperTier;relegated.tier=lowerTier;promoted.movement='昇格';relegated.movement='降格';
+  }
+  function advanceSoccerWorld(){
+    const world=normalizeSoccerWorld(),year=state.soccer.year;if(world.lastSimulatedYear>=year)return [];
+    const news=[];Object.values(world.schools).forEach(s=>{
+      const seed=soccerHashSeed(s.id+':generation:'+year),old=s.strength,cycle=((seed%7)-3),generationPenalty=s.generation===3?-2:s.generation===1?1:0,recruit=Math.round((s.prestige-60)/25),change=clamp(cycle+generationPenalty+recruit,-5,5);
+      s.strength=clamp(s.strength+change,38,96);s.lastChange=s.strength-old;s.trend=clamp(Math.sign(s.lastChange)*(Math.abs(s.lastChange)>=3?2:1),-2,2);if(s.lastChange===0)s.trend=0;s.generation=s.generation>=3?1:s.generation+1;s.movement='';
+    });
+    Object.entries(LEAGUE_PYRAMIDS).forEach(([region,pyramid])=>{
+      const snapshot=world.leagues[region].map(ids=>ids.slice());
+      for(let tier=0;tier<pyramid.length-1;tier++){
+        const lower=snapshot[tier].map(soccerWorldSchool).filter(Boolean).sort((a,b)=>soccerWorldPowerScore(b,year)-soccerWorldPowerScore(a,year));
+        const upper=snapshot[tier+1].map(soccerWorldSchool).filter(Boolean).sort((a,b)=>soccerWorldPowerScore(a,year)-soccerWorldPowerScore(b,year));
+        if(lower[0]&&upper[0]){soccerWorldSwap(region,tier,tier+1,lower[0].id,upper[0].id);news.push(REGION_LABELS[region]+'：'+lower[0].name+' 昇格 / '+upper[0].name+' 降格');}
+      }
+    });
+    const userIH=!!state.soccer.season?.tournaments?.interhigh?.champion,userCS=!!state.soccer.season?.tournaments?.championship?.champion,ih=userIH?null:soccerWorldPickNationalChampion('interhigh',year),cs=userCS?null:soccerWorldPickNationalChampion('championship',year);
+    if(ih){ih.nationalTitles++;ih.titles++;ih.prestige=clamp(ih.prestige+3,30,99);}if(cs){cs.nationalTitles++;cs.titles++;cs.prestige=clamp(cs.prestige+4,30,99);}
+    const record={year,interhigh:userIH?state.soccer.schoolName:(ih?.name||'—'),championship:userCS?state.soccer.schoolName:(cs?.name||'—'),userInterhigh:userIH,userChampionship:userCS};world.history.unshift(record);world.history=world.history.slice(0,20);
+    if(userIH)news.unshift(state.soccer.schoolName+'がインターハイ全国制覇');else if(ih)news.unshift(ih.name+'がインターハイ全国制覇');
+    if(userCS)news.unshift(state.soccer.schoolName+'が全国高校選手権優勝');else if(cs)news.unshift(cs.name+'が全国高校選手権優勝');
+    const movers=Object.values(world.schools).sort((a,b)=>Math.abs(b.lastChange)-Math.abs(a.lastChange)).slice(0,4);movers.forEach(s=>{if(Math.abs(s.lastChange)>=3)news.push(s.name+'：世代交代で戦力 '+(s.lastChange>0?'+':'')+s.lastChange);});
+    world.news=news.slice(0,18);world.lastSimulatedYear=year;return news;
+  }
+  function soccerWorldTrendLabel(s){if(s.trend>=2)return '躍進';if(s.trend===1)return '上昇';if(s.trend<=-2)return '低迷';if(s.trend===-1)return '下降';return '安定';}
+  function renderSoccerWorld(){
+    if(!$('soccerWorldRanking'))return;normalizeSoccerState();const world=normalizeSoccerWorld(),ranking=soccerWorldRanking(),hist=world.history||[];
+    $('soccerWorldYear').textContent=state.soccer.year;$('worldSchoolCount').textContent=Object.keys(world.schools).length;$('worldTopPower').textContent=ranking[0]?.strength||0;$('worldInterhighChampion').textContent=hist[0]?.interhigh||'未決定';$('worldChampionshipChampion').textContent=hist[0]?.championship||'未決定';
+    $('soccerWorldRanking').innerHTML=ranking.slice(0,20).map((s,i)=>{const cls=s.trend>0?'phase9-trend-up':s.trend<0?'phase9-trend-down':'phase9-trend-flat';return '<div class="phase9-rank-row'+(i<3?' top':'')+'"><span class="rank">#'+(i+1)+'</span><div><b>'+escapeHtml(s.name)+'</b><small>'+REGION_LABELS[s.region]+' • '+escapeHtml((LEAGUE_PYRAMIDS[s.region]?.[s.tier]?.short)||'リーグ')+' • 名声 '+s.prestige+'</small></div><em class="'+cls+'">'+soccerWorldTrendLabel(s)+(s.lastChange?' '+(s.lastChange>0?'+':'')+s.lastChange:'')+'</em><strong>'+s.strength+'</strong></div>';}).join('');
+    $('soccerWorldRegions').innerHTML=Object.keys(REGION_LABELS).map(region=>{const s=soccerWorldRegionTop(region);return '<div class="phase9-region-card"><span>'+REGION_LABELS[region]+'</span><b>'+escapeHtml(s?.name||'—')+'</b><small>POWER '+(s?.strength||0)+' • '+escapeHtml((LEAGUE_PYRAMIDS[region]?.[s?.tier]?.short)||'—')+'</small></div>';}).join('');
+    $('soccerWorldNews').innerHTML=(world.news?.length?world.news:['新年度のシミュレーション後にニュースが更新されます。']).slice(0,10).map(n=>'<div class="phase9-news-item">'+escapeHtml(n)+'</div>').join('');
+    $('soccerWorldHistory').innerHTML=hist.length?hist.slice(0,8).map(h=>'<div class="phase9-history-row"><span>YEAR '+h.year+'</span><b>IH '+escapeHtml(h.interhigh)+'</b><small>選手権 '+escapeHtml(h.championship)+'</small></div>').join(''):'<div class="phase9-news-item">まだ全国大会の歴史はありません。</div>';
+  }
+
   /* HIGH SCHOOL SOCCER • PHASE 8 SCHOOL FACILITIES */
   const SOCCER_FACILITIES={
     ground:{name:'グラウンド',icon:'⚽',desc:'試合経験から得るMATCH XPを増やす。',effect:l=>'試合成長XP +'+((l-1)*4)+'%',next:l=>'次Lv：試合成長XP +'+(l*4)+'%'},
@@ -5800,7 +5929,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   const SOCCER_ACTION_MS=430;
 
   function soccerDefaultState(){
-    return {initialized:false,identitySetupDone:false,schoolName:'FORGE高校',year:1,month:4,reputation:0,schoolExp:0,trainingPoints:0,formation:'4-3-3',players:[],starterIds:[],lineupSlots:{},selectedSlotId:null,selectedPlayerId:null,scouting:{points:30,selectedZone:'local',candidates:[],committed:[],scholarshipUsed:0,searchSerial:0,homePrefecture:'北海道',recruitWins:0,recruitLosses:0},career:{alumni:[],news:[],totalGraduates:0},facilities:{points:120,levels:{ground:1,training:1,recovery:1,dormitory:1,medical:1,scouting:1,analysis:1},history:[]},season:{currentIndex:0,gradesSeeded:false,history:[],skipped:[],news:'新シーズン開幕。',league:{region:'hokkaido',tier:0,nextTier:0,table:[],roundsPlayed:0,finalized:false,finalRank:null,promotionPlayoffEligible:false,promotionPlayoffWon:false,movement:'札幌ブロック4部からスタート'},tournaments:{interhigh:{alive:true,champion:false,best:'未出場'},championship:{alive:true,champion:false,best:'未出場'}},lastGraduates:[],lastIntake:[]},record:{played:0,wins:0,draws:0,losses:0,gf:0,ga:0},lastResult:null};
+    return {initialized:false,identitySetupDone:false,schoolName:'FORGE高校',year:1,month:4,reputation:0,schoolExp:0,trainingPoints:0,formation:'4-3-3',players:[],starterIds:[],lineupSlots:{},selectedSlotId:null,selectedPlayerId:null,scouting:{points:30,selectedZone:'local',candidates:[],committed:[],scholarshipUsed:0,searchSerial:0,homePrefecture:'北海道',recruitWins:0,recruitLosses:0},career:{alumni:[],news:[],totalGraduates:0},facilities:{points:120,levels:{ground:1,training:1,recovery:1,dormitory:1,medical:1,scouting:1,analysis:1},history:[]},world:{initialized:false,lastSimulatedYear:0,schools:{},leagues:{},news:[],history:[]},season:{currentIndex:0,gradesSeeded:false,history:[],skipped:[],news:'新シーズン開幕。',league:{region:'hokkaido',tier:0,nextTier:0,table:[],roundsPlayed:0,finalized:false,finalRank:null,promotionPlayoffEligible:false,promotionPlayoffWon:false,movement:'札幌ブロック4部からスタート'},tournaments:{interhigh:{alive:true,champion:false,best:'未出場'},championship:{alive:true,champion:false,best:'未出場'}},lastGraduates:[],lastIntake:[]},record:{played:0,wins:0,draws:0,losses:0,gf:0,ga:0},lastResult:null};
   }
 
   let pendingSoccerRename=null;
@@ -5850,7 +5979,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   }
   function normalizeSoccerState(){
     const base=soccerDefaultState();
-    const prev=state.soccer||{},prevSeason=prev.season||{},prevTournaments=prevSeason.tournaments||{},prevCareer=prev.career||{},prevFacilities=prev.facilities||{};state.soccer={...base,...prev,record:{...base.record,...(prev.record||{})},lineupSlots:{...base.lineupSlots,...(prev.lineupSlots||{})},scouting:{...base.scouting,...(prev.scouting||{})},career:{...base.career,...prevCareer},facilities:{...base.facilities,...prevFacilities,levels:{...base.facilities.levels,...(prevFacilities.levels||{})}},season:{...base.season,...prevSeason,league:{...base.season.league,...(prevSeason.league||{})},tournaments:{interhigh:{...base.season.tournaments.interhigh,...(prevTournaments.interhigh||{})},championship:{...base.season.tournaments.championship,...(prevTournaments.championship||{})}}}};
+    const prev=state.soccer||{},prevSeason=prev.season||{},prevTournaments=prevSeason.tournaments||{},prevCareer=prev.career||{},prevFacilities=prev.facilities||{},prevWorld=prev.world||{};state.soccer={...base,...prev,record:{...base.record,...(prev.record||{})},lineupSlots:{...base.lineupSlots,...(prev.lineupSlots||{})},scouting:{...base.scouting,...(prev.scouting||{})},career:{...base.career,...prevCareer},facilities:{...base.facilities,...prevFacilities,levels:{...base.facilities.levels,...(prevFacilities.levels||{})}},world:{...base.world,...prevWorld},season:{...base.season,...prevSeason,league:{...base.season.league,...(prevSeason.league||{})},tournaments:{interhigh:{...base.season.tournaments.interhigh,...(prevTournaments.interhigh||{})},championship:{...base.season.tournaments.championship,...(prevTournaments.championship||{})}}}};
     if(!Array.isArray(state.soccer.players)||state.soccer.players.length<11){state.soccer.players=generateSoccerRoster();state.soccer.initialized=true;}
     state.soccer.players.forEach(ensureSoccerPlayerProfile);
     if(!SOCCER_FORMATIONS[state.soccer.formation])state.soccer.formation='4-3-3';
@@ -5863,6 +5992,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if(!slotIds.has(state.soccer.selectedSlotId))state.soccer.selectedSlotId=slots[0]?.id||null;
     if(!validIds.has(state.soccer.selectedPlayerId))state.soccer.selectedPlayerId=state.soccer.players[0]?.id||null;
     state.soccer.trainingPoints=Math.max(0,Math.round(Number(state.soccer.trainingPoints)||0));state.soccer.reputation=Math.max(0,Math.round(Number(state.soccer.reputation)||0));
+    normalizeSoccerWorld();
     const facilities=state.soccer.facilities;facilities.points=Math.max(0,Math.round(Number(facilities.points)||0));facilities.history=Array.isArray(facilities.history)?facilities.history:[];SOCCER_FACILITY_KEYS.forEach(key=>facilities.levels[key]=soccerFacilityLevel(key));
     const career=state.soccer.career;career.alumni=Array.isArray(career.alumni)?career.alumni:[];career.news=Array.isArray(career.news)?career.news:[];career.totalGraduates=Math.max(career.alumni.length,Math.round(Number(career.totalGraduates)||0));career.alumni.forEach(a=>{a.history=Array.isArray(a.history)?a.history:[];a.careerYear=Math.max(0,Math.round(Number(a.careerYear)||0));a.careerRating=clamp(Math.round(Number(a.careerRating)||Number(a.schoolOvr)||50),35,99);a.nationalCaps=Math.max(0,Math.round(Number(a.nationalCaps)||0));});
     const sc=state.soccer.scouting;sc.points=Math.max(0,Math.round(Number(sc.points)||0));sc.searchSerial=Math.max(0,Math.round(Number(sc.searchSerial)||0));sc.scholarshipUsed=Math.max(0,Math.round(Number(sc.scholarshipUsed)||0));sc.recruitWins=Math.max(0,Math.round(Number(sc.recruitWins)||0));sc.recruitLosses=Math.max(0,Math.round(Number(sc.recruitLosses)||0));sc.candidates=Array.isArray(sc.candidates)?sc.candidates:[];sc.committed=Array.isArray(sc.committed)?sc.committed:[];sc.candidates.forEach(normalizeScoutCandidate);sc.committed.forEach(normalizeScoutCandidate);if(!SCOUT_ZONES.some(z=>z.id===sc.selectedZone))sc.selectedZone='local';
@@ -5917,12 +6047,10 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   }
   function currentLeagueInfo(){return leagueInfoAt(currentLeagueTier());}
   function currentLeagueTeams(){
-    const region=currentLeagueRegion(),tier=currentLeagueTier(),info=currentLeagueInfo();
+    const region=currentLeagueRegion(),tier=currentLeagueTier(),info=currentLeagueInfo(),worldIds=state.soccer?.world?.leagues?.[region]?.[tier];
+    if(Array.isArray(worldIds)&&worldIds.length===7){const teams=worldIds.map(id=>soccerWorldSchool(id)).filter(Boolean);if(teams.length===7)return teams.map(s=>({id:s.id,name:s.name,strength:s.strength,prestige:s.prestige,trend:s.trend,movement:s.movement}));}
     const pool=info.scope==='premier'?(info.id.includes('east')?PREMIER_TEAM_POOLS.east:PREMIER_TEAM_POOLS.west):info.scope==='prince'?(PRINCE_TEAM_POOLS[region]||PRINCE_TEAM_POOLS.hokkaido):(LEAGUE_TEAM_POOLS[region]||LEAGUE_TEAM_POOLS.hokkaido);
-    return pool.map((root,i)=>{
-      const suffix=info.scope==='pref'&&tier===0?(i%3===0?'B':''):info.scope==='pref'&&tier===1&&i%4===0?'B':'';
-      return {id:'l'+region+'-'+tier+'-'+i,name:root+suffix,strength:info.base+[0,2,-1,4,1,3,5][i]+Math.min(6,(state.soccer.year-1))};
-    });
+    return pool.map((root,i)=>({id:'l'+region+'-'+tier+'-'+i,name:root,strength:info.base+[0,2,-1,4,1,3,5][i]}));
   }
 
   function seasonInitialLeagueTable(){
@@ -5966,18 +6094,10 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   function soccerSeasonOpponent(event=currentSeasonEvent()){
     if(!event||event.type==='graduation')return {name:'新年度',strength:0,style:'—'};
     if(event.type==='league'){const t=seasonLeagueOpponent(event.leagueRound);return {name:t.name,strength:t.strength,style:'LEAGUE',teamId:t.id};}
+    const worldTeam=soccerWorldTournamentOpponent(event);if(worldTeam)return {name:worldTeam.name,strength:clamp(Math.round(worldTeam.strength+(event.type==='minor'?-3:0)),40,96),style:event.type==='promotion'?'PLAYOFF':event.type==='minor'?'CUP':'TOURNAMENT',teamId:worldTeam.id};
     if(event.type==='promotion')return {name:'地域代表強豪校',strength:event.strength+Math.min(6,(state.soccer.year-1)*2),style:'PLAYOFF'};
-    const yearBoost=Math.min(8,(state.soccer.year-1)*2);
-    if(event.type==='interhigh'){
-      const list=SEASON_EVENTS.filter(e=>e.type==='interhigh'),idx=Math.max(0,list.findIndex(e=>e.id===event.id));
-      return {name:TOURNAMENT_OPPONENTS.interhigh[idx]||'全国強豪校',strength:event.strength+yearBoost,style:'TOURNAMENT'};
-    }
-    if(event.type==='championship'){
-      const list=SEASON_EVENTS.filter(e=>e.type==='championship'),idx=Math.max(0,list.findIndex(e=>e.id===event.id));
-      return {name:TOURNAMENT_OPPONENTS.championship[idx]||'全国強豪校',strength:event.strength+yearBoost,style:'TOURNAMENT'};
-    }
-    const minors=SEASON_EVENTS.filter(e=>e.type==='minor'),idx=Math.max(0,minors.findIndex(e=>e.id===event.id));
-    return {name:TOURNAMENT_OPPONENTS.minor[idx]||'招待校',strength:event.strength+yearBoost,style:'CUP'};
+    const yearBoost=Math.min(8,(state.soccer.year-1)*2),list=SEASON_EVENTS.filter(e=>e.type===event.type),idx=Math.max(0,list.findIndex(e=>e.id===event.id)),pool=TOURNAMENT_OPPONENTS[event.type]||TOURNAMENT_OPPONENTS.minor;
+    return {name:pool[idx%pool.length]||'全国強豪校',strength:event.strength+yearBoost,style:event.type==='minor'?'CUP':'TOURNAMENT'};
   }
   function seasonCompetitionLabel(event){
     if(!event)return 'SEASON';if(event.type==='league')return currentLeagueInfo().short;if(event.type==='promotion')return 'PREMIER PLAYOFF';if(event.type==='interhigh')return 'INTERHIGH';if(event.type==='championship')return 'CHAMPIONSHIP';if(event.type==='minor')return event.label||'CUP';return 'SCHOOL YEAR';
@@ -6048,11 +6168,11 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
       const pool=generateSoccerRoster();walkons=pool.slice(0,16-nextPlayers.length).map((p,i)=>{p.grade=1;p.id='walk-y'+(state.soccer.year+1)+'-'+Date.now().toString(36)+'-'+i;return p;});nextPlayers.push(...walkons);
     }
     const leagueRegion=ss.league.region,nextLeagueTier=Number.isInteger(ss.league.nextTier)?ss.league.nextTier:ss.league.tier;
-    const annualFacilityGrant=20+soccerRankLevel()*8;state.soccer.facilities.points+=annualFacilityGrant;state.soccer.facilities.history.unshift({year:state.soccer.year+1,key:'grant',level:annualFacilityGrant,at:Date.now()});state.soccer.facilities.history=state.soccer.facilities.history.slice(0,20);
+    const worldNews=advanceSoccerWorld();const annualFacilityGrant=20+soccerRankLevel()*8;state.soccer.facilities.points+=annualFacilityGrant;state.soccer.facilities.history.unshift({year:state.soccer.year+1,key:'grant',level:annualFacilityGrant,at:Date.now()});state.soccer.facilities.history=state.soccer.facilities.history.slice(0,20);
     nextPlayers.forEach(p=>{p.condition=100;p.injuryGames=0;p.injuryLabel='';});state.soccer.players=nextPlayers;state.soccer.year++;state.soccer.month=4;state.soccer.lineupSlots={};state.soccer.starterIds=[];
     state.soccer.scouting.candidates=[];state.soccer.scouting.committed=[];state.soccer.scouting.scholarshipUsed=0;
     state.soccer.season={currentIndex:0,gradesSeeded:true,history:[],skipped:[],news:'新年度スタート。'+graduates.length+'名が卒業、'+(committed.length+walkons.length)+'名が入学。',league:{region:leagueRegion,tier:nextLeagueTier,nextTier:nextLeagueTier,table:[],roundsPlayed:0,finalized:false,finalRank:null,promotionPlayoffEligible:false,promotionPlayoffWon:false,movement:''},tournaments:{interhigh:{alive:true,champion:false,best:'未出場'},championship:{alive:true,champion:false,best:'未出場'}},lastGraduates:newAlumni.map(a=>({name:a.name,pos:a.pos,ovr:a.schoolOvr,path:a.pathLabel,destination:a.destination})),lastIntake:[...committed,...walkons].map(p=>({name:p.name,pos:p.primaryPos,ovr:p.ovr,scouted:!!p.scouted}))};
-    state.soccer.season.league.table=seasonInitialLeagueTable();state.soccer.season.news+=' 所属：'+currentLeagueInfo().name+(newAlumni.length?' / 卒業進路：'+newAlumni.slice(0,3).map(a=>a.name+'→'+a.pathLabel).join('、'):'');
+    state.soccer.season.league.table=seasonInitialLeagueTable();state.soccer.season.news+=' 所属：'+currentLeagueInfo().name+(newAlumni.length?' / 卒業進路：'+newAlumni.slice(0,3).map(a=>a.name+'→'+a.pathLabel).join('、'):'')+(worldNews.length?' / 全国動向：'+worldNews.slice(0,2).join('、'):'');
     state.soccer.selectedPlayerId=state.soccer.players[0]?.id||null;autoSelectSoccerStarters(false);saveState();renderSoccerShell();showMoment('NEW SCHOOL YEAR','YEAR '+state.soccer.year,'good');navigate('soccer-season');
   }
   function canChangeLeagueRegion(){return (state.soccer.season?.league?.roundsPlayed||0)===0&&!state.soccer.season?.history?.some(h=>h.type==='league');}
@@ -6115,7 +6235,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   function renderSoccerHome(){
     if(!$('soccerHomeSchool'))return;normalizeSoccerState();const rank=soccerRankInfo(),team=soccerTeamOvr(),event=currentSeasonEvent(),next=soccerSeasonOpponent(event);
     $('soccerHomeSchool').textContent=state.soccer.schoolName;$('soccerHomeYear').textContent=state.soccer.year;if($('soccerHomeMonth'))$('soccerHomeMonth').textContent=event.month+'月';$('soccerHomeRank').textContent=rank.name;$('soccerHomeRepText').textContent=state.soccer.reputation+' REP';$('soccerHomeTraining').textContent=state.soccer.trainingPoints;$('soccerHomeOvr').textContent=team;$('soccerHomeRoster').textContent=state.soccer.players.length;
-    const r=state.soccer.record;$('soccerHomeRecord').textContent=r.wins+'-'+r.draws+'-'+r.losses;if($('soccerHomeScoutPoints'))$('soccerHomeScoutPoints').textContent=state.soccer.scouting.points;const careerTotals=soccerCareerTotals();if($('soccerHomeProAlumni'))$('soccerHomeProAlumni').textContent=careerTotals.pro;if($('soccerHomeNationalAlumni'))$('soccerHomeNationalAlumni').textContent=careerTotals.national;if($('soccerHomeFacilityPoints'))$('soccerHomeFacilityPoints').textContent=state.soccer.facilities.points;if($('soccerHomeCampusRank'))$('soccerHomeCampusRank').textContent=soccerCampusRank().name;$('soccerNextHome').textContent=state.soccer.schoolName;$('soccerNextHomePower').textContent='OVR '+team;
+    const r=state.soccer.record;$('soccerHomeRecord').textContent=r.wins+'-'+r.draws+'-'+r.losses;if($('soccerHomeScoutPoints'))$('soccerHomeScoutPoints').textContent=state.soccer.scouting.points;const careerTotals=soccerCareerTotals();if($('soccerHomeProAlumni'))$('soccerHomeProAlumni').textContent=careerTotals.pro;if($('soccerHomeNationalAlumni'))$('soccerHomeNationalAlumni').textContent=careerTotals.national;if($('soccerHomeFacilityPoints'))$('soccerHomeFacilityPoints').textContent=state.soccer.facilities.points;if($('soccerHomeCampusRank'))$('soccerHomeCampusRank').textContent=soccerCampusRank().name;if($('soccerHomeWorldTop'))$('soccerHomeWorldTop').textContent=soccerWorldRanking()[0]?.name||'—';$('soccerNextHome').textContent=state.soccer.schoolName;$('soccerNextHomePower').textContent='OVR '+team;
     $('soccerNextCompetition').textContent=seasonCompetitionLabel(event);$('soccerNextAway').textContent=event.type==='graduation'?'卒業式':next.name;$('soccerNextAwayPower').textContent=event.type==='graduation'?'次年度へ':'OVR '+next.strength;
     const lower=rank.min,nextVal=rank.next,progress=nextVal?clamp((state.soccer.reputation-lower)/(nextVal-lower)*100,0,100):100;$('soccerRepBar').style.width=progress+'%';$('soccerRepNext').textContent=nextVal?Math.max(0,nextVal-state.soccer.reputation)+' REP':'MAX';$('soccerTopTraining').textContent=state.soccer.trainingPoints;$('soccerTopRank').textContent=rank.name;
   }
@@ -6498,7 +6618,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     const extra=[growthReport.length?'成長：'+growthReport.slice(0,3).map(escapeHtml).join(' / '):'',injuryReport.length?'コンディション：'+injuryReport.map(escapeHtml).join(' / '):''].filter(Boolean).join('<br>');
     const box=$('soccerMatchResult');box.classList.remove('hidden');box.innerHTML='<h3>'+result+' '+rt.home+' - '+rt.away+(pk?' <small>PK '+pk.home+'-'+pk.away+'</small>':'')+'</h3><p>'+escapeHtml(event.title)+' • 学校評判 +'+rep+' / 育成PT +'+trainingReward+' / 施設PT +'+facilityReward+'</p>'+(extra?'<p>'+extra+'</p>':'');soccerLog('FULL TIME • '+result);renderSoccerMatch();renderSoccerHome();
   }
-  function renderSoccerShell(){if(!state.soccer)normalizeSoccerState();renderSoccerHome();const active=document.querySelector('.screen.active')?.dataset.screen;if(active==='soccer-team')renderSoccerTeam();if(active==='soccer-training')renderSoccerTraining();if(active==='soccer-match')renderSoccerMatch();if(active==='soccer-scout')renderSoccerScout();if(active==='soccer-season')renderSoccerSeason();if(active==='soccer-school')renderSoccerSchool();}
+  function renderSoccerShell(){if(!state.soccer)normalizeSoccerState();renderSoccerHome();const active=document.querySelector('.screen.active')?.dataset.screen;if(active==='soccer-team')renderSoccerTeam();if(active==='soccer-training')renderSoccerTraining();if(active==='soccer-match')renderSoccerMatch();if(active==='soccer-scout')renderSoccerScout();if(active==='soccer-season')renderSoccerSeason();if(active==='soccer-school')renderSoccerSchool();if(active==='soccer-world')renderSoccerWorld();}
   function bindSoccerEvents(){
     $('soccerAutoLineupBtn')?.addEventListener('click',()=>{autoSelectSoccerStarters();renderSoccerTeam();});
     $('soccerStartMatchBtn')?.addEventListener('click',soccerPrimaryMatchAction);
