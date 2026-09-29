@@ -1505,6 +1505,15 @@ button.match-athlete{cursor:pointer}
 .soccer-csv-entry button{min-height:44px;white-space:nowrap}
 @media(max-width:560px){.soccer-csv-entry{grid-template-columns:1fr}.soccer-csv-entry button{width:100%}}
 
+
+/* ===== MATCH BACK BUTTON / CSV ACCESS HOTFIX ===== */
+.app-shell.match-focus #screen-soccer-match .soccer-screen-head{z-index:500!important;isolation:isolate}
+#soccerMatchBackBtn{position:relative!important;z-index:1000!important;pointer-events:auto!important;touch-action:manipulation!important;-webkit-user-select:none;user-select:none;cursor:pointer}
+#soccerMatchBackBtn::before{content:"";position:absolute;inset:-8px}
+#screen-soccer-match .soccer-match-shell,#screen-soccer-match .soccer-match-main,#screen-soccer-match .soccer-pitch{position:relative;z-index:1}
+.soccer-action.csv-action{border-color:rgba(111,183,255,.34);background:linear-gradient(145deg,rgba(111,183,255,.12),#11151a)}
+.soccer-action.csv-action span{filter:none}
+
 </style>
 </head>
 <body>
@@ -1549,6 +1558,7 @@ button.match-athlete{cursor:pointer}
               <div class="panel-head"><span>MANAGER HUB</span><small>PHASE 7</small></div>
               <div class="soccer-actions">
                 <button class="soccer-action primary" data-nav="study"><span>📚</span><b>勉強する</b><small>正解で育成PTを獲得</small></button>
+                <button class="soccer-action csv-action" type="button" id="soccerCsvMenuBtn"><span>📥</span><b>問題CSV</b><small>問題を追加・管理</small></button>
                 <button class="soccer-action" data-nav="soccer-training"><span>🏃</span><b>選手育成</b><small>能力を個別強化</small></button>
                 <button class="soccer-action" data-nav="soccer-team"><span>📋</span><b>チーム編成</b><small>スタメン・布陣を決定</small></button>
                 <button class="soccer-action" data-nav="soccer-match"><span>⚽</span><b>試合</b><small>重要場面だけ自分で操作</small></button>
@@ -2459,7 +2469,7 @@ button.match-athlete{cursor:pointer}
 
       <section class="screen" id="screen-soccer-match" data-screen="soccer-match">
         <div class="soccer-screen-head">
-          <button class="icon-btn" data-nav="home" aria-label="ホームへ戻る">←</button>
+          <button class="icon-btn" id="soccerMatchBackBtn" type="button" aria-label="ホームへ戻る">←</button>
           <div><span class="eyebrow" id="soccerMatchCompetition">MATCH DAY</span><h2 id="soccerMatchTitle">公式戦</h2></div>
           <div class="soccer-pill" id="soccerMatchStatus">READY</div>
         </div>
@@ -6654,6 +6664,8 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     $('soccerSubBtn')?.addEventListener('click',substituteSoccerPlayer);
     $('soccerPositionTrainBtn')?.addEventListener('click',trainSoccerPositionAptitude);
     $('soccerOpenBankManagerBtn')?.addEventListener('click',openBankManager);
+    $('soccerCsvMenuBtn')?.addEventListener('click',openBankManager);
+    $('soccerMatchBackBtn')?.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();navigate('home');});
     const pitch=$('soccerPitch');
     pitch?.addEventListener('pointerdown',soccerPitchPointerDown);
     pitch?.addEventListener('pointerup',soccerPitchPointerUp);
