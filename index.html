@@ -6818,14 +6818,14 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   function startSoccerMatch(){
     normalizeSoccerState();const event=currentSeasonEvent();if(event.type==='graduation')return toast('<b>SEASON</b> 年間日程から卒業式を進めてください');const unavailable=state.soccer.starterIds.map(id=>state.soccer.players.find(p=>p.id===id)).filter(p=>!soccerPlayerAvailable(p));if(unavailable.length){autoSelectSoccerStarters(false);toast('<b>LINEUP UPDATED</b> 離脱選手を外して自動編成しました');}if(state.soccer.starterIds.length!==11)return toast('<b>LINEUP ERROR</b> スタメンを11人選んでください');
     if(soccerMatchTimer){clearInterval(soccerMatchTimer);soccerMatchTimer=null;}
-    const opp=soccerSeasonOpponent(event);soccerMatchRuntime={eventId:event.id,eventType:event.type,opponent:opp,minute:0,home:0,away:0,chances:0,userGoals:0,dribbles:0,dribbleSuccess:0,nextChance:Math.max(10,Math.round((15+Math.floor(Math.random()*9))/soccerTacticInfo().chance)),inChance:false,finished:false,stage:0,ballHolder:null,attackers:[],actorPos:{},defenderPos:{},actionLocked:false,pk:null,liveLineup:{...state.soccer.lineupSlots},startingLineup:{...state.soccer.lineupSlots},substitutions:0,subHistory:[],minutesPlayed:{},tacticalChanges:0};
+    const opp=soccerSeasonOpponent(event);soccerMatchRuntime={eventId:event.id,eventType:event.type,opponent:opp,minute:0,home:0,away:0,chances:0,userGoals:0,dribbles:0,dribbleSuccess:0,nextChance:Math.max(10,Math.round((15+Math.floor(Math.random()*9))/soccerTacticInfo().chance)),inChance:false,finished:false,stage:0,ballHolder:null,attackers:[],actorPos:{},defenderPos:{},actionLocked:false,pk:null,liveLineup:{...state.soccer.lineupSlots},startingLineup:{...state.soccer.lineupSlots},substitutions:0,subHistory:[],minutesPlayed:{},tacticalChanges:0,playerGoals:{},playerAssists:{},lastPasserId:null};
     $('soccerMatchResult').classList.add('hidden');$('soccerMatchResult').innerHTML='';$('soccerMatchLog').innerHTML='<b>'+escapeHtml(seasonCompetitionLabel(event))+'</b><br>'+escapeHtml(state.soccer.schoolName)+' vs '+escapeHtml(opp.name)+'<br>戦術：'+escapeHtml(soccerTacticInfo().name)+' / 相手：'+escapeHtml(soccerTacticInfo(soccerOpponentTactic(opp)).name);renderSoccerMatch();
     const presentation=soccerEventPresentation(event);soccerCinematic('KICK OFF',state.soccer.schoolName+' vs '+opp.name,presentation.final?'legendary':'good',presentation.badge,900);
     soccerMatchTimer=setInterval(soccerMatchTick,520);
   }
   function soccerMatchTick(){
     const rt=soccerMatchRuntime;if(!rt||rt.finished||rt.inChance)return;soccerAccumulateMinutes(3);rt.minute=Math.min(90,rt.minute+3);const n=soccerMatchNumbers();
-    if(Math.random()<.0115*(n.attack/Math.max(35,n.oppDefense))){rt.home++;soccerLog('戦術から崩してゴール！ 自動得点');soccerScreenImpact(true);soccerCinematic('GOAL!',state.soccer.schoolName+' • '+rt.minute+"'",'good','TEAM GOAL',820);}
+    if(Math.random()<.0115*(n.attack/Math.max(35,n.oppDefense))){rt.home++;const contrib=soccerPickAutoGoalContributors();if(contrib.scorer)soccerRegisterGoal(contrib.scorer.id,contrib.assist?.id);soccerLog((contrib.scorer?contrib.scorer.name+' ':'')+'戦術から崩してゴール！');soccerScreenImpact(true);soccerCinematic('GOAL!',(contrib.scorer?.name||state.soccer.schoolName)+' • '+rt.minute+"'",'good','TEAM GOAL',820);}
     if(Math.random()<.0135*(n.oppAttack/Math.max(35,n.defense))){rt.away++;soccerLog(rt.opponent.name+'が得点');soccerScreenImpact(false);soccerCinematic('GOAL AGAINST',rt.opponent.name+' • '+rt.minute+"'",'bad','OPPONENT GOAL',720);}
     if(rt.minute>=rt.nextChance&&rt.minute<87&&rt.chances<3){startSoccerChance();return;}
     if(rt.minute>=90){finishSoccerMatch();return;}renderSoccerMatch();
@@ -6837,7 +6837,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   function startSoccerChance(){
     const rt=soccerMatchRuntime;if(!rt)return;rt.inChance=true;setSoccerGestureScrollLock(true);rt.chances++;rt.stage=0;rt.actionLocked=false;
     const liveLineup=soccerMatchLineup(),pool=soccerFormationSlots().map(slot=>({p:state.soccer.players.find(x=>x.id===liveLineup[slot.id]),slot})).filter(x=>x.p&&x.slot.pos!=='GK').sort((a,b)=>(b.p.SHO+b.p.DRI+b.p.PAS)-(a.p.SHO+a.p.DRI+a.p.PAS));
-    rt.attackers=pool.slice(0,7).sort(()=>Math.random()-.5).slice(0,4).map(x=>x.p);rt.ballHolder=rt.attackers[0]?.id||null;
+    rt.attackers=pool.slice(0,7).sort(()=>Math.random()-.5).slice(0,4).map(x=>x.p);rt.ballHolder=rt.attackers[0]?.id||null;rt.lastPasserId=null;
     rt.actorPos={};rt.attackers.forEach((p,i)=>{rt.actorPos[p.id]=soccerChanceCoordinates(p,i);});
     rt.defenderPos={lsb:{x:24,y:27},lcb:{x:41,y:32},rcb:{x:59,y:32},rsb:{x:76,y:27},dmf:{x:50,y:44},gk:{x:50,y:10}};
     soccerLog('CHANCE! 攻撃局面を自分で操作');soccerCinematic('CHANCE!',rt.attackers[0]?.name||'ATTACK','good','ATTACKING MOMENT',650);renderSoccerChance();renderSoccerMatch();
@@ -6975,7 +6975,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
       const intercept=nearest.pos||to;await animateSoccerBall(from,{x:(to.x+intercept.x)/2,y:(to.y+intercept.y)/2});
       soccerLog('DFが寄せてパスカット');setSoccerActionLock(false);return endSoccerChance(false);
     }
-    await animateSoccerBall(from,to);rt.ballHolder=targetId;rt.stage++;soccerLog(passer.name+' → '+target.name+'　走り込みへパス成功');
+    await animateSoccerBall(from,to);rt.lastPasserId=passer.id;rt.ballHolder=targetId;rt.stage++;soccerLog(passer.name+' → '+target.name+'　走り込みへパス成功');
     setSoccerActionLock(false);renderSoccerChance();
   }
   async function soccerChanceShoot(lane='center'){
@@ -6989,7 +6989,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if(gk){gk.classList.add('gk-dive','running');gk.style.left=keeperX[keeperLane]+'%';gk.style.top='8%';gk.style.transform='translate(-50%,-50%) rotate('+(keeperLane==='left'?'-58deg':keeperLane==='right'?'58deg':'0deg')+') scale(1.12)';}
     const shotTarget=goal?{x:laneX[lane],y:2}:lane===keeperLane?{x:keeperX[keeperLane],y:8}:{x:lane==='left'?27:lane==='right'?73:50,y:-1};
     await animateSoccerBall(from,shotTarget,{shot:true});
-    if(goal){rt.home++;rt.userGoals++;soccerLog(shooter.name+' GOAL! '+lane.toUpperCase()+'へ決めた');soccerScreenImpact(true);soccerCinematic('GOAL!',shooter.name+' • '+(rt.minute||0)+"'",'good','GOOOOOAL',1050);showMoment('GOAL!',shooter.name,'good');}
+    if(goal){rt.home++;rt.userGoals++;soccerRegisterGoal(shooter.id,rt.lastPasserId);soccerLog(shooter.name+' GOAL! '+lane.toUpperCase()+'へ決めた');soccerScreenImpact(true);soccerCinematic('GOAL!',shooter.name+' • '+(rt.minute||0)+"'",'good','GOOOOOAL',1050);showMoment('GOAL!',shooter.name,'good');}
     else if(lane===keeperLane){soccerLog('GKがコースを読んでダイビングセーブ');showMoment('SAVE','GK READ THE SHOT','bad');}
     else soccerLog('シュートはわずかに枠外');
     setTimeout(()=>{setSoccerActionLock(false);endSoccerChance(goal);},260);
@@ -7012,9 +7012,9 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     else if(draw){r.draws++;result='DRAW';rep=4;}
     else{r.losses++;result=pk?'LOSE (PK)':'LOSE';rep=event.type==='league'?1:3;}
     const trainingReward=won?12:draw?8:6,facilityReward=(won?10:draw?7:5)+((event.type==='interhigh'||event.type==='championship'||event.type==='promotion')?4:0),managerXp=soccerManagerMatchReward(event,won,draw);state.soccer.reputation+=rep;state.soccer.trainingPoints+=trainingReward;state.soccer.facilities.points+=facilityReward;soccerAwardManagerXp(managerXp);state.soccer.lastResult={result,home:rt.home,away:rt.away,opponent:rt.opponent.name,eventId:event.id,at:Date.now()};
-    const growthReport=applySoccerMatchDevelopment(event,{won,draw});applySoccerMatchCondition();const injuryReport=applySoccerInjuriesAfterMatch();seasonRecordResult(event,{won,draw,home:rt.home,away:rt.away,pk,opponent:rt.opponent.name});
+    const matchMotm=applySoccerMatchStatistics(),growthReport=applySoccerMatchDevelopment(event,{won,draw});applySoccerMatchCondition();const injuryReport=applySoccerInjuriesAfterMatch();seasonRecordResult(event,{won,draw,home:rt.home,away:rt.away,pk,opponent:rt.opponent.name});
     autoSelectSoccerStarters(false);saveState();
-    const extra=[growthReport.length?'成長：'+growthReport.slice(0,3).map(escapeHtml).join(' / '):'',injuryReport.length?'コンディション：'+injuryReport.map(escapeHtml).join(' / '):''].filter(Boolean).join('<br>');
+    const extra=[matchMotm?'MOM：'+escapeHtml(matchMotm.name):'',growthReport.length?'成長：'+growthReport.slice(0,3).map(escapeHtml).join(' / '):'',injuryReport.length?'コンディション：'+injuryReport.map(escapeHtml).join(' / '):''].filter(Boolean).join('<br>');
     const box=$('soccerMatchResult'),outcome=won?'win':draw?'draw':'lose';box.className='soccer-result phase11-result '+outcome;box.innerHTML='<div class="phase11-result-score"><div><span>'+escapeHtml(state.soccer.schoolName)+'</span><b>'+rt.home+'</b></div><div style="text-align:center"><span>'+escapeHtml(result)+'</span><b style="font-size:14px">'+(pk?'PK '+pk.home+'-'+pk.away:'FULL TIME')+'</b></div><div style="text-align:right"><span>'+escapeHtml(rt.opponent.name)+'</span><b>'+rt.away+'</b></div></div><div class="phase11-rewards"><span class="phase11-reward">REP +'+rep+'</span><span class="phase11-reward">育成PT +'+trainingReward+'</span><span class="phase11-reward">施設PT +'+facilityReward+'</span><span class="phase11-reward">監督XP +'+managerXp+'</span></div>'+(extra?'<p>'+extra+'</p>':'');soccerLog('FULL TIME • '+result);soccerCinematic(won?'VICTORY':draw?'DRAW':'FULL TIME',rt.home+' - '+rt.away,won?'good':draw?'good':'bad',escapeHtml(event.title),950);renderSoccerMatch();renderSoccerHome();
   }
   function renderSoccerShell(){if(!state.soccer)normalizeSoccerState();renderSoccerHome();const active=document.querySelector('.screen.active')?.dataset.screen;if(active==='soccer-team')renderSoccerTeam();if(active==='soccer-training')renderSoccerTraining();if(active==='soccer-match')renderSoccerMatch();if(active==='soccer-scout')renderSoccerScout();if(active==='soccer-season')renderSoccerSeason();if(active==='soccer-school')renderSoccerSchool();if(active==='soccer-world')renderSoccerWorld();if(active==='soccer-manager')renderSoccerManager();}
