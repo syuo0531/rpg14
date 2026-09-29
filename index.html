@@ -1514,6 +1514,30 @@ button.match-athlete{cursor:pointer}
 .soccer-action.csv-action{border-color:rgba(111,183,255,.34);background:linear-gradient(145deg,rgba(111,183,255,.12),#11151a)}
 .soccer-action.csv-action span{filter:none}
 
+
+/* ===== QUESTION BANK MOBILE LAYER FIX ===== */
+#bankManagerModal{
+  z-index:5000!important;
+  pointer-events:auto!important;
+  padding-top:max(14px,env(safe-area-inset-top))!important;
+  padding-bottom:max(14px,env(safe-area-inset-bottom))!important;
+}
+#bankManagerModal .bank-modal{
+  max-height:calc(100dvh - max(28px,env(safe-area-inset-top)) - max(28px,env(safe-area-inset-bottom)))!important;
+  padding-bottom:calc(30px + env(safe-area-inset-bottom))!important;
+  position:relative;
+  z-index:5001;
+}
+.app-shell.bank-manager-open .bottom-nav-shell{
+  visibility:hidden!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+.app-shell.bank-manager-open .bottom-nav,
+.app-shell.bank-manager-open .nav-btn{
+  pointer-events:none!important;
+}
+
 </style>
 </head>
 <body>
@@ -5160,14 +5184,17 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"è²§è¡
   function openBankManager() {
     refreshBankDiagnostics(true);
     const modal = $('bankManagerModal');
+    $('appShell')?.classList.add('bank-manager-open');
     modal.classList.remove('hidden');
     modal.setAttribute('aria-hidden', 'false');
+    requestAnimationFrame(()=>{ try { modal.querySelector('.bank-modal')?.scrollTo({top:0,behavior:'auto'}); } catch(_) {} });
   }
 
   function closeBankManager() {
     const modal = $('bankManagerModal');
     modal.classList.add('hidden');
     modal.setAttribute('aria-hidden', 'true');
+    $('appShell')?.classList.remove('bank-manager-open');
   }
 
   function updateImportMode(mode) {
