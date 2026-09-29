@@ -1496,6 +1496,15 @@ button.match-athlete{cursor:pointer}
 .phase9-trend-up{color:#7fe0a5!important}.phase9-trend-down{color:#ff9d9d!important}.phase9-trend-flat{color:#94a098!important}
 @media(max-width:860px){.phase9-world-layout{grid-template-columns:1fr}}@media(max-width:560px){.phase9-world-metrics{grid-template-columns:repeat(2,1fr)}.phase9-region-grid{grid-template-columns:1fr}.phase9-rank-row{grid-template-columns:28px 1fr auto}.phase9-rank-row em{display:none}}
 
+
+/* ===== SOCCER HOME • QUESTION CSV ENTRY ===== */
+.soccer-csv-entry{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin-top:12px;padding:13px 14px;border:1px solid rgba(111,183,255,.22);border-radius:12px;background:linear-gradient(135deg,rgba(111,183,255,.07),rgba(69,212,131,.035))}
+.soccer-csv-entry span{display:block;color:#8fbde9;font-size:7px;font-weight:1000;letter-spacing:.12em}
+.soccer-csv-entry b{display:block;margin-top:4px;font-size:12px;color:#edf6f1}
+.soccer-csv-entry small{display:block;margin-top:4px;color:#87958d;font-size:7px;line-height:1.45}
+.soccer-csv-entry button{min-height:44px;white-space:nowrap}
+@media(max-width:560px){.soccer-csv-entry{grid-template-columns:1fr}.soccer-csv-entry button{width:100%}}
+
 </style>
 </head>
 <body>
@@ -1559,6 +1568,14 @@ button.match-athlete{cursor:pointer}
                 <div class="soccer-metric"><span>FACILITY PT</span><b id="soccerHomeFacilityPoints">0</b></div>
                 <div class="soccer-metric"><span>CAMPUS</span><b id="soccerHomeCampusRank">BASIC</b></div>
                 <div class="soccer-metric"><span>WORLD #1</span><b id="soccerHomeWorldTop">—</b></div>
+              </div>
+              <div class="soccer-csv-entry">
+                <div>
+                  <span>QUESTION BANK / CSV</span>
+                  <b><span id="soccerQuestionBankCount">0</span>問を収録中</b>
+                  <small>前のRPGと同じCSV管理画面を使用。年度・基礎/応用を選んで、CSVを複数まとめて追加できます。</small>
+                </div>
+                <button type="button" class="primary-btn" id="soccerOpenBankManagerBtn">＋ 問題CSVを入れる</button>
               </div>
             </section>
             <section class="soccer-card metal-panel">
@@ -6241,7 +6258,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   function renderSoccerHome(){
     if(!$('soccerHomeSchool'))return;normalizeSoccerState();const rank=soccerRankInfo(),team=soccerTeamOvr(),event=currentSeasonEvent(),next=soccerSeasonOpponent(event);
     $('soccerHomeSchool').textContent=state.soccer.schoolName;$('soccerHomeYear').textContent=state.soccer.year;if($('soccerHomeMonth'))$('soccerHomeMonth').textContent=event.month+'月';$('soccerHomeRank').textContent=rank.name;$('soccerHomeRepText').textContent=state.soccer.reputation+' REP';$('soccerHomeTraining').textContent=state.soccer.trainingPoints;$('soccerHomeOvr').textContent=team;$('soccerHomeRoster').textContent=state.soccer.players.length;
-    const r=state.soccer.record;$('soccerHomeRecord').textContent=r.wins+'-'+r.draws+'-'+r.losses;if($('soccerHomeScoutPoints'))$('soccerHomeScoutPoints').textContent=state.soccer.scouting.points;const careerTotals=soccerCareerTotals();if($('soccerHomeProAlumni'))$('soccerHomeProAlumni').textContent=careerTotals.pro;if($('soccerHomeNationalAlumni'))$('soccerHomeNationalAlumni').textContent=careerTotals.national;if($('soccerHomeFacilityPoints'))$('soccerHomeFacilityPoints').textContent=state.soccer.facilities.points;if($('soccerHomeCampusRank'))$('soccerHomeCampusRank').textContent=soccerCampusRank().name;if($('soccerHomeWorldTop'))$('soccerHomeWorldTop').textContent=soccerWorldRanking()[0]?.name||'—';$('soccerNextHome').textContent=state.soccer.schoolName;$('soccerNextHomePower').textContent='OVR '+team;
+    const r=state.soccer.record;$('soccerHomeRecord').textContent=r.wins+'-'+r.draws+'-'+r.losses;if($('soccerHomeScoutPoints'))$('soccerHomeScoutPoints').textContent=state.soccer.scouting.points;const careerTotals=soccerCareerTotals();if($('soccerHomeProAlumni'))$('soccerHomeProAlumni').textContent=careerTotals.pro;if($('soccerHomeNationalAlumni'))$('soccerHomeNationalAlumni').textContent=careerTotals.national;if($('soccerHomeFacilityPoints'))$('soccerHomeFacilityPoints').textContent=state.soccer.facilities.points;if($('soccerHomeCampusRank'))$('soccerHomeCampusRank').textContent=soccerCampusRank().name;if($('soccerHomeWorldTop'))$('soccerHomeWorldTop').textContent=soccerWorldRanking()[0]?.name||'—';if($('soccerQuestionBankCount'))$('soccerQuestionBankCount').textContent=(questions?.length||0).toLocaleString();$('soccerNextHome').textContent=state.soccer.schoolName;$('soccerNextHomePower').textContent='OVR '+team;
     $('soccerNextCompetition').textContent=seasonCompetitionLabel(event);$('soccerNextAway').textContent=event.type==='graduation'?'卒業式':next.name;$('soccerNextAwayPower').textContent=event.type==='graduation'?'次年度へ':'OVR '+next.strength;
     const lower=rank.min,nextVal=rank.next,progress=nextVal?clamp((state.soccer.reputation-lower)/(nextVal-lower)*100,0,100):100;$('soccerRepBar').style.width=progress+'%';$('soccerRepNext').textContent=nextVal?Math.max(0,nextVal-state.soccer.reputation)+' REP':'MAX';$('soccerTopTraining').textContent=state.soccer.trainingPoints;$('soccerTopRank').textContent=rank.name;
   }
@@ -6636,6 +6653,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     $('soccerShootBtn')?.addEventListener('click',()=>soccerChanceShoot('center'));
     $('soccerSubBtn')?.addEventListener('click',substituteSoccerPlayer);
     $('soccerPositionTrainBtn')?.addEventListener('click',trainSoccerPositionAptitude);
+    $('soccerOpenBankManagerBtn')?.addEventListener('click',openBankManager);
     const pitch=$('soccerPitch');
     pitch?.addEventListener('pointerdown',soccerPitchPointerDown);
     pitch?.addEventListener('pointerup',soccerPitchPointerUp);
