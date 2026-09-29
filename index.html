@@ -1538,6 +1538,33 @@ button.match-athlete{cursor:pointer}
   pointer-events:none!important;
 }
 
+
+/* ===== iOS HOME-SCREEN MATCH BACK HARDENING ===== */
+.app-shell.match-focus #soccerMatchBackBtn{
+  position:fixed!important;
+  top:max(10px,env(safe-area-inset-top))!important;
+  left:12px!important;
+  width:50px!important;
+  height:50px!important;
+  z-index:12000!important;
+  pointer-events:auto!important;
+  touch-action:manipulation!important;
+  -webkit-user-select:none!important;
+  user-select:none!important;
+  -webkit-touch-callout:none!important;
+  background:rgba(15,18,21,.98)!important;
+  border:1px solid rgba(255,255,255,.18)!important;
+  border-radius:15px!important;
+}
+.app-shell.match-focus #screen-soccer-match .soccer-screen-head{
+  padding-left:62px!important;
+}
+@media (display-mode:standalone){
+  .app-shell.match-focus #soccerMatchBackBtn{
+    top:max(12px,env(safe-area-inset-top))!important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -2493,7 +2520,7 @@ button.match-athlete{cursor:pointer}
 
       <section class="screen" id="screen-soccer-match" data-screen="soccer-match">
         <div class="soccer-screen-head">
-          <button class="icon-btn" id="soccerMatchBackBtn" type="button" aria-label="ホームへ戻る">←</button>
+          <button class="icon-btn" id="soccerMatchBackBtn" type="button" data-nav="home" aria-label="ホームへ戻る">←</button>
           <div><span class="eyebrow" id="soccerMatchCompetition">MATCH DAY</span><h2 id="soccerMatchTitle">公式戦</h2></div>
           <div class="soccer-pill" id="soccerMatchStatus">READY</div>
         </div>
@@ -6679,6 +6706,13 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     const box=$('soccerMatchResult');box.classList.remove('hidden');box.innerHTML='<h3>'+result+' '+rt.home+' - '+rt.away+(pk?' <small>PK '+pk.home+'-'+pk.away+'</small>':'')+'</h3><p>'+escapeHtml(event.title)+' • 学校評判 +'+rep+' / 育成PT +'+trainingReward+' / 施設PT +'+facilityReward+'</p>'+(extra?'<p>'+extra+'</p>':'');soccerLog('FULL TIME • '+result);renderSoccerMatch();renderSoccerHome();
   }
   function renderSoccerShell(){if(!state.soccer)normalizeSoccerState();renderSoccerHome();const active=document.querySelector('.screen.active')?.dataset.screen;if(active==='soccer-team')renderSoccerTeam();if(active==='soccer-training')renderSoccerTraining();if(active==='soccer-match')renderSoccerMatch();if(active==='soccer-scout')renderSoccerScout();if(active==='soccer-season')renderSoccerSeason();if(active==='soccer-school')renderSoccerSchool();if(active==='soccer-world')renderSoccerWorld();}
+  let soccerBackHandledAt=0;
+  function soccerExitMatch(event){
+    const now=Date.now();if(now-soccerBackHandledAt<350)return;soccerBackHandledAt=now;
+    try{event?.preventDefault?.();event?.stopPropagation?.();event?.stopImmediatePropagation?.();}catch(_){}
+    soccerPointerStart=null;setSoccerGestureScrollLock(false);
+    if(typeof hardSoccerNavigate==='function')hardSoccerNavigate('home');else navigate('home');
+  }
   function bindSoccerEvents(){
     $('soccerAutoLineupBtn')?.addEventListener('click',()=>{autoSelectSoccerStarters();renderSoccerTeam();});
     $('soccerStartMatchBtn')?.addEventListener('click',soccerPrimaryMatchAction);
@@ -6692,7 +6726,10 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     $('soccerPositionTrainBtn')?.addEventListener('click',trainSoccerPositionAptitude);
     $('soccerOpenBankManagerBtn')?.addEventListener('click',openBankManager);
     $('soccerCsvMenuBtn')?.addEventListener('click',openBankManager);
-    $('soccerMatchBackBtn')?.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();navigate('home');});
+    const matchBack=$('soccerMatchBackBtn');
+    matchBack?.addEventListener('pointerup',soccerExitMatch,{passive:false});
+    matchBack?.addEventListener('touchend',soccerExitMatch,{passive:false});
+    matchBack?.addEventListener('click',soccerExitMatch);
     const pitch=$('soccerPitch');
     pitch?.addEventListener('pointerdown',soccerPitchPointerDown);
     pitch?.addEventListener('pointerup',soccerPitchPointerUp);
@@ -6812,7 +6849,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   document.addEventListener('click',event=>{
     const btn=event.target?.closest?.('[data-nav]');if(!btn)return;
     const screen=btn.dataset.nav;if(!screen)return;
-    if(['home','study','soccer-training','soccer-team','soccer-match','soccer-scout','soccer-season'].includes(screen)){
+    if(['home','study','soccer-training','soccer-team','soccer-match','soccer-scout','soccer-season','soccer-school','soccer-world'].includes(screen)){
       event.preventDefault();event.stopImmediatePropagation();hardSoccerNavigate(screen);
     }
   },true);
