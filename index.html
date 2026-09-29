@@ -1580,6 +1580,33 @@ button.match-athlete{cursor:pointer}
 .phase10-manager-note{margin-top:10px;padding:9px;border:1px solid rgba(242,209,122,.16);border-radius:8px;background:rgba(242,209,122,.035);font-size:7px;line-height:1.5;color:#9b927b}
 @media(max-width:860px){.phase10-manager-layout{grid-template-columns:1fr}}@media(max-width:650px){.phase10-skill-grid,.phase10-offer-grid{grid-template-columns:1fr}}
 
+
+/* ===== HIGH SCHOOL SOCCER • PHASE 11 PRESENTATION ===== */
+.screen.active{animation:phase11-screen-in .22s ease-out}
+@keyframes phase11-screen-in{from{opacity:.45;transform:translateY(4px)}to{opacity:1;transform:none}}
+.phase11-stage-bar{display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center;margin-bottom:10px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:linear-gradient(90deg,rgba(255,255,255,.035),rgba(255,255,255,.01))}
+.phase11-stage-badge{padding:5px 7px;border-radius:999px;background:#151b1f;border:1px solid var(--line);font-size:6px;font-weight:1000;letter-spacing:.1em;color:#9ba8a1}.phase11-stage-bar b{font-size:8px}.phase11-stage-bar small{font-size:6px;color:#7e8a83;text-align:right}
+#screen-soccer-match.stage-national .soccer-match-main{box-shadow:0 0 0 1px rgba(242,209,122,.12),0 18px 50px rgba(0,0,0,.42)}
+#screen-soccer-match.stage-national .phase11-stage-bar{border-color:rgba(242,209,122,.28);background:linear-gradient(90deg,rgba(242,209,122,.09),rgba(255,255,255,.01))}
+#screen-soccer-match.stage-final .phase11-stage-badge{background:rgba(242,209,122,.12);border-color:rgba(242,209,122,.4);color:#f0d77f}
+#screen-soccer-match.stage-final .soccer-score{animation:phase11-score-glow 1.8s ease-in-out infinite}
+@keyframes phase11-score-glow{0%,100%{text-shadow:0 0 0 transparent}50%{text-shadow:0 0 18px rgba(242,209,122,.28)}}
+.soccer-pitch.phase11-goal{animation:phase11-goal-pitch .48s ease-out}
+@keyframes phase11-goal-pitch{0%{filter:brightness(1)}25%{filter:brightness(1.8) saturate(1.3)}100%{filter:brightness(1)}}
+.app-shell.phase11-shake{animation:phase11-shake .34s linear}
+@keyframes phase11-shake{0%,100%{transform:none}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+.phase11-cinema{position:fixed;inset:0;z-index:15000;display:grid;place-items:center;pointer-events:none;opacity:0;visibility:hidden;background:radial-gradient(circle at center,rgba(0,0,0,.12),rgba(0,0,0,.68));transition:opacity .18s ease,visibility .18s}
+.phase11-cinema.show{opacity:1;visibility:visible}.phase11-cinema-card{text-align:center;transform:scale(.82);opacity:0;transition:.26s cubic-bezier(.2,.8,.2,1);padding:24px;max-width:min(90vw,620px)}.phase11-cinema.show .phase11-cinema-card{transform:scale(1);opacity:1}
+.phase11-cinema-kicker{display:block;font-size:8px;font-weight:1000;letter-spacing:.28em;color:#9ca9a2}.phase11-cinema-title{margin:6px 0 3px;font-size:clamp(38px,11vw,86px);line-height:.95;font-weight:1000;letter-spacing:-.04em;color:#fff;text-shadow:0 10px 35px rgba(0,0,0,.5)}.phase11-cinema-sub{display:block;font-size:11px;font-weight:900;color:#c7d1cb}
+.phase11-cinema.good .phase11-cinema-title{color:#9ff0bd}.phase11-cinema.bad .phase11-cinema-title{color:#ff9c9c}.phase11-cinema.legendary .phase11-cinema-title{color:#f3dc91;text-shadow:0 0 35px rgba(242,209,122,.35),0 12px 40px rgba(0,0,0,.55)}
+.phase11-particles{position:absolute;inset:0;overflow:hidden}.phase11-particle{position:absolute;top:-10%;width:7px;height:18px;border-radius:2px;background:currentColor;animation:phase11-confetti 1.45s linear forwards;opacity:.9}
+@keyframes phase11-confetti{to{transform:translate3d(var(--drift),115vh,0) rotate(620deg);opacity:.1}}
+.phase11-result{position:relative;overflow:hidden;border-radius:12px!important;padding:16px!important}.phase11-result.win{border-color:rgba(69,212,131,.32)!important;background:linear-gradient(135deg,rgba(69,212,131,.1),rgba(0,0,0,.18))!important}.phase11-result.lose{border-color:rgba(255,103,103,.28)!important;background:linear-gradient(135deg,rgba(255,80,80,.07),rgba(0,0,0,.18))!important}.phase11-result.draw{border-color:rgba(111,183,255,.24)!important}
+.phase11-result-score{display:flex;justify-content:space-between;align-items:end;gap:10px}.phase11-result-score span{font-size:7px;color:#8b9891;font-weight:1000}.phase11-result-score b{display:block;margin-top:3px;font-size:28px;line-height:1}.phase11-rewards{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}.phase11-reward{padding:5px 7px;border-radius:999px;border:1px solid var(--line);background:rgba(0,0,0,.16);font-size:6px;font-weight:900;color:#aebbb4}
+.season-trophy.champion{position:relative;overflow:hidden}.season-trophy.champion::after{content:"★ CHAMPION";position:absolute;right:-28px;top:10px;transform:rotate(35deg);padding:4px 30px;background:rgba(242,209,122,.18);color:#f0d77f;font-size:6px;font-weight:1000;letter-spacing:.08em}
+.season-current.phase11-big-event{border-color:rgba(242,209,122,.28)!important;box-shadow:inset 0 0 30px rgba(242,209,122,.04)}
+@media(prefers-reduced-motion:reduce){.screen.active,.soccer-pitch.phase11-goal,.app-shell.phase11-shake,#screen-soccer-match.stage-final .soccer-score,.phase11-particle{animation:none!important}.phase11-cinema,.phase11-cinema-card{transition:none!important}}
+
 </style>
 </head>
 <body>
@@ -2583,6 +2610,11 @@ button.match-athlete{cursor:pointer}
         </div>
         <div class="soccer-match-shell">
           <section class="soccer-match-main metal-panel">
+            <div class="phase11-stage-bar" id="soccerMatchStageBar">
+              <span class="phase11-stage-badge" id="soccerMatchStageBadge">MATCH</span>
+              <b id="soccerMatchStageText">公式戦</b>
+              <small id="soccerMatchStageMeta">90 MIN</small>
+            </div>
             <div class="soccer-scoreboard">
               <div class="soccer-score-team"><b id="soccerScoreHomeName">FORGE高校</b><small id="soccerScoreHomeOvr">OVR 0</small></div>
               <div class="soccer-score"><span id="soccerHomeGoals">0</span> - <span id="soccerAwayGoals">0</span></div>
@@ -2683,6 +2715,14 @@ button.match-athlete{cursor:pointer}
     <div class="fx-layer" id="fxLayer" aria-hidden="true">
       <div class="fx-flash" id="fxFlash"></div>
       <div class="fx-banner" id="fxBanner"><strong id="fxBannerTitle"></strong><small id="fxBannerSub"></small></div>
+    </div>
+    <div class="phase11-cinema" id="soccerCinema" aria-hidden="true">
+      <div class="phase11-particles" id="soccerCinemaParticles"></div>
+      <div class="phase11-cinema-card">
+        <span class="phase11-cinema-kicker" id="soccerCinemaKicker">MATCH EVENT</span>
+        <div class="phase11-cinema-title" id="soccerCinemaTitle">GOAL</div>
+        <span class="phase11-cinema-sub" id="soccerCinemaSub"></span>
+      </div>
     </div>
 
 
@@ -4357,6 +4397,32 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   function renderFxMode(){ const mode=fxMode(); $$('[data-fx-mode]').forEach(btn=>btn.classList.toggle('active',btn.dataset.fxMode===mode)); }
   function pulseClass(el,className,duration=520){ if(!el)return; el.classList.remove(className); void el.offsetWidth; el.classList.add(className); setTimeout(()=>el.classList.remove(className),duration); }
   function playFlash(tone='good'){ if(!fxEnabled()||!$('fxFlash'))return; const el=$('fxFlash'); el.className=`fx-flash ${tone}`; void el.offsetWidth; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),560); }
+  let soccerCinemaTimer=null;
+  function soccerEventPresentation(event=currentSeasonEvent()){
+    if(!event)return {badge:'MATCH',text:'公式戦',meta:'90 MIN',national:false,final:false};
+    const stage=String(event.stage||''),national=stage.startsWith('nat'),final=stage.includes('final')||event.type==='promotion';
+    if(event.type==='promotion')return {badge:'PROMOTION',text:'プレミア参入プレーオフ',meta:'WIN TO PROMOTE',national:true,final:true};
+    if(event.type==='interhigh')return {badge:national?'INTERHIGH NATIONAL':'INTERHIGH',text:event.title,meta:final?'FINAL':'KNOCKOUT',national,final};
+    if(event.type==='championship')return {badge:national?'CHAMPIONSHIP NATIONAL':'CHAMPIONSHIP',text:event.title,meta:final?'FINAL':'KNOCKOUT',national,final};
+    if(event.type==='league')return {badge:'LEAGUE',text:currentLeagueInfo().short+' 第'+event.leagueRound+'節',meta:'ROUND '+event.leagueRound+'/7',national:false,final:false};
+    if(event.type==='minor')return {badge:'CUP',text:event.title,meta:'TOURNAMENT',national:false,final:false};
+    return {badge:'MATCH',text:event.title||'公式戦',meta:'90 MIN',national:false,final:false};
+  }
+  function soccerSpawnCinemaParticles(tone='good'){
+    const box=$('soccerCinemaParticles');if(!box)return;box.innerHTML='';if(tone==='bad')return;
+    const colors=tone==='legendary'?['#f2d17a','#fff2bf','#ffffff','#e7bf67']:['#45d483','#b8f178','#ffffff','#6fb7ff'];
+    for(let i=0;i<24;i++){const p=document.createElement('i');p.className='phase11-particle';p.style.left=(3+Math.random()*94)+'%';p.style.color=colors[i%colors.length];p.style.setProperty('--drift',((Math.random()-.5)*160)+'px');p.style.animationDelay=(Math.random()*.24)+'s';box.appendChild(p);}
+  }
+  function soccerCinematic(title,sub='',tone='good',kicker='MATCH EVENT',duration=1150){
+    if(!fxEnabled()||!$('soccerCinema'))return;const el=$('soccerCinema');if(soccerCinemaTimer)clearTimeout(soccerCinemaTimer);$('soccerCinemaKicker').textContent=kicker;$('soccerCinemaTitle').textContent=title;$('soccerCinemaSub').textContent=sub;el.className='phase11-cinema '+tone;void el.offsetWidth;el.classList.add('show');soccerSpawnCinemaParticles(tone);soccerCinemaTimer=setTimeout(()=>{el.classList.remove('show');$('soccerCinemaParticles').innerHTML='';},duration);
+  }
+  function soccerScreenImpact(goal=false){
+    if(!fxEnabled())return;const shell=$('appShell'),pitch=$('soccerPitch');shell?.classList.remove('phase11-shake');pitch?.classList.remove('phase11-goal');void shell?.offsetWidth;if(goal)pitch?.classList.add('phase11-goal');shell?.classList.add('phase11-shake');setTimeout(()=>{shell?.classList.remove('phase11-shake');pitch?.classList.remove('phase11-goal');},520);
+  }
+  function soccerApplyStagePresentation(event=currentSeasonEvent()){
+    const p=soccerEventPresentation(event),screen=$('screen-soccer-match');if(screen){screen.classList.toggle('stage-national',p.national);screen.classList.toggle('stage-final',p.final);}
+    if($('soccerMatchStageBadge'))$('soccerMatchStageBadge').textContent=p.badge;if($('soccerMatchStageText'))$('soccerMatchStageText').textContent=p.text;if($('soccerMatchStageMeta'))$('soccerMatchStageMeta').textContent=p.meta;
+  }
   function showMoment(title,sub='',tone='good'){ if(!fxEnabled()||!$('fxBanner'))return; const el=$('fxBanner'); $('fxBannerTitle').textContent=title; $('fxBannerSub').textContent=sub; el.className=`fx-banner ${tone}`; void el.offsetWidth; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),1750); }
   function burstAt(target,tone='legendary',count=fxParticleCount()){ if(!fxEnabled()||!$('fxLayer'))return; let rect={left:innerWidth/2,top:innerHeight/2,width:0,height:0}; const el=typeof target==='string'?$(target):target; if(el?.getBoundingClientRect)rect=el.getBoundingClientRect(); const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2; for(let i=0;i<count;i++){const p=document.createElement('i'); const angle=(Math.PI*2*i/count)+Math.random()*.38,dist=38+Math.random()*(fxMode()==='full'?92:58); p.className=`fx-particle ${tone}`; p.style.left=`${cx}px`;p.style.top=`${cy}px`;p.style.setProperty('--tx',`${Math.cos(angle)*dist}px`);p.style.setProperty('--ty',`${Math.sin(angle)*dist}px`);p.style.setProperty('--rot',`${Math.round(Math.random()*280-140)}deg`);$('fxLayer').appendChild(p);setTimeout(()=>p.remove(),800);} }
   function enemyHitFx(crit=false,heavy=false){ const enemy=$('enemyAvatar'); pulseClass(enemy,crit?'fx-crit-hit':'fx-hit',360); if(heavy)pulseClass($('battleStage'),'fx-heavy-hit',340); if(crit){playFlash('crit');burstAt(enemy,'crit');} }
@@ -6328,9 +6394,9 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     const bonus=rank===1?35:rank<=3?18:rank<=5?8:3;state.soccer.reputation+=bonus;
     if(rank===1&&tier<max){
       if(info.promotion==='playoff'){lg.promotionPlayoffEligible=true;lg.movement=info.name+'優勝。プレミア参入プレーオフ進出！';state.soccer.season.news=lg.movement;showMoment('PLAYOFF QUALIFIED','プレミア昇格まであと1勝','legendary');}
-      else{const next=leagueInfoAt(tier+1);lg.nextTier=tier+1;lg.movement=info.name+'優勝 → '+next.name+'へ昇格決定';state.soccer.season.news=lg.movement;showMoment('PROMOTION',next.short+'へ昇格','legendary');}
+      else{const next=leagueInfoAt(tier+1);lg.nextTier=tier+1;lg.movement=info.name+'優勝 → '+next.name+'へ昇格決定';state.soccer.season.news=lg.movement;showMoment('PROMOTION',next.short+'へ昇格','legendary');soccerCinematic('PROMOTION!',next.short+'へ昇格','legendary','LEAGUE PROMOTION',1550);}
     }else if(rank===8&&tier>0){const down=leagueInfoAt(tier-1);lg.nextTier=tier-1;lg.movement=info.name+' 8位 → '+down.name+'へ降格';state.soccer.season.news=lg.movement;}
-    else if(rank===1&&tier===max){lg.movement=info.name+' 優勝！国内最高峰リーグ制覇';state.soccer.season.news=lg.movement;showMoment('LEAGUE CHAMPION',info.short,'legendary');}
+    else if(rank===1&&tier===max){lg.movement=info.name+' 優勝！国内最高峰リーグ制覇';state.soccer.season.news=lg.movement;showMoment('LEAGUE CHAMPION',info.short,'legendary');soccerCinematic('LEAGUE CHAMPION',info.short,'legendary','TITLE WON',1550);}
     else{lg.movement=info.name+' '+rank+'位。来季も同リーグ';state.soccer.season.news=lg.movement;}
   }
 
@@ -6340,9 +6406,9 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if(event.type==='league'){
       const opp=seasonLeagueOpponent(event.leagueRound);updateLeagueRow('user',result.home,result.away);updateLeagueRow(opp.id,result.away,result.home);simulateOtherLeagueMatches(event.leagueRound);ss.league.roundsPlayed=Math.max(ss.league.roundsPlayed,event.leagueRound);if(event.leagueRound===7)finalizeSoccerLeague();
     }else if(event.type==='promotion'){
-      const lg=ss.league;if(result.won){lg.promotionPlayoffWon=true;lg.nextTier=Math.min(currentLeagueTier()+1,leaguePyramid().length-1);lg.movement='プレミア参入プレーオフ勝利 → '+leaguePyramid()[lg.nextTier].name+'昇格決定';ss.news=lg.movement;showMoment('PROMOTED','PREMIER LEAGUE','legendary');}else{lg.nextTier=currentLeagueTier();lg.movement='プレミア参入プレーオフ敗退。来季も'+currentLeagueInfo().name;ss.news=lg.movement;}
+      const lg=ss.league;if(result.won){lg.promotionPlayoffWon=true;lg.nextTier=Math.min(currentLeagueTier()+1,leaguePyramid().length-1);lg.movement='プレミア参入プレーオフ勝利 → '+leaguePyramid()[lg.nextTier].name+'昇格決定';ss.news=lg.movement;showMoment('PROMOTED','PREMIER LEAGUE','legendary');soccerCinematic('PROMOTED!','PREMIER LEAGUE','legendary','HISTORIC RESULT',1700);}else{lg.nextTier=currentLeagueTier();lg.movement='プレミア参入プレーオフ敗退。来季も'+currentLeagueInfo().name;ss.news=lg.movement;}
     }else if(event.type==='interhigh'||event.type==='championship'){
-      const t=ss.tournaments[event.type];if(result.won){t.best=event.title;if(event.stage==='nat-final'){t.champion=true;t.alive=false;state.soccer.reputation+=45;ss.news=TOURNAMENT_NAMES[event.type]+' 全国制覇！';showMoment('NATIONAL CHAMPION',TOURNAMENT_NAMES[event.type],'legendary');}}
+      const t=ss.tournaments[event.type];if(result.won){t.best=event.title;if(event.stage==='nat-final'){t.champion=true;t.alive=false;state.soccer.reputation+=45;ss.news=TOURNAMENT_NAMES[event.type]+' 全国制覇！';showMoment('NATIONAL CHAMPION',TOURNAMENT_NAMES[event.type],'legendary');soccerCinematic('NATIONAL CHAMPION',TOURNAMENT_NAMES[event.type]+' 全国制覇','legendary','CHAMPIONS',1900);}}
       else {t.alive=false;t.best=event.title+'敗退';ss.news=TOURNAMENT_NAMES[event.type]+'は'+event.title.replace(TOURNAMENT_NAMES[event.type],'')+'で敗退。';}
     }else if(event.type==='minor'){
       ss.news=event.title+' '+(result.won?'優勝・勝利':'終了')+'。';
@@ -6379,7 +6445,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     state.soccer.scouting.candidates=[];state.soccer.scouting.committed=[];state.soccer.scouting.scholarshipUsed=0;
     state.soccer.season={currentIndex:0,gradesSeeded:true,history:[],skipped:[],news:'新年度スタート。'+graduates.length+'名が卒業、'+(committed.length+walkons.length)+'名が入学。',league:{region:leagueRegion,tier:nextLeagueTier,nextTier:nextLeagueTier,table:[],roundsPlayed:0,finalized:false,finalRank:null,promotionPlayoffEligible:false,promotionPlayoffWon:false,movement:''},tournaments:{interhigh:{alive:true,champion:false,best:'未出場'},championship:{alive:true,champion:false,best:'未出場'}},lastGraduates:newAlumni.map(a=>({name:a.name,pos:a.pos,ovr:a.schoolOvr,path:a.pathLabel,destination:a.destination})),lastIntake:[...committed,...walkons].map(p=>({name:p.name,pos:p.primaryPos,ovr:p.ovr,scouted:!!p.scouted}))};
     state.soccer.season.league.table=seasonInitialLeagueTable();state.soccer.manager.offers=state.soccer.manager.careerMode?soccerGenerateManagerOffers():[];state.soccer.season.news+=' 所属：'+currentLeagueInfo().name+(managerAwards?' / 監督実績：'+managerAwards:'')+(newAlumni.length?' / 卒業進路：'+newAlumni.slice(0,3).map(a=>a.name+'→'+a.pathLabel).join('、'):'')+(worldNews.length?' / 全国動向：'+worldNews.slice(0,2).join('、'):'');
-    state.soccer.selectedPlayerId=state.soccer.players[0]?.id||null;autoSelectSoccerStarters(false);saveState();renderSoccerShell();showMoment('NEW SCHOOL YEAR','YEAR '+state.soccer.year,'good');navigate('soccer-season');
+    state.soccer.selectedPlayerId=state.soccer.players[0]?.id||null;autoSelectSoccerStarters(false);saveState();renderSoccerShell();showMoment('NEW SCHOOL YEAR','YEAR '+state.soccer.year,'good');soccerCinematic('NEW SEASON','YEAR '+state.soccer.year+' • '+state.soccer.schoolName,'good','NEW SCHOOL YEAR',1450);navigate('soccer-season');
   }
   function canChangeLeagueRegion(){return (state.soccer.season?.league?.roundsPlayed||0)===0&&!state.soccer.season?.history?.some(h=>h.type==='league');}
   function changeSoccerPrefecture(pref){
@@ -6392,7 +6458,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if(!$('seasonCurrentCard'))return;normalizeSoccerState();const ss=state.soccer.season,event=currentSeasonEvent(),opp=soccerSeasonOpponent(event),table=leagueSortTable();
     $('seasonYearLabel').textContent=state.soccer.year;$('seasonMonthLabel').textContent=event.month+'月';
     const action=event.type==='graduation'?'卒業式・進路発表 → 次年度へ':'この試合へ';
-    $('seasonCurrentCard').innerHTML='<div class="season-date">YEAR '+state.soccer.year+' • '+event.month+'月 • '+seasonCompetitionLabel(event)+'</div><h3>'+escapeHtml(event.title)+'</h3><p>'+(event.type==='graduation'?'3年生の進路を発表し、スカウト内定者が新1年生として入学します。卒業後もOBキャリアを追跡します。':escapeHtml(state.soccer.schoolName)+' vs '+escapeHtml(opp.name)+' • 相手 OVR '+opp.strength)+'</p>'+(event.type==='graduation'?soccerGraduationPreviewHtml():'')+'<button type="button" class="primary-btn" id="seasonActionBtn">'+action+'</button>';
+    $('seasonCurrentCard').classList.toggle('phase11-big-event',['promotion','interhigh','championship'].includes(event.type));$('seasonCurrentCard').innerHTML='<div class="season-date">YEAR '+state.soccer.year+' • '+event.month+'月 • '+seasonCompetitionLabel(event)+'</div><h3>'+escapeHtml(event.title)+'</h3><p>'+(event.type==='graduation'?'3年生の進路を発表し、スカウト内定者が新1年生として入学します。卒業後もOBキャリアを追跡します。':escapeHtml(state.soccer.schoolName)+' vs '+escapeHtml(opp.name)+' • 相手 OVR '+opp.strength)+'</p>'+(event.type==='graduation'?soccerGraduationPreviewHtml():'')+'<button type="button" class="primary-btn" id="seasonActionBtn">'+action+'</button>';
     $('seasonActionBtn')?.addEventListener('click',seasonStartCurrentEvent);
     const counts=[1,2,3].map(g=>state.soccer.players.filter(p=>p.grade===g).length);$('seasonGradeSummary').innerHTML=counts.map((n,i)=>'<span>'+(i+1)+'年 <b>'+n+'</b>人</span>').join('');
     const ih=state.soccer.season.tournaments.interhigh,cs=state.soccer.season.tournaments.championship;
@@ -6589,7 +6655,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   function soccerMatchEvent(){if(soccerMatchRuntime?.eventId)return SEASON_EVENTS.find(e=>e.id===soccerMatchRuntime.eventId)||currentSeasonEvent();return currentSeasonEvent();}
   function renderSoccerMatch(){
     if(!$('soccerScoreHomeName'))return;normalizeSoccerState();const event=soccerMatchEvent(),opp=soccerMatchRuntime?.opponent||soccerSeasonOpponent(event),rt=soccerMatchRuntime,numbers=soccerMatchNumbers(),team=rt?numbers.overall:soccerTeamOvr();
-    $('soccerMatchCompetition').textContent=seasonCompetitionLabel(event);$('soccerMatchTitle').textContent=event?.title||'公式戦';
+    soccerApplyStagePresentation(event);$('soccerMatchCompetition').textContent=seasonCompetitionLabel(event);$('soccerMatchTitle').textContent=event?.title||'公式戦';
     $('soccerScoreHomeName').textContent=state.soccer.schoolName;$('soccerScoreAwayName').textContent=event?.type==='graduation'?'新年度':opp.name;$('soccerScoreHomeOvr').textContent=(rt?'MATCH ':'OVR ')+team;$('soccerScoreAwayOvr').textContent=event?.type==='graduation'?'—':'OVR '+opp.strength;$('soccerMatchFormation').textContent=state.soccer.formation+' • '+soccerTacticInfo().name;$('soccerMatchRank').textContent=soccerRankInfo().name;
     $('soccerMinute').textContent=rt?Math.min(90,rt.minute):0;$('soccerHomeGoals').textContent=rt?rt.home:0;$('soccerAwayGoals').textContent=rt?rt.away:0;$('soccerMatchProgress').style.width=((rt?Math.min(90,rt.minute):0)/90*100)+'%';$('soccerChanceCount').textContent=rt?rt.chances:0;$('soccerUserGoals').textContent=rt?rt.userGoals:0;if($('soccerDribbleCount'))$('soccerDribbleCount').textContent=rt?(rt.dribbleSuccess+' / '+rt.dribbles):'0 / 0';
     $('soccerMatchStatus').textContent=rt?(rt.finished?'FULL TIME':rt.inChance?'CHANCE!':'LIVE'):(event?.type==='graduation'?'NO MATCH':'READY');
@@ -6647,7 +6713,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     rt.attackers=pool.slice(0,7).sort(()=>Math.random()-.5).slice(0,4).map(x=>x.p);rt.ballHolder=rt.attackers[0]?.id||null;
     rt.actorPos={};rt.attackers.forEach((p,i)=>{rt.actorPos[p.id]=soccerChanceCoordinates(p,i);});
     rt.defenderPos={lsb:{x:24,y:27},lcb:{x:41,y:32},rcb:{x:59,y:32},rsb:{x:76,y:27},dmf:{x:50,y:44},gk:{x:50,y:10}};
-    soccerLog('CHANCE! 攻撃局面を自分で操作');renderSoccerChance();renderSoccerMatch();
+    soccerLog('CHANCE! 攻撃局面を自分で操作');soccerCinematic('CHANCE!',rt.attackers[0]?.name||'ATTACK','good','ATTACKING MOMENT',650);renderSoccerChance();renderSoccerMatch();
   }
   function soccerChanceCoordinates(p,i){
     const pos=p?.primaryPos||'';if(pos==='LWG'||pos==='LMF'||pos==='LSB')return{x:18,y:i%2?58:68};if(pos==='RWG'||pos==='RMF'||pos==='RSB')return{x:82,y:i%2?58:68};if(pos==='CF')return{x:50,y:31};if(pos==='OMF')return{x:50,y:51};return{x:[30,42,58,70][i%4],y:[67,59,57,66][i%4]};
@@ -6796,7 +6862,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if(gk){gk.classList.add('gk-dive','running');gk.style.left=keeperX[keeperLane]+'%';gk.style.top='8%';gk.style.transform='translate(-50%,-50%) rotate('+(keeperLane==='left'?'-58deg':keeperLane==='right'?'58deg':'0deg')+') scale(1.12)';}
     const shotTarget=goal?{x:laneX[lane],y:2}:lane===keeperLane?{x:keeperX[keeperLane],y:8}:{x:lane==='left'?27:lane==='right'?73:50,y:-1};
     await animateSoccerBall(from,shotTarget,{shot:true});
-    if(goal){rt.home++;rt.userGoals++;soccerLog(shooter.name+' GOAL! '+lane.toUpperCase()+'へ決めた');showMoment('GOAL!',shooter.name,'good');}
+    if(goal){rt.home++;rt.userGoals++;soccerLog(shooter.name+' GOAL! '+lane.toUpperCase()+'へ決めた');soccerScreenImpact(true);soccerCinematic('GOAL!',shooter.name+' • '+(rt.minute||0)+"'",'good','GOOOOOAL',1050);showMoment('GOAL!',shooter.name,'good');}
     else if(lane===keeperLane){soccerLog('GKがコースを読んでダイビングセーブ');showMoment('SAVE','GK READ THE SHOT','bad');}
     else soccerLog('シュートはわずかに枠外');
     setTimeout(()=>{setSoccerActionLock(false);endSoccerChance(goal);},260);
@@ -6812,7 +6878,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     let won=rt.home>rt.away,draw=rt.home===rt.away,pk=null;
     if(draw&&knockout){
       const pkWon=Math.random()<clamp(.5+(team-opp)/110,.3,.7),base=3+Math.floor(Math.random()*2);pk=pkWon?{home:base+1,away:base}:{home:base,away:base+1};won=pkWon;draw=false;rt.pk=pk;
-      soccerLog('PK戦 '+pk.home+' - '+pk.away);
+      soccerLog('PK戦 '+pk.home+' - '+pk.away);soccerCinematic(pkWon?'PK WIN':'PK LOSE',pk.home+' - '+pk.away,pkWon?'legendary':'bad','PENALTY SHOOTOUT',1050);
     }
     const r=state.soccer.record;r.played++;r.gf+=rt.home;r.ga+=rt.away;let result,rep;
     if(won){r.wins++;result=pk?'WIN (PK)':'WIN';rep=event.type==='league'?10:(event.type==='interhigh'||event.type==='championship'?18:9);}
@@ -6822,7 +6888,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     const growthReport=applySoccerMatchDevelopment(event,{won,draw});applySoccerMatchCondition();const injuryReport=applySoccerInjuriesAfterMatch();seasonRecordResult(event,{won,draw,home:rt.home,away:rt.away,pk,opponent:rt.opponent.name});
     autoSelectSoccerStarters(false);saveState();
     const extra=[growthReport.length?'成長：'+growthReport.slice(0,3).map(escapeHtml).join(' / '):'',injuryReport.length?'コンディション：'+injuryReport.map(escapeHtml).join(' / '):''].filter(Boolean).join('<br>');
-    const box=$('soccerMatchResult');box.classList.remove('hidden');box.innerHTML='<h3>'+result+' '+rt.home+' - '+rt.away+(pk?' <small>PK '+pk.home+'-'+pk.away+'</small>':'')+'</h3><p>'+escapeHtml(event.title)+' • 学校評判 +'+rep+' / 育成PT +'+trainingReward+' / 施設PT +'+facilityReward+' / 監督XP +'+managerXp+'</p>'+(extra?'<p>'+extra+'</p>':'');soccerLog('FULL TIME • '+result);renderSoccerMatch();renderSoccerHome();
+    const box=$('soccerMatchResult'),outcome=won?'win':draw?'draw':'lose';box.className='soccer-result phase11-result '+outcome;box.innerHTML='<div class="phase11-result-score"><div><span>'+escapeHtml(state.soccer.schoolName)+'</span><b>'+rt.home+'</b></div><div style="text-align:center"><span>'+escapeHtml(result)+'</span><b style="font-size:14px">'+(pk?'PK '+pk.home+'-'+pk.away:'FULL TIME')+'</b></div><div style="text-align:right"><span>'+escapeHtml(rt.opponent.name)+'</span><b>'+rt.away+'</b></div></div><div class="phase11-rewards"><span class="phase11-reward">REP +'+rep+'</span><span class="phase11-reward">育成PT +'+trainingReward+'</span><span class="phase11-reward">施設PT +'+facilityReward+'</span><span class="phase11-reward">監督XP +'+managerXp+'</span></div>'+(extra?'<p>'+extra+'</p>':'');soccerLog('FULL TIME • '+result);soccerCinematic(won?'VICTORY':draw?'DRAW':'FULL TIME',rt.home+' - '+rt.away,won?'good':draw?'good':'bad',escapeHtml(event.title),950);renderSoccerMatch();renderSoccerHome();
   }
   function renderSoccerShell(){if(!state.soccer)normalizeSoccerState();renderSoccerHome();const active=document.querySelector('.screen.active')?.dataset.screen;if(active==='soccer-team')renderSoccerTeam();if(active==='soccer-training')renderSoccerTraining();if(active==='soccer-match')renderSoccerMatch();if(active==='soccer-scout')renderSoccerScout();if(active==='soccer-season')renderSoccerSeason();if(active==='soccer-school')renderSoccerSchool();if(active==='soccer-world')renderSoccerWorld();if(active==='soccer-manager')renderSoccerManager();}
   let soccerBackHandledAt=0;
