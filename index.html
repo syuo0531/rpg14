@@ -1607,6 +1607,22 @@ button.match-athlete{cursor:pointer}
 .season-current.phase11-big-event{border-color:rgba(242,209,122,.28)!important;box-shadow:inset 0 0 30px rgba(242,209,122,.04)}
 @media(prefers-reduced-motion:reduce){.screen.active,.soccer-pitch.phase11-goal,.app-shell.phase11-shake,#screen-soccer-match.stage-final .soccer-score,.phase11-particle{animation:none!important}.phase11-cinema,.phase11-cinema-card{transition:none!important}}
 
+
+/* ===== HIGH SCHOOL SOCCER • PHASE 12 HONORS & RECORDS ===== */
+.phase12-honors{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.phase12-award-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:10px}
+.phase12-award-card{padding:11px;border:1px solid var(--line);border-radius:11px;background:linear-gradient(145deg,#11171a,#0b1013)}
+.phase12-award-card.mvp{border-color:rgba(242,209,122,.32);background:radial-gradient(circle at 90% 0,rgba(242,209,122,.1),transparent 42%),#0d1215}
+.phase12-award-card span{display:block;font-size:6px;color:#78857e;font-weight:1000;letter-spacing:.08em}.phase12-award-card b{display:block;margin-top:5px;font-size:10px}.phase12-award-card strong{display:block;margin-top:4px;font-size:15px;color:#f0d77f}.phase12-award-card small{display:block;margin-top:3px;font-size:6px;color:#849189}
+.phase12-stats-layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(260px,.9fr);gap:10px;margin-top:10px}
+.phase12-leaderboard,.phase12-bestxi,.phase12-records,.phase12-history{padding:12px;border:1px solid var(--line);border-radius:11px;background:#0c1114}
+.phase12-stat-row{display:grid;grid-template-columns:26px 1fr repeat(4,42px);gap:5px;align-items:center;padding:7px 5px;border-bottom:1px solid rgba(255,255,255,.055)}.phase12-stat-row:last-child{border-bottom:0}.phase12-stat-row.head{font-size:6px;color:#6f7b75;font-weight:1000}.phase12-stat-row .rank{font-weight:1000;color:#e8d17f}.phase12-stat-row b{font-size:8px}.phase12-stat-row small{font-size:6px;color:#748079}.phase12-stat-row em{font-style:normal;text-align:center;font-size:7px;color:#b7c4bd}
+.phase12-bestxi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:8px}.phase12-xi-player{padding:7px 5px;border:1px solid var(--line);border-radius:8px;text-align:center;background:#10161a}.phase12-xi-player span{display:block;font-size:6px;color:#6fb7ff;font-weight:1000}.phase12-xi-player b{display:block;margin-top:3px;font-size:7px}.phase12-xi-player small{display:block;margin-top:2px;font-size:6px;color:#7b8881}
+.phase12-record-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:8px}.phase12-record{padding:8px;border:1px solid var(--line);border-radius:8px;background:#0a0f12}.phase12-record span{display:block;font-size:6px;color:#74817a}.phase12-record b{display:block;margin-top:3px;font-size:9px;color:#eaf4ee}.phase12-record small{display:block;margin-top:2px;font-size:6px;color:#9d8f65}
+.phase12-trophies{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.phase12-trophy{padding:6px 8px;border:1px solid rgba(242,209,122,.22);border-radius:999px;background:rgba(242,209,122,.04);font-size:6px;color:#dbc77f;font-weight:1000}
+.phase12-history-list{display:grid;gap:5px;margin-top:8px}.phase12-history-row{display:grid;grid-template-columns:44px 1fr auto;gap:7px;align-items:center;padding:7px 8px;border-left:2px solid rgba(242,209,122,.26);background:rgba(242,209,122,.025)}.phase12-history-row span{font-size:6px;color:#e0ca7e;font-weight:1000}.phase12-history-row b{font-size:7px}.phase12-history-row small{font-size:6px;color:#7d8a83;text-align:right}
+@media(max-width:820px){.phase12-award-grid{grid-template-columns:repeat(2,1fr)}.phase12-stats-layout{grid-template-columns:1fr}}@media(max-width:560px){.phase12-stat-row{grid-template-columns:24px 1fr repeat(4,34px)}.phase12-record-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -2395,6 +2411,31 @@ button.match-athlete{cursor:pointer}
             <div id="seasonLeagueTable"></div>
             <div class="panel-head" style="margin-top:18px"><span>YEAR CALENDAR</span><small>主要大会＋小大会</small></div>
             <div class="season-calendar" id="seasonCalendar"></div>
+            <div class="phase12-honors">
+              <div class="panel-head"><span>PLAYER AWARDS / RECORDS</span><small id="seasonHonorsMeta">LIVE SEASON</small></div>
+              <div class="phase12-award-grid" id="seasonAwardCards"></div>
+              <div class="phase12-stats-layout">
+                <div class="phase12-leaderboard">
+                  <div class="panel-head"><span>PLAYER STATS</span><small>公式戦</small></div>
+                  <div id="seasonPlayerLeaderboard"></div>
+                </div>
+                <div class="phase12-bestxi">
+                  <div class="panel-head"><span>BEST XI</span><small id="seasonBestXiMeta">暫定</small></div>
+                  <div class="phase12-bestxi-grid" id="seasonBestXi"></div>
+                </div>
+              </div>
+              <div class="phase12-stats-layout">
+                <div class="phase12-records">
+                  <div class="panel-head"><span>SCHOOL RECORDS</span><small>歴代最高</small></div>
+                  <div class="phase12-record-grid" id="schoolRecordGrid"></div>
+                  <div class="phase12-trophies" id="schoolTrophyCabinet"></div>
+                </div>
+                <div class="phase12-history">
+                  <div class="panel-head"><span>SEASON HONORS</span><small>歴代表彰</small></div>
+                  <div class="phase12-history-list" id="seasonHonorsHistory"></div>
+                </div>
+              </div>
+            </div>
             <div class="phase7-legacy">
               <div class="panel-head"><span>ALUMNI / CAREER LEGACY</span><small id="careerLegacyMeta">卒業生 0名</small></div>
               <div class="phase7-legacy-stats">
@@ -5688,6 +5729,91 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   }
 
 
+
+  /* HIGH SCHOOL SOCCER • PHASE 12 HONORS & RECORDS */
+  function soccerPlayerSeasonScore(p){
+    return (p.seasonGoals||0)*8+(p.seasonAssists||0)*5+(p.seasonMotm||0)*7+Math.min(18,(p.seasonMinutes||0)/90*.9)+(Number(p.ovr)||50)*.22;
+  }
+  function soccerPlayerSeasonStats(p){
+    return {id:p.id,name:p.name,pos:p.primaryPos,grade:p.grade,ovr:p.ovr,goals:p.seasonGoals||0,assists:p.seasonAssists||0,motm:p.seasonMotm||0,matches:p.seasonMatches||0,minutes:p.seasonMinutes||0,cleanSheets:p.seasonCleanSheets||0,score:+soccerPlayerSeasonScore(p).toFixed(1)};
+  }
+  function soccerSeasonStatsSorted(){return state.soccer.players.map(soccerPlayerSeasonStats).sort((a,b)=>b.score-a.score||b.goals-a.goals||b.assists-a.assists);}
+  function soccerSeasonLeaders(){
+    const all=soccerSeasonStatsSorted(),by=(key)=>all.slice().sort((a,b)=>b[key]-a[key]||b.score-a.score)[0]||null;
+    return {mvp:all[0]||null,scorer:by('goals'),assister:by('assists'),young:all.filter(x=>Number(x.grade)<=2).sort((a,b)=>b.score-a.score)[0]||all[0]||null};
+  }
+  function soccerBestXI(){
+    const stats=soccerSeasonStatsSorted(),groups={
+      GK:stats.filter(x=>x.pos==='GK'),
+      DEF:stats.filter(x=>['CB','LSB','RSB'].includes(x.pos)),
+      MID:stats.filter(x=>['DMF','CMF','OMF','LMF','RMF'].includes(x.pos)),
+      FWD:stats.filter(x=>['LWG','RWG','CF'].includes(x.pos))
+    },picked=[],ids=new Set();
+    [['GK',1],['DEF',4],['MID',3],['FWD',3]].forEach(([group,count])=>{groups[group].slice(0,count).forEach(x=>{picked.push(x);ids.add(x.id);});});
+    stats.filter(x=>!ids.has(x.id)).slice(0,11-picked.length).forEach(x=>picked.push(x));return picked.slice(0,11);
+  }
+  function soccerPickAutoGoalContributors(){
+    const rt=soccerMatchRuntime,ids=[...new Set(Object.values(rt?.liveLineup||{}))],players=ids.map(id=>state.soccer.players.find(p=>p.id===id)).filter(Boolean);
+    const attack=players.filter(p=>p.primaryPos!=='GK').sort((a,b)=>(soccerMatchAttr(b,'SHO')*1.35+soccerMatchAttr(b,'DRI')*.5+soccerMatchAttr(b,'PAC')*.35)-(soccerMatchAttr(a,'SHO')*1.35+soccerMatchAttr(a,'DRI')*.5+soccerMatchAttr(a,'PAC')*.35));
+    const scorerPool=attack.slice(0,Math.min(6,attack.length)),scorer=scorerPool.length?scorerPool[Math.floor(Math.random()*scorerPool.length)]:null;
+    const assistPool=attack.filter(p=>p.id!==scorer?.id).sort((a,b)=>soccerMatchAttr(b,'PAS')-soccerMatchAttr(a,'PAS')).slice(0,5),assist=assistPool.length&&Math.random()<.72?assistPool[Math.floor(Math.random()*assistPool.length)]:null;
+    return {scorer,assist};
+  }
+  function soccerRegisterGoal(scorerId,assistId=null){
+    const rt=soccerMatchRuntime;if(!rt||!scorerId)return;rt.playerGoals=rt.playerGoals||{};rt.playerAssists=rt.playerAssists||{};rt.playerGoals[scorerId]=(rt.playerGoals[scorerId]||0)+1;
+    if(assistId&&assistId!==scorerId)rt.playerAssists[assistId]=(rt.playerAssists[assistId]||0)+1;
+  }
+  function applySoccerMatchStatistics(){
+    const rt=soccerMatchRuntime;if(!rt)return null;const participants=[];
+    state.soccer.players.forEach(p=>{
+      const mins=Math.min(90,Math.round(rt.minutesPlayed?.[p.id]||0));if(mins<=0)return;
+      p.seasonMatches=(p.seasonMatches||0)+1;p.seasonMinutes=(p.seasonMinutes||0)+mins;p.seasonGoals=(p.seasonGoals||0)+(rt.playerGoals?.[p.id]||0);p.seasonAssists=(p.seasonAssists||0)+(rt.playerAssists?.[p.id]||0);
+      p.careerGoals=(p.careerGoals||0)+(rt.playerGoals?.[p.id]||0);p.careerAssists=(p.careerAssists||0)+(rt.playerAssists?.[p.id]||0);
+      participants.push(p);
+    });
+    const gkId=rt.liveLineup?.[soccerFormationSlots().find(s=>s.pos==='GK')?.id]||rt.startingLineup?.[soccerFormationSlots().find(s=>s.pos==='GK')?.id],gk=state.soccer.players.find(p=>p.id===gkId);
+    if(gk&&rt.away===0){gk.seasonCleanSheets=(gk.seasonCleanSheets||0)+1;gk.careerCleanSheets=(gk.careerCleanSheets||0)+1;}
+    const motm=participants.slice().sort((a,b)=>{
+      const sa=(rt.playerGoals?.[a.id]||0)*6+(rt.playerAssists?.[a.id]||0)*4+(rt.minutesPlayed?.[a.id]||0)/90+(Number(a.ovr)||0)/30;
+      const sb=(rt.playerGoals?.[b.id]||0)*6+(rt.playerAssists?.[b.id]||0)*4+(rt.minutesPlayed?.[b.id]||0)/90+(Number(b.ovr)||0)/30;return sb-sa;
+    })[0]||null;
+    if(motm){motm.seasonMotm=(motm.seasonMotm||0)+1;motm.careerMotm=(motm.careerMotm||0)+1;}
+    return motm;
+  }
+  function soccerCurrentSeasonSnapshot(){
+    const leaders=soccerSeasonLeaders(),bestXI=soccerBestXI(),ss=state.soccer.season,r=state.soccer.record,history=ss.history||[],big=history.filter(h=>Number.isFinite(h.home)&&Number.isFinite(h.away)).slice().sort((a,b)=>(b.home-b.away)-(a.home-a.away))[0]||null;
+    return {year:state.soccer.year,schoolName:state.soccer.schoolName,league:currentLeagueInfo().name,leagueRank:ss.league.finalRank||null,record:{wins:r.wins,draws:r.draws,losses:r.losses,gf:r.gf,ga:r.ga},interhigh:ss.tournaments.interhigh.champion?'全国優勝':ss.tournaments.interhigh.best,championship:ss.tournaments.championship.champion?'全国優勝':ss.tournaments.championship.best,awards:{mvp:leaders.mvp,scorer:leaders.scorer,assister:leaders.assister,young:leaders.young},bestXI,biggestWin:big?{opponent:big.opponent,home:big.home,away:big.away,title:big.title}:null};
+  }
+  function soccerUpdateSchoolRecords(snapshot){
+    const records=state.soccer.honors.records||{},setRecord=(key,value,data,higher=true)=>{const old=records[key];if(!old||(higher?value>old.value:value<old.value))records[key]={value,...data};};
+    const a=snapshot.awards;if(a.scorer)setRecord('goals',a.scorer.goals,{player:a.scorer.name,year:snapshot.year});if(a.assister)setRecord('assists',a.assister.assists,{player:a.assister.name,year:snapshot.year});if(a.mvp)setRecord('motm',a.mvp.motm,{player:a.mvp.name,year:snapshot.year});
+    setRecord('wins',snapshot.record.wins,{school:snapshot.schoolName,year:snapshot.year});setRecord('gf',snapshot.record.gf,{school:snapshot.schoolName,year:snapshot.year});
+    if(snapshot.biggestWin){const margin=snapshot.biggestWin.home-snapshot.biggestWin.away;setRecord('winMargin',margin,{opponent:snapshot.biggestWin.opponent,score:snapshot.biggestWin.home+'-'+snapshot.biggestWin.away,year:snapshot.year});}
+    state.soccer.honors.records=records;
+  }
+  function soccerFinalizeSeasonHonors(){
+    const honors=state.soccer.honors;if(honors.seasons.some(s=>s.year===state.soccer.year&&s.schoolName===state.soccer.schoolName))return honors.seasons.find(s=>s.year===state.soccer.year&&s.schoolName===state.soccer.schoolName);
+    const snap=soccerCurrentSeasonSnapshot(),ss=state.soccer.season;honors.seasons.unshift(snap);honors.seasons=honors.seasons.slice(0,30);
+    if(ss.league.finalRank===1)honors.trophies.league++;if(ss.tournaments.interhigh.champion)honors.trophies.interhigh++;if(ss.tournaments.championship.champion)honors.trophies.championship++;if(ss.league.promotionPlayoffWon)honors.trophies.promotion++;
+    soccerUpdateSchoolRecords(snap);return snap;
+  }
+  function soccerResetSeasonPlayerStats(p){['seasonGoals','seasonAssists','seasonMotm','seasonMatches','seasonMinutes','seasonCleanSheets'].forEach(k=>p[k]=0);}
+  function soccerAwardCard(label,p,value,unit,cls=''){
+    if(!p)return '<article class="phase12-award-card '+cls+'"><span>'+label+'</span><b>—</b><strong>0</strong></article>';
+    return '<article class="phase12-award-card '+cls+'"><span>'+label+'</span><b>'+escapeHtml(p.name)+'</b><strong>'+value+unit+'</strong><small>'+p.pos+' • '+p.grade+'年 • OVR '+p.ovr+'</small></article>';
+  }
+  function renderSoccerHonors(){
+    if(!$('seasonAwardCards'))return;const leaders=soccerSeasonLeaders(),stats=soccerSeasonStatsSorted(),xi=soccerBestXI(),honors=state.soccer.honors,finalized=honors.seasons.some(s=>s.year===state.soccer.year&&s.schoolName===state.soccer.schoolName);
+    $('seasonHonorsMeta').textContent=finalized?'YEAR '+state.soccer.year+' FINAL':'YEAR '+state.soccer.year+' LIVE';$('seasonBestXiMeta').textContent=finalized?'確定':'暫定';
+    $('seasonAwardCards').innerHTML=soccerAwardCard('SEASON MVP',leaders.mvp,leaders.mvp?.score||0,' pt','mvp')+soccerAwardCard('TOP SCORER',leaders.scorer,leaders.scorer?.goals||0,' GOALS')+soccerAwardCard('ASSIST KING',leaders.assister,leaders.assister?.assists||0,' AST')+soccerAwardCard('YOUNG PLAYER',leaders.young,leaders.young?.score||0,' pt');
+    $('seasonPlayerLeaderboard').innerHTML='<div class="phase12-stat-row head"><span>#</span><span>PLAYER</span><em>G</em><em>A</em><em>MOM</em><em>APP</em></div>'+stats.slice(0,8).map((p,i)=>'<div class="phase12-stat-row"><span class="rank">'+(i+1)+'</span><div><b>'+escapeHtml(p.name)+'</b><small>'+p.pos+' • '+p.grade+'年</small></div><em>'+p.goals+'</em><em>'+p.assists+'</em><em>'+p.motm+'</em><em>'+p.matches+'</em></div>').join('');
+    $('seasonBestXi').innerHTML=xi.map(p=>'<div class="phase12-xi-player"><span>'+p.pos+'</span><b>'+escapeHtml(p.name)+'</b><small>G'+p.goals+' A'+p.assists+' • '+p.score+'</small></div>').join('');
+    const r=honors.records||{},record=(key,label,unit='')=>{const x=r[key];return '<div class="phase12-record"><span>'+label+'</span><b>'+(x?escapeHtml(x.player||x.school||x.score||'—'):'—')+'</b><small>'+(x?(x.value+unit+' • YEAR '+x.year):'記録なし')+'</small></div>';};
+    $('schoolRecordGrid').innerHTML=record('goals','1シーズン最多得点','点')+record('assists','1シーズン最多アシスト','A')+record('wins','シーズン最多勝','勝')+record('winMargin','最大得点差','点差');
+    const t=honors.trophies;$('schoolTrophyCabinet').innerHTML='<span class="phase12-trophy">🏆 LEAGUE '+t.league+'</span><span class="phase12-trophy">🏆 INTERHIGH '+t.interhigh+'</span><span class="phase12-trophy">🏆 選手権 '+t.championship+'</span><span class="phase12-trophy">⬆ 昇格PO '+t.promotion+'</span>';
+    $('seasonHonorsHistory').innerHTML=honors.seasons.length?honors.seasons.slice(0,8).map(s=>'<div class="phase12-history-row"><span>YEAR '+s.year+'</span><b>'+escapeHtml(s.awards?.mvp?.name||'—')+' • MVP</b><small>'+escapeHtml(s.schoolName)+'<br>'+((s.awards?.scorer?.goals||0))+'G</small></div>').join(''):'<div class="phase12-history-row"><span>—</span><b>まだシーズン表彰はありません</b><small>卒業式で確定</small></div>';
+  }
+
   /* HIGH SCHOOL SOCCER • PHASE 10 MANAGER CAREER */
   const SOCCER_MANAGER_SKILLS={
     development:{name:'育成力',icon:'🌱',desc:'個別練習とMATCH XPの成長効率を上げる。'},
@@ -6194,7 +6320,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   const SOCCER_ACTION_MS=430;
 
   function soccerDefaultState(){
-    return {initialized:false,identitySetupDone:false,schoolName:'FORGE高校',year:1,month:4,reputation:0,schoolExp:0,trainingPoints:0,formation:'4-3-3',players:[],starterIds:[],lineupSlots:{},selectedSlotId:null,selectedPlayerId:null,scouting:{points:30,selectedZone:'local',candidates:[],committed:[],scholarshipUsed:0,searchSerial:0,homePrefecture:'北海道',recruitWins:0,recruitLosses:0},career:{alumni:[],news:[],totalGraduates:0},facilities:{points:120,levels:{ground:1,training:1,recovery:1,dormitory:1,medical:1,scouting:1,analysis:1},history:[]},world:{initialized:false,lastSimulatedYear:0,schools:{},leagues:{},news:[],history:[]},manager:{level:1,xp:0,skillPoints:0,skills:{development:0,tactics:0,recruiting:0},careerMode:false,years:0,wins:0,titles:0,offers:[],history:[],lastSeasonAwardYear:0},season:{currentIndex:0,gradesSeeded:false,history:[],skipped:[],news:'新シーズン開幕。',league:{region:'hokkaido',tier:0,nextTier:0,table:[],roundsPlayed:0,finalized:false,finalRank:null,promotionPlayoffEligible:false,promotionPlayoffWon:false,movement:'札幌ブロック4部からスタート'},tournaments:{interhigh:{alive:true,champion:false,best:'未出場'},championship:{alive:true,champion:false,best:'未出場'}},lastGraduates:[],lastIntake:[]},record:{played:0,wins:0,draws:0,losses:0,gf:0,ga:0},lastResult:null};
+    return {initialized:false,identitySetupDone:false,schoolName:'FORGE高校',year:1,month:4,reputation:0,schoolExp:0,trainingPoints:0,formation:'4-3-3',players:[],starterIds:[],lineupSlots:{},selectedSlotId:null,selectedPlayerId:null,scouting:{points:30,selectedZone:'local',candidates:[],committed:[],scholarshipUsed:0,searchSerial:0,homePrefecture:'北海道',recruitWins:0,recruitLosses:0},career:{alumni:[],news:[],totalGraduates:0},facilities:{points:120,levels:{ground:1,training:1,recovery:1,dormitory:1,medical:1,scouting:1,analysis:1},history:[]},world:{initialized:false,lastSimulatedYear:0,schools:{},leagues:{},news:[],history:[]},honors:{seasons:[],records:{},trophies:{league:0,interhigh:0,championship:0,promotion:0}},manager:{level:1,xp:0,skillPoints:0,skills:{development:0,tactics:0,recruiting:0},careerMode:false,years:0,wins:0,titles:0,offers:[],history:[],lastSeasonAwardYear:0},season:{currentIndex:0,gradesSeeded:false,history:[],skipped:[],news:'新シーズン開幕。',league:{region:'hokkaido',tier:0,nextTier:0,table:[],roundsPlayed:0,finalized:false,finalRank:null,promotionPlayoffEligible:false,promotionPlayoffWon:false,movement:'札幌ブロック4部からスタート'},tournaments:{interhigh:{alive:true,champion:false,best:'未出場'},championship:{alive:true,champion:false,best:'未出場'}},lastGraduates:[],lastIntake:[]},record:{played:0,wins:0,draws:0,losses:0,gf:0,ga:0},lastResult:null};
   }
 
   let pendingSoccerRename=null;
@@ -6239,14 +6365,14 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if(!p.aptitudes[p.primaryPos])p.aptitudes[p.primaryPos]='S';
     if(!Number.isInteger(p.number))p.number=index===0?1:index+2;
     p.condition=clamp(Number.isFinite(Number(p.condition))?Math.round(Number(p.condition)):100,35,100);
-    p.growthCurve=soccerGrowthCurveFor(p);p.talent=clamp(Number(p.talent)||1,.75,1.35);if(!SOCCER_DEV_PLANS[p.developmentPlan])p.developmentPlan='balanced';p.developmentXp=Math.max(0,Math.round(Number(p.developmentXp)||0));p.developmentLevels=Math.max(0,Math.round(Number(p.developmentLevels)||0));p.careerMinutes=Math.max(0,Math.round(Number(p.careerMinutes)||0));p.appearances=Math.max(0,Math.round(Number(p.appearances)||0));p.starts=Math.max(0,Math.round(Number(p.starts)||0));p.injuryGames=soccerInjuryGames(p);p.specialTraits=Array.isArray(p.specialTraits)?p.specialTraits.filter(id=>SOCCER_SPECIAL_TRAITS[id]):[];
+    p.growthCurve=soccerGrowthCurveFor(p);p.talent=clamp(Number(p.talent)||1,.75,1.35);if(!SOCCER_DEV_PLANS[p.developmentPlan])p.developmentPlan='balanced';p.developmentXp=Math.max(0,Math.round(Number(p.developmentXp)||0));p.developmentLevels=Math.max(0,Math.round(Number(p.developmentLevels)||0));p.careerMinutes=Math.max(0,Math.round(Number(p.careerMinutes)||0));p.appearances=Math.max(0,Math.round(Number(p.appearances)||0));p.starts=Math.max(0,Math.round(Number(p.starts)||0));p.careerGoals=Math.max(0,Math.round(Number(p.careerGoals)||0));p.careerAssists=Math.max(0,Math.round(Number(p.careerAssists)||0));p.careerMotm=Math.max(0,Math.round(Number(p.careerMotm)||0));p.careerCleanSheets=Math.max(0,Math.round(Number(p.careerCleanSheets)||0));p.seasonGoals=Math.max(0,Math.round(Number(p.seasonGoals)||0));p.seasonAssists=Math.max(0,Math.round(Number(p.seasonAssists)||0));p.seasonMotm=Math.max(0,Math.round(Number(p.seasonMotm)||0));p.seasonMatches=Math.max(0,Math.round(Number(p.seasonMatches)||0));p.seasonMinutes=Math.max(0,Math.round(Number(p.seasonMinutes)||0));p.seasonCleanSheets=Math.max(0,Math.round(Number(p.seasonCleanSheets)||0));p.injuryGames=soccerInjuryGames(p);p.specialTraits=Array.isArray(p.specialTraits)?p.specialTraits.filter(id=>SOCCER_SPECIAL_TRAITS[id]):[];
     SOCCER_ATTRS.forEach(a=>p[a]=clamp(Number(p[a])||45,25,99));p.ovr=soccerPlayerOvr(p);return p;
   }
   function normalizeSoccerState(){
     const base=soccerDefaultState();
-    const prev=state.soccer||{},prevSeason=prev.season||{},prevTournaments=prevSeason.tournaments||{},prevCareer=prev.career||{},prevFacilities=prev.facilities||{},prevWorld=prev.world||{},prevManager=prev.manager||{};state.soccer={...base,...prev,record:{...base.record,...(prev.record||{})},lineupSlots:{...base.lineupSlots,...(prev.lineupSlots||{})},scouting:{...base.scouting,...(prev.scouting||{})},career:{...base.career,...prevCareer},facilities:{...base.facilities,...prevFacilities,levels:{...base.facilities.levels,...(prevFacilities.levels||{})}},world:{...base.world,...prevWorld},manager:{...base.manager,...prevManager,skills:{...base.manager.skills,...(prevManager.skills||{})}},season:{...base.season,...prevSeason,league:{...base.season.league,...(prevSeason.league||{})},tournaments:{interhigh:{...base.season.tournaments.interhigh,...(prevTournaments.interhigh||{})},championship:{...base.season.tournaments.championship,...(prevTournaments.championship||{})}}}};
+    const prev=state.soccer||{},prevSeason=prev.season||{},prevTournaments=prevSeason.tournaments||{},prevCareer=prev.career||{},prevFacilities=prev.facilities||{},prevWorld=prev.world||{},prevManager=prev.manager||{},prevHonors=prev.honors||{};state.soccer={...base,...prev,record:{...base.record,...(prev.record||{})},lineupSlots:{...base.lineupSlots,...(prev.lineupSlots||{})},scouting:{...base.scouting,...(prev.scouting||{})},career:{...base.career,...prevCareer},facilities:{...base.facilities,...prevFacilities,levels:{...base.facilities.levels,...(prevFacilities.levels||{})}},world:{...base.world,...prevWorld},honors:{...base.honors,...prevHonors,records:{...base.honors.records,...(prevHonors.records||{})},trophies:{...base.honors.trophies,...(prevHonors.trophies||{})}},manager:{...base.manager,...prevManager,skills:{...base.manager.skills,...(prevManager.skills||{})}},season:{...base.season,...prevSeason,league:{...base.season.league,...(prevSeason.league||{})},tournaments:{interhigh:{...base.season.tournaments.interhigh,...(prevTournaments.interhigh||{})},championship:{...base.season.tournaments.championship,...(prevTournaments.championship||{})}}}};
     if(!Array.isArray(state.soccer.players)||state.soccer.players.length<11){state.soccer.players=generateSoccerRoster();state.soccer.initialized=true;}
-    state.soccer.players.forEach(ensureSoccerPlayerProfile);
+    state.soccer.players.forEach(ensureSoccerPlayerProfile);const honors=state.soccer.honors;honors.seasons=Array.isArray(honors.seasons)?honors.seasons:[];honors.records=honors.records&&typeof honors.records==='object'?honors.records:{};honors.trophies={league:0,interhigh:0,championship:0,promotion:0,...(honors.trophies||{})};
     if(!SOCCER_FORMATIONS[state.soccer.formation])state.soccer.formation='4-3-3';
     if(!SOCCER_TACTICS[state.soccer.tactic])state.soccer.tactic='balanced';
     const validIds=new Set(state.soccer.players.map(p=>p.id)),slots=SOCCER_FORMATIONS[state.soccer.formation].slots,slotIds=new Set(slots.map(x=>x.id));
