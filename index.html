@@ -5428,7 +5428,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   function soccerCareerPromote(a,newType,text){
     a.currentType=newType;a.pathLabel={j3:'J3',j2:'J2',j1:'J1',overseas:'海外プロ',social:'社会人',university:'大学',topUniversity:'強豪大学'}[newType]||newType;
     const seed=soccerHashSeed(a.id+':move:'+a.careerYear+':'+newType),pool=SOCCER_CAREER_DESTINATIONS[newType];if(pool)a.destination=soccerCareerPick(pool,seed);
-    const note=text||a.pathLabel+'へステップアップ：'+a.destination;a.history.unshift({year:state.soccer.year,text:note});return note;
+    const note=text?(text+'：'+a.destination):(a.pathLabel+'へステップアップ：'+a.destination);a.history.unshift({year:state.soccer.year,text:note});return note;
   }
   function progressSoccerAlumniCareers(){
     const career=state.soccer.career;if(!career?.alumni?.length)return [];const news=[];
@@ -5437,11 +5437,11 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
       a.careerRating=clamp((Number(a.careerRating)||a.schoolOvr||50)+growth,35,ceiling);
       const seed=soccerHashSeed(a.id+':career:'+a.careerYear),roll=(seed%100)/100,r=a.careerRating||50;let note='';
       if(['university','topUniversity'].includes(a.currentType)&&a.careerYear>=4){
-        if(r>=80)note=soccerCareerPromote(a,'j1','大学経由でJ1加入：'+soccerCareerPick(SOCCER_CAREER_DESTINATIONS.j1,seed));
+        if(r>=80)note=soccerCareerPromote(a,'j1','大学経由でJ1加入');
         else if(r>=74)note=soccerCareerPromote(a,'j2');
         else if(r>=68)note=soccerCareerPromote(a,'j3');
         else if(r>=62&&roll<.55)note=soccerCareerPromote(a,'social');
-      }else if(a.currentType==='social'&&r>=71&&roll<.28)note=soccerCareerPromote(a,'j3','社会人からJ3へ：'+soccerCareerPick(SOCCER_CAREER_DESTINATIONS.j3,seed));
+      }else if(a.currentType==='social'&&r>=71&&roll<.28)note=soccerCareerPromote(a,'j3','社会人からJ3へ');
       else if(a.currentType==='j3'&&r>=74&&roll<.55)note=soccerCareerPromote(a,'j2');
       else if(a.currentType==='j2'&&r>=79&&roll<.48)note=soccerCareerPromote(a,'j1');
       else if(a.currentType==='j1'&&r>=85&&roll<.34)note=soccerCareerPromote(a,'overseas');
@@ -5449,7 +5449,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
       else if(a.nationalTeam)a.nationalCaps=(a.nationalCaps||0)+1+((seed>>>12)%5);
       if(note)news.push(a.name+'：'+note);
     });
-    if(news.length){career.news=[...news,...(career.news||[])].slice(0,20);}return news;
+    return news;
   }
   function soccerGraduationPreviewHtml(){
     const grads=state.soccer.players.filter(p=>p.grade>=3).slice().sort((a,b)=>soccerGraduateScore(b)-soccerGraduateScore(a));if(!grads.length)return '';
