@@ -6694,12 +6694,13 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if(soccerMatchTimer){clearInterval(soccerMatchTimer);soccerMatchTimer=null;}
     const opp=soccerSeasonOpponent(event);soccerMatchRuntime={eventId:event.id,eventType:event.type,opponent:opp,minute:0,home:0,away:0,chances:0,userGoals:0,dribbles:0,dribbleSuccess:0,nextChance:Math.max(10,Math.round((15+Math.floor(Math.random()*9))/soccerTacticInfo().chance)),inChance:false,finished:false,stage:0,ballHolder:null,attackers:[],actorPos:{},defenderPos:{},actionLocked:false,pk:null,liveLineup:{...state.soccer.lineupSlots},startingLineup:{...state.soccer.lineupSlots},substitutions:0,subHistory:[],minutesPlayed:{},tacticalChanges:0};
     $('soccerMatchResult').classList.add('hidden');$('soccerMatchResult').innerHTML='';$('soccerMatchLog').innerHTML='<b>'+escapeHtml(seasonCompetitionLabel(event))+'</b><br>'+escapeHtml(state.soccer.schoolName)+' vs '+escapeHtml(opp.name)+'<br>戦術：'+escapeHtml(soccerTacticInfo().name)+' / 相手：'+escapeHtml(soccerTacticInfo(soccerOpponentTactic(opp)).name);renderSoccerMatch();
+    const presentation=soccerEventPresentation(event);soccerCinematic('KICK OFF',state.soccer.schoolName+' vs '+opp.name,presentation.final?'legendary':'good',presentation.badge,900);
     soccerMatchTimer=setInterval(soccerMatchTick,520);
   }
   function soccerMatchTick(){
     const rt=soccerMatchRuntime;if(!rt||rt.finished||rt.inChance)return;soccerAccumulateMinutes(3);rt.minute=Math.min(90,rt.minute+3);const n=soccerMatchNumbers();
-    if(Math.random()<.0115*(n.attack/Math.max(35,n.oppDefense))){rt.home++;soccerLog('戦術から崩してゴール！ 自動得点');}
-    if(Math.random()<.0135*(n.oppAttack/Math.max(35,n.defense))){rt.away++;soccerLog(rt.opponent.name+'が得点');}
+    if(Math.random()<.0115*(n.attack/Math.max(35,n.oppDefense))){rt.home++;soccerLog('戦術から崩してゴール！ 自動得点');soccerScreenImpact(true);soccerCinematic('GOAL!',state.soccer.schoolName+' • '+rt.minute+"'",'good','TEAM GOAL',820);}
+    if(Math.random()<.0135*(n.oppAttack/Math.max(35,n.defense))){rt.away++;soccerLog(rt.opponent.name+'が得点');soccerScreenImpact(false);soccerCinematic('GOAL AGAINST',rt.opponent.name+' • '+rt.minute+"'",'bad','OPPONENT GOAL',720);}
     if(rt.minute>=rt.nextChance&&rt.minute<87&&rt.chances<3){startSoccerChance();return;}
     if(rt.minute>=90){finishSoccerMatch();return;}renderSoccerMatch();
   }
