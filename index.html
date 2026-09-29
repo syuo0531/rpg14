@@ -1565,6 +1565,21 @@ button.match-athlete{cursor:pointer}
   }
 }
 
+
+/* ===== HIGH SCHOOL SOCCER • PHASE 10 MANAGER CAREER ===== */
+.phase10-manager-layout{display:grid;grid-template-columns:310px minmax(0,1fr);gap:14px}
+.phase10-profile,.phase10-career-board{padding:18px}
+.phase10-manager-card{padding:16px;border:1px solid rgba(111,183,255,.24);border-radius:14px;background:radial-gradient(circle at 85% 5%,rgba(111,183,255,.13),transparent 40%),#0d1215}
+.phase10-manager-card span{display:block;font-size:7px;color:#8bb5dc;font-weight:1000;letter-spacing:.13em}.phase10-manager-card h3{margin:5px 0 4px;font-size:24px}.phase10-manager-card p{margin:0;color:#85938b;font-size:7px;line-height:1.45}
+.phase10-xp{margin-top:12px}.phase10-xp-head{display:flex;justify-content:space-between;font-size:7px;color:#8d9b93;font-weight:900}.phase10-xpbar{height:8px;margin-top:6px;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:#080b0d}.phase10-xpbar i{display:block;height:100%;background:linear-gradient(90deg,#6fb7ff,#45d483)}
+.phase10-manager-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:10px}.phase10-manager-stat{padding:9px;border:1px solid var(--line);border-radius:9px;background:#0a0f12;text-align:center}.phase10-manager-stat span{font-size:6px;color:#74817a}.phase10-manager-stat b{display:block;margin-top:3px;font-size:12px;color:#edf5f0}
+.phase10-skill-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}.phase10-skill{padding:12px;border:1px solid var(--line);border-radius:11px;background:#0d1215}.phase10-skill.max{border-color:rgba(242,209,122,.3)}.phase10-skill b{display:block;font-size:10px}.phase10-skill small{display:block;min-height:32px;margin-top:4px;color:#7c8982;font-size:6px;line-height:1.45}.phase10-skill-level{margin:8px 0;font-size:14px;font-weight:1000;color:#f0d77f}.phase10-skill button{width:100%;min-height:38px}
+.phase10-career-toggle{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:12px;margin-top:12px;border:1px solid var(--line);border-radius:11px;background:#0c1114}.phase10-career-toggle b{display:block;font-size:9px}.phase10-career-toggle small{display:block;margin-top:3px;color:#7d8983;font-size:6px;line-height:1.45}.phase10-career-toggle button{min-height:40px}
+.phase10-offer-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}.phase10-offer{padding:12px;border:1px solid var(--line);border-radius:11px;background:linear-gradient(150deg,#11171b,#0b0f12)}.phase10-offer b{display:block;font-size:10px}.phase10-offer small{display:block;margin-top:4px;color:#7f8c85;font-size:6px;line-height:1.45}.phase10-offer-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:8px 0}.phase10-offer-stats span{padding:5px;border:1px solid var(--line);border-radius:6px;text-align:center;font-size:6px;color:#89968f}.phase10-offer-stats strong{display:block;margin-top:2px;color:#e9f3ed;font-size:8px}.phase10-offer button{width:100%;min-height:38px}
+.phase10-history{display:grid;gap:6px;margin-top:10px}.phase10-history-row{padding:8px 9px;border-left:2px solid rgba(69,212,131,.32);background:rgba(69,212,131,.035);font-size:7px;line-height:1.45;color:#9eaba4}
+.phase10-manager-note{margin-top:10px;padding:9px;border:1px solid rgba(242,209,122,.16);border-radius:8px;background:rgba(242,209,122,.035);font-size:7px;line-height:1.5;color:#9b927b}
+@media(max-width:860px){.phase10-manager-layout{grid-template-columns:1fr}}@media(max-width:650px){.phase10-skill-grid,.phase10-offer-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -1617,6 +1632,7 @@ button.match-athlete{cursor:pointer}
                 <button class="soccer-action" data-nav="soccer-season"><span>🗓️</span><b>年間日程</b><small>リーグ・大会・進級を管理</small></button>
                 <button class="soccer-action" data-nav="soccer-school"><span>🏫</span><b>学校施設</b><small>設備投資で育成環境を強化</small></button>
                 <button class="soccer-action" data-nav="soccer-world"><span>🌏</span><b>高校サッカー界</b><small>全国勢力図・他校の世代交代</small></button>
+                <button class="soccer-action" data-nav="soccer-manager"><span>🧠</span><b>監督キャリア</b><small>監督Lv・スキル・移籍オファー</small></button>
               </div>
               <div class="soccer-metrics">
                 <div class="soccer-metric"><span>TRAINING PT</span><b id="soccerHomeTraining">0</b></div>
@@ -1629,6 +1645,7 @@ button.match-athlete{cursor:pointer}
                 <div class="soccer-metric"><span>FACILITY PT</span><b id="soccerHomeFacilityPoints">0</b></div>
                 <div class="soccer-metric"><span>CAMPUS</span><b id="soccerHomeCampusRank">BASIC</b></div>
                 <div class="soccer-metric"><span>WORLD #1</span><b id="soccerHomeWorldTop">—</b></div>
+                <div class="soccer-metric"><span>MANAGER LV</span><b id="soccerHomeManagerLevel">1</b></div>
               </div>
               <div class="soccer-csv-entry">
                 <div>
@@ -2362,6 +2379,46 @@ button.match-athlete{cursor:pointer}
               <div class="phase7-career-news" id="careerLatestNews">卒業生が出ると、ここに進路とその後のキャリアが記録されます。</div>
               <div class="phase7-alumni-grid" id="careerAlumniGrid"></div>
             </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-soccer-manager" data-screen="soccer-manager">
+        <div class="soccer-screen-head">
+          <button class="icon-btn" data-nav="home" aria-label="ホームへ戻る">←</button>
+          <div><span class="eyebrow">MANAGER CAREER</span><h2>監督キャリア</h2></div>
+          <div class="soccer-pill">LV <span id="soccerManagerLevel">1</span></div>
+        </div>
+        <div class="phase10-manager-layout">
+          <aside class="phase10-profile metal-panel">
+            <div class="phase10-manager-card">
+              <span>HEAD COACH</span>
+              <h3 id="soccerManagerTitle">ROOKIE COACH</h3>
+              <p id="soccerManagerClub">FORGE高校 • 1年目</p>
+              <div class="phase10-xp">
+                <div class="phase10-xp-head"><span>MANAGER XP</span><span id="soccerManagerXpText">0 / 120</span></div>
+                <div class="phase10-xpbar"><i id="soccerManagerXpBar"></i></div>
+              </div>
+            </div>
+            <div class="phase10-manager-stats">
+              <div class="phase10-manager-stat"><span>SKILL PT</span><b id="soccerManagerSkillPoints">0</b></div>
+              <div class="phase10-manager-stat"><span>CAREER YEARS</span><b id="soccerManagerYears">0</b></div>
+              <div class="phase10-manager-stat"><span>WINS</span><b id="soccerManagerWins">0</b></div>
+              <div class="phase10-manager-stat"><span>TITLES</span><b id="soccerManagerTitles">0</b></div>
+            </div>
+            <div class="phase10-career-toggle">
+              <div><b>学校移籍モード</b><small>OFFなら現在の高校を永久に育成。ONなら新年度に他校からオファーが届きます。</small></div>
+              <button type="button" class="secondary-btn" id="soccerCareerModeBtn">OFF</button>
+            </div>
+            <div class="phase10-manager-note" id="soccerManagerEffectNote">監督スキルは育成・戦術・スカウトに直接反映されます。</div>
+          </aside>
+          <section class="phase10-career-board metal-panel">
+            <div class="panel-head"><span>COACH SKILLS</span><small>最大 Lv5</small></div>
+            <div class="phase10-skill-grid" id="soccerManagerSkillGrid"></div>
+            <div class="panel-head" style="margin-top:18px"><span>JOB OFFERS</span><small id="soccerManagerOfferMeta">移籍モード OFF</small></div>
+            <div class="phase10-offer-grid" id="soccerManagerOffers"></div>
+            <div class="panel-head" style="margin-top:18px"><span>CAREER HISTORY</span><small>監督としての歩み</small></div>
+            <div class="phase10-history" id="soccerManagerHistory"></div>
           </section>
         </div>
       </section>
@@ -5563,6 +5620,66 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     return notes;
   }
 
+
+  /* HIGH SCHOOL SOCCER • PHASE 10 MANAGER CAREER */
+  const SOCCER_MANAGER_SKILLS={
+    development:{name:'育成力',icon:'🌱',desc:'個別練習とMATCH XPの成長効率を上げる。'},
+    tactics:{name:'戦術力',icon:'🧠',desc:'試合中の攻守パフォーマンスを底上げする。'},
+    recruiting:{name:'人脈',icon:'🤝',desc:'有望選手への勧誘成功率を上げる。'}
+  };
+  const SOCCER_MANAGER_SCHOOL_NAMES={
+    hokkaido:['札幌黎明高校','北海蒼星高校','旭川フロンティア'],tohoku:['仙台青嶺高校','盛岡北辰高校','山形フェニックス'],
+    kanto:['東京青翔高校','横浜星南高校','埼玉中央学院'],hokushinetsu:['新潟蒼陵高校','金沢北星高校','長野アルプス学院'],
+    tokai:['静岡青峰高校','名古屋東星高校','岐阜翔英高校'],kansai:['大阪蒼天高校','神戸北斗高校','京都翔陽高校'],
+    chugoku:['広島青雲高校','岡山東陵高校','山口星翔高校'],shikoku:['徳島鳴門学院','高松青峰高校','松山黎明高校'],
+    kyushu:['福岡蒼海高校','熊本翔南高校','鹿児島星稜高校']
+  };
+  function soccerManagerXpNeed(level=state.soccer.manager?.level||1){return 80+Math.max(1,level)*40;}
+  function soccerManagerSkillLevel(key){return clamp(Math.round(Number(state.soccer.manager?.skills?.[key])||0),0,5);}
+  function soccerManagerDevelopmentMultiplier(){return 1+soccerManagerSkillLevel('development')*.035;}
+  function soccerManagerTacticsMultiplier(){return 1+soccerManagerSkillLevel('tactics')*.008;}
+  function soccerManagerRecruitBonus(){return soccerManagerSkillLevel('recruiting')*.02;}
+  function soccerManagerTitle(){const lv=state.soccer.manager?.level||1;if(lv>=15)return 'MASTER MANAGER';if(lv>=10)return 'NATIONAL COACH';if(lv>=7)return 'ELITE MANAGER';if(lv>=4)return 'RISING COACH';return 'ROOKIE COACH';}
+  function soccerAwardManagerXp(amount){const m=state.soccer.manager;if(!m)return 0;let gained=0;m.xp=Math.max(0,(m.xp||0)+Math.max(0,Math.round(amount||0)));while(m.xp>=soccerManagerXpNeed(m.level)){m.xp-=soccerManagerXpNeed(m.level);m.level++;m.skillPoints++;gained++;}if(gained>0)showMoment('MANAGER LEVEL UP','LV '+m.level+' • SKILL PT +'+gained,'good');return gained;}
+  function soccerManagerMatchReward(event,won,draw){const m=state.soccer.manager;m.wins=(m.wins||0)+(won?1:0);let xp=won?24:draw?14:9;if(['interhigh','championship'].includes(event?.type))xp+=8;if(event?.type==='promotion')xp+=6;return xp;}
+  function spendSoccerManagerSkill(key){normalizeSoccerState();const m=state.soccer.manager;if(!SOCCER_MANAGER_SKILLS[key]||m.skillPoints<=0||soccerManagerSkillLevel(key)>=5)return;m.skillPoints--;m.skills[key]=soccerManagerSkillLevel(key)+1;saveState();renderSoccerManager();renderSoccerHome();showMoment('COACH SKILL UP',SOCCER_MANAGER_SKILLS[key].name+' Lv.'+m.skills[key],'good');}
+  function soccerManagerCanTransfer(){const ss=state.soccer.season;return (ss?.league?.roundsPlayed||0)===0&&!(ss?.history||[]).length&&ss?.currentIndex===0;}
+  function soccerManagerOfferName(region,index,year){const pool=SOCCER_MANAGER_SCHOOL_NAMES[region]||SOCCER_MANAGER_SCHOOL_NAMES.hokkaido;return pool[(index+year)%pool.length];}
+  function soccerGenerateManagerOffers(){
+    const m=state.soccer.manager;if(!m?.careerMode)return [];normalizeSoccerWorld();const maxStrength=clamp(51+m.level*2.4+m.titles*1.5,52,91),minStrength=Math.max(40,maxStrength-16),seed=soccerHashSeed('manager-offers:'+state.soccer.year+':'+m.level+':'+m.titles);
+    const pool=Object.values(state.soccer.world.schools).filter(s=>s.strength>=minStrength&&s.strength<=maxStrength).sort((a,b)=>(soccerHashSeed(a.id+':'+seed)%1000)-(soccerHashSeed(b.id+':'+seed)%1000)),used=new Set(),offers=[];
+    for(const s of pool){const name=soccerManagerOfferName(s.region,offers.length,state.soccer.year);if(used.has(name)||name===state.soccer.schoolName)continue;used.add(name);offers.push({id:'offer-'+state.soccer.year+'-'+offers.length+'-'+s.region+'-'+s.tier,schoolName:name,region:s.region,tier:s.tier,strength:s.strength,prestige:s.prestige,year:state.soccer.year});if(offers.length>=3)break;}return offers;
+  }
+  function toggleSoccerManagerCareerMode(){const m=state.soccer.manager;m.careerMode=!m.careerMode;if(m.careerMode&&!m.offers.length)m.offers=soccerGenerateManagerOffers();if(!m.careerMode)m.offers=[];saveState();renderSoccerManager();renderSoccerHome();}
+  function soccerManagerSeasonAwards(){
+    const m=state.soccer.manager;if(m.lastSeasonAwardYear===state.soccer.year)return '';const ss=state.soccer.season;let trophies=0,bonus=0,labels=[];
+    if(ss.tournaments?.interhigh?.champion){trophies++;bonus+=70;labels.push('インターハイ優勝');}if(ss.tournaments?.championship?.champion){trophies++;bonus+=90;labels.push('選手権優勝');}if(ss.league?.finalRank===1){trophies++;bonus+=45;labels.push(currentLeagueInfo().name+' 1位');}if(ss.league?.movement&&String(ss.league.movement).includes('昇格')){bonus+=25;labels.push('昇格');}
+    m.titles=(m.titles||0)+trophies;m.years=(m.years||0)+1;m.lastSeasonAwardYear=state.soccer.year;if(bonus)soccerAwardManagerXp(bonus);return labels.join(' / ');
+  }
+  function soccerBuildManagerOfferRoster(offer){
+    const roster=generateSoccerRoster(),delta=clamp(Math.round((Number(offer.strength||55)-55)*.62),-4,18);
+    roster.forEach((p,i)=>{p.grade=i<6?3:i<12?2:1;SOCCER_ATTRS.forEach(a=>p[a]=clamp(p[a]+delta+((soccerHashSeed(p.id+a)%3)-1),25,95));p.potential=clamp(p.potential+Math.max(0,Math.round(delta*.7)),68,98);p.talent=clamp(p.talent+Math.max(0,(offer.prestige-50)/600),.82,1.35);p.condition=100;p.ovr=soccerPlayerOvr(p);ensureSoccerPlayerProfile(p,i);});return roster;
+  }
+  function acceptSoccerManagerOffer(id){
+    normalizeSoccerState();const m=state.soccer.manager,offer=m.offers.find(o=>o.id===id);if(!offer||!m.careerMode)return;if(!soccerManagerCanTransfer())return toast('<b>JOB OFFER</b> 移籍できるのは新年度開幕直後だけです');
+    const oldSchool=state.soccer.schoolName;m.history.unshift({year:state.soccer.year,from:oldSchool,to:offer.schoolName,region:offer.region,tier:offer.tier});m.history=m.history.slice(0,20);
+    state.soccer.schoolName=offer.schoolName;state.soccer.players=soccerBuildManagerOfferRoster(offer);state.soccer.reputation=clamp(Math.round((offer.prestige-35)*8),20,700);state.soccer.trainingPoints=30;state.soccer.lineupSlots={};state.soccer.starterIds=[];state.soccer.selectedPlayerId=state.soccer.players[0]?.id||null;
+    state.soccer.scouting={...state.soccer.scouting,points:30+soccerManagerSkillLevel('recruiting')*4,selectedZone:'local',candidates:[],committed:[],scholarshipUsed:0,homePrefecture:(REGION_PREFECTURES[offer.region]||['北海道'])[0]};
+    const baseFacility=clamp(1+Math.floor((offer.prestige-40)/16),1,4);SOCCER_FACILITY_KEYS.forEach(key=>state.soccer.facilities.levels[key]=clamp(baseFacility+((soccerHashSeed(offer.id+key)%3)===0?1:0),1,5));state.soccer.facilities.points=80;
+    state.soccer.season.league={region:offer.region,tier:offer.tier,nextTier:offer.tier,table:[],roundsPlayed:0,finalized:false,finalRank:null,promotionPlayoffEligible:false,promotionPlayoffWon:false,movement:'監督就任'};state.soccer.season.history=[];state.soccer.season.skipped=[];state.soccer.season.currentIndex=0;state.soccer.season.tournaments={interhigh:{alive:true,champion:false,best:'未出場'},championship:{alive:true,champion:false,best:'未出場'}};state.soccer.season.news=oldSchool+'から'+offer.schoolName+'へ監督就任。';state.soccer.season.league.table=seasonInitialLeagueTable();m.offers=[];autoSelectSoccerStarters(false);saveState();renderSoccerShell();showMoment('NEW CLUB',offer.schoolName,'good');navigate('soccer-manager');
+  }
+  function renderSoccerManager(){
+    if(!$('soccerManagerSkillGrid'))return;normalizeSoccerState();const m=state.soccer.manager,need=soccerManagerXpNeed(m.level),canTransfer=soccerManagerCanTransfer();
+    $('soccerManagerLevel').textContent=m.level;$('soccerManagerTitle').textContent=soccerManagerTitle();$('soccerManagerClub').textContent=state.soccer.schoolName+' • 監督'+Math.max(1,m.years+1)+'年目';$('soccerManagerXpText').textContent=m.xp+' / '+need;$('soccerManagerXpBar').style.width=clamp(m.xp/need*100,0,100)+'%';$('soccerManagerSkillPoints').textContent=m.skillPoints;$('soccerManagerYears').textContent=m.years;$('soccerManagerWins').textContent=m.wins;$('soccerManagerTitles').textContent=m.titles;
+    $('soccerCareerModeBtn').textContent=m.careerMode?'ON':'OFF';$('soccerManagerEffectNote').textContent='育成 ×'+soccerManagerDevelopmentMultiplier().toFixed(2)+' / 戦術 ×'+soccerManagerTacticsMultiplier().toFixed(3)+' / 勧誘 +'+Math.round(soccerManagerRecruitBonus()*100)+'%。';
+    $('soccerManagerSkillGrid').innerHTML=Object.entries(SOCCER_MANAGER_SKILLS).map(([key,x])=>{const lv=soccerManagerSkillLevel(key),max=lv>=5;return '<article class="phase10-skill'+(max?' max':'')+'"><b>'+x.icon+' '+x.name+'</b><small>'+x.desc+'</small><div class="phase10-skill-level">Lv.'+lv+' / 5</div><button type="button" class="secondary-btn" data-manager-skill="'+key+'" '+(max||m.skillPoints<=0?'disabled':'')+'>'+(max?'MAX':'1 PTで強化')+'</button></article>';}).join('');
+    Array.from(document.querySelectorAll('[data-manager-skill]')).forEach(btn=>btn.addEventListener('click',()=>spendSoccerManagerSkill(btn.dataset.managerSkill)));
+    $('soccerManagerOfferMeta').textContent=!m.careerMode?'移籍モード OFF':canTransfer?'新年度 • 就任可能':'次年度まで交渉期間外';
+    $('soccerManagerOffers').innerHTML=!m.careerMode?'<div class="phase10-manager-note">移籍モードをONにすると、監督Lvと実績に応じた他校オファーが届きます。</div>':m.offers.length?m.offers.map(o=>'<article class="phase10-offer"><b>'+escapeHtml(o.schoolName)+'</b><small>'+REGION_LABELS[o.region]+' • '+escapeHtml((LEAGUE_PYRAMIDS[o.region]?.[o.tier]?.name)||'リーグ')+'</small><div class="phase10-offer-stats"><span>POWER<strong>'+o.strength+'</strong></span><span>名声<strong>'+o.prestige+'</strong></span><span>TIER<strong>'+(o.tier+1)+'</strong></span></div><button type="button" class="primary-btn" data-manager-offer="'+o.id+'" '+(canTransfer?'':'disabled')+'>監督就任</button></article>').join(''):'<div class="phase10-manager-note">現在オファーはありません。新年度に更新されます。</div>';
+    Array.from(document.querySelectorAll('[data-manager-offer]')).forEach(btn=>btn.addEventListener('click',()=>acceptSoccerManagerOffer(btn.dataset.managerOffer)));
+    $('soccerManagerHistory').innerHTML=m.history.length?m.history.map(h=>'<div class="phase10-history-row">YEAR '+h.year+' • '+escapeHtml(h.from)+' → <b>'+escapeHtml(h.to)+'</b>（'+REGION_LABELS[h.region]+'）</div>').join(''):'<div class="phase10-manager-note">現在は'+escapeHtml(state.soccer.schoolName)+'一筋。移籍しなくても最後まで遊べます。</div>';
+  }
+
   /* HIGH SCHOOL SOCCER • PHASE 9 WORLD SIMULATION */
   const SOCCER_WORLD_TREND=['低迷','下降','安定','上昇','躍進'];
   function soccerWorldPool(region,tier){
@@ -6010,7 +6127,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   const SOCCER_ACTION_MS=430;
 
   function soccerDefaultState(){
-    return {initialized:false,identitySetupDone:false,schoolName:'FORGE高校',year:1,month:4,reputation:0,schoolExp:0,trainingPoints:0,formation:'4-3-3',players:[],starterIds:[],lineupSlots:{},selectedSlotId:null,selectedPlayerId:null,scouting:{points:30,selectedZone:'local',candidates:[],committed:[],scholarshipUsed:0,searchSerial:0,homePrefecture:'北海道',recruitWins:0,recruitLosses:0},career:{alumni:[],news:[],totalGraduates:0},facilities:{points:120,levels:{ground:1,training:1,recovery:1,dormitory:1,medical:1,scouting:1,analysis:1},history:[]},world:{initialized:false,lastSimulatedYear:0,schools:{},leagues:{},news:[],history:[]},season:{currentIndex:0,gradesSeeded:false,history:[],skipped:[],news:'新シーズン開幕。',league:{region:'hokkaido',tier:0,nextTier:0,table:[],roundsPlayed:0,finalized:false,finalRank:null,promotionPlayoffEligible:false,promotionPlayoffWon:false,movement:'札幌ブロック4部からスタート'},tournaments:{interhigh:{alive:true,champion:false,best:'未出場'},championship:{alive:true,champion:false,best:'未出場'}},lastGraduates:[],lastIntake:[]},record:{played:0,wins:0,draws:0,losses:0,gf:0,ga:0},lastResult:null};
+    return {initialized:false,identitySetupDone:false,schoolName:'FORGE高校',year:1,month:4,reputation:0,schoolExp:0,trainingPoints:0,formation:'4-3-3',players:[],starterIds:[],lineupSlots:{},selectedSlotId:null,selectedPlayerId:null,scouting:{points:30,selectedZone:'local',candidates:[],committed:[],scholarshipUsed:0,searchSerial:0,homePrefecture:'北海道',recruitWins:0,recruitLosses:0},career:{alumni:[],news:[],totalGraduates:0},facilities:{points:120,levels:{ground:1,training:1,recovery:1,dormitory:1,medical:1,scouting:1,analysis:1},history:[]},world:{initialized:false,lastSimulatedYear:0,schools:{},leagues:{},news:[],history:[]},manager:{level:1,xp:0,skillPoints:0,skills:{development:0,tactics:0,recruiting:0},careerMode:false,years:0,wins:0,titles:0,offers:[],history:[],lastSeasonAwardYear:0},season:{currentIndex:0,gradesSeeded:false,history:[],skipped:[],news:'新シーズン開幕。',league:{region:'hokkaido',tier:0,nextTier:0,table:[],roundsPlayed:0,finalized:false,finalRank:null,promotionPlayoffEligible:false,promotionPlayoffWon:false,movement:'札幌ブロック4部からスタート'},tournaments:{interhigh:{alive:true,champion:false,best:'未出場'},championship:{alive:true,champion:false,best:'未出場'}},lastGraduates:[],lastIntake:[]},record:{played:0,wins:0,draws:0,losses:0,gf:0,ga:0},lastResult:null};
   }
 
   let pendingSoccerRename=null;
@@ -6060,7 +6177,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   }
   function normalizeSoccerState(){
     const base=soccerDefaultState();
-    const prev=state.soccer||{},prevSeason=prev.season||{},prevTournaments=prevSeason.tournaments||{},prevCareer=prev.career||{},prevFacilities=prev.facilities||{},prevWorld=prev.world||{};state.soccer={...base,...prev,record:{...base.record,...(prev.record||{})},lineupSlots:{...base.lineupSlots,...(prev.lineupSlots||{})},scouting:{...base.scouting,...(prev.scouting||{})},career:{...base.career,...prevCareer},facilities:{...base.facilities,...prevFacilities,levels:{...base.facilities.levels,...(prevFacilities.levels||{})}},world:{...base.world,...prevWorld},season:{...base.season,...prevSeason,league:{...base.season.league,...(prevSeason.league||{})},tournaments:{interhigh:{...base.season.tournaments.interhigh,...(prevTournaments.interhigh||{})},championship:{...base.season.tournaments.championship,...(prevTournaments.championship||{})}}}};
+    const prev=state.soccer||{},prevSeason=prev.season||{},prevTournaments=prevSeason.tournaments||{},prevCareer=prev.career||{},prevFacilities=prev.facilities||{},prevWorld=prev.world||{},prevManager=prev.manager||{};state.soccer={...base,...prev,record:{...base.record,...(prev.record||{})},lineupSlots:{...base.lineupSlots,...(prev.lineupSlots||{})},scouting:{...base.scouting,...(prev.scouting||{})},career:{...base.career,...prevCareer},facilities:{...base.facilities,...prevFacilities,levels:{...base.facilities.levels,...(prevFacilities.levels||{})}},world:{...base.world,...prevWorld},manager:{...base.manager,...prevManager,skills:{...base.manager.skills,...(prevManager.skills||{})}},season:{...base.season,...prevSeason,league:{...base.season.league,...(prevSeason.league||{})},tournaments:{interhigh:{...base.season.tournaments.interhigh,...(prevTournaments.interhigh||{})},championship:{...base.season.tournaments.championship,...(prevTournaments.championship||{})}}}};
     if(!Array.isArray(state.soccer.players)||state.soccer.players.length<11){state.soccer.players=generateSoccerRoster();state.soccer.initialized=true;}
     state.soccer.players.forEach(ensureSoccerPlayerProfile);
     if(!SOCCER_FORMATIONS[state.soccer.formation])state.soccer.formation='4-3-3';
@@ -6074,6 +6191,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if(!validIds.has(state.soccer.selectedPlayerId))state.soccer.selectedPlayerId=state.soccer.players[0]?.id||null;
     state.soccer.trainingPoints=Math.max(0,Math.round(Number(state.soccer.trainingPoints)||0));state.soccer.reputation=Math.max(0,Math.round(Number(state.soccer.reputation)||0));
     normalizeSoccerWorld();
+    const manager=state.soccer.manager;manager.level=Math.max(1,Math.round(Number(manager.level)||1));manager.xp=Math.max(0,Math.round(Number(manager.xp)||0));manager.skillPoints=Math.max(0,Math.round(Number(manager.skillPoints)||0));manager.years=Math.max(0,Math.round(Number(manager.years)||0));manager.wins=Math.max(0,Math.round(Number(manager.wins)||0));manager.titles=Math.max(0,Math.round(Number(manager.titles)||0));manager.offers=Array.isArray(manager.offers)?manager.offers:[];manager.history=Array.isArray(manager.history)?manager.history:[];manager.careerMode=!!manager.careerMode;Object.keys(SOCCER_MANAGER_SKILLS).forEach(k=>manager.skills[k]=soccerManagerSkillLevel(k));
     const facilities=state.soccer.facilities;facilities.points=Math.max(0,Math.round(Number(facilities.points)||0));facilities.history=Array.isArray(facilities.history)?facilities.history:[];SOCCER_FACILITY_KEYS.forEach(key=>facilities.levels[key]=soccerFacilityLevel(key));
     const career=state.soccer.career;career.alumni=Array.isArray(career.alumni)?career.alumni:[];career.news=Array.isArray(career.news)?career.news:[];career.totalGraduates=Math.max(career.alumni.length,Math.round(Number(career.totalGraduates)||0));career.alumni.forEach(a=>{a.history=Array.isArray(a.history)?a.history:[];a.careerYear=Math.max(0,Math.round(Number(a.careerYear)||0));a.careerRating=clamp(Math.round(Number(a.careerRating)||Number(a.schoolOvr)||50),35,99);a.nationalCaps=Math.max(0,Math.round(Number(a.nationalCaps)||0));});
     const sc=state.soccer.scouting;sc.points=Math.max(0,Math.round(Number(sc.points)||0));sc.searchSerial=Math.max(0,Math.round(Number(sc.searchSerial)||0));sc.scholarshipUsed=Math.max(0,Math.round(Number(sc.scholarshipUsed)||0));sc.recruitWins=Math.max(0,Math.round(Number(sc.recruitWins)||0));sc.recruitLosses=Math.max(0,Math.round(Number(sc.recruitLosses)||0));sc.candidates=Array.isArray(sc.candidates)?sc.candidates:[];sc.committed=Array.isArray(sc.committed)?sc.committed:[];sc.candidates.forEach(normalizeScoutCandidate);sc.committed.forEach(normalizeScoutCandidate);if(!SCOUT_ZONES.some(z=>z.id===sc.selectedZone))sc.selectedZone='local';
