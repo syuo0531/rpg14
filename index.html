@@ -1676,7 +1676,7 @@ button.match-athlete{cursor:pointer}
 
           <div class="soccer-dashboard">
             <section class="soccer-card metal-panel">
-              <div class="panel-head"><span>MANAGER HUB</span><small>PHASE 7</small></div>
+              <div class="panel-head"><span>MANAGER HUB</span><small>PHASE 13</small></div>
               <div class="soccer-actions">
                 <button class="soccer-action primary" data-nav="study"><span>📚</span><b>勉強する</b><small>正解で育成PTを獲得</small></button>
                 <button class="soccer-action csv-action" type="button" id="soccerCsvMenuBtn"><span>📥</span><b>問題CSV</b><small>問題を追加・管理</small></button>
@@ -6129,8 +6129,8 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     return {alumni:alumni.length,pro,overseas,national};
   }
   function soccerCreateAlumnus(p){
-    const path=soccerGraduatePath(p),rating=clamp(Math.round((Number(p.ovr)||50)+(Number(p.talent)||1)*2+(p.specialTraits?.length||0)),35,99);
-    return {id:'ob-'+p.id+'-y'+state.soccer.year,name:p.name,pos:p.primaryPos,graduateYear:state.soccer.year,schoolOvr:p.ovr,potential:p.potential,talent:p.talent,growthCurve:p.growthCurve,specialTraits:[...(p.specialTraits||[])],appearances:p.appearances||0,careerMinutes:p.careerMinutes||0,schoolGoals:p.careerGoals||0,schoolAssists:p.careerAssists||0,schoolMotm:p.careerMotm||0,schoolCleanSheets:p.careerCleanSheets||0,initialType:path.type,currentType:path.type,pathLabel:path.label,destination:path.destination,graduateScore:path.score,careerRating:rating,careerYear:0,nationalTeam:false,nationalCaps:0,history:[{year:state.soccer.year,text:path.label+'：'+path.destination}]};
+    const path=soccerGraduatePath(p),rating=clamp(Math.round((Number(p.ovr)||50)+(Number(p.talent)||1)*2+(p.specialTraits?.length||0)),35,99),prospect=soccerProspectTag(p),scoutInterest=soccerProScoutInterest(p),watchers=soccerScoutWatchers(p);
+    return {id:'ob-'+p.id+'-y'+state.soccer.year,name:p.name,pos:p.primaryPos,graduateYear:state.soccer.year,schoolOvr:p.ovr,potential:p.potential,talent:p.talent,growthCurve:p.growthCurve,specialTraits:[...(p.specialTraits||[])],appearances:p.appearances||0,careerMinutes:p.careerMinutes||0,schoolGoals:p.careerGoals||0,schoolAssists:p.careerAssists||0,schoolMotm:p.careerMotm||0,schoolCleanSheets:p.careerCleanSheets||0,prospectLabel:prospect?.label||'',scoutInterest,scoutWatchers:watchers,initialType:path.type,currentType:path.type,pathLabel:path.label,destination:path.destination,graduateScore:path.score,careerRating:rating,careerYear:0,nationalTeam:false,nationalCaps:0,history:[{year:state.soccer.year,text:path.label+'：'+path.destination}]};
   }
   function soccerCareerPromote(a,newType,text){
     a.currentType=newType;a.pathLabel={j3:'J3',j2:'J2',j1:'J1',overseas:'海外プロ',social:'社会人',university:'大学',topUniversity:'強豪大学'}[newType]||newType;
@@ -6160,10 +6160,10 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   }
   function soccerGraduationPreviewHtml(){
     const grads=state.soccer.players.filter(p=>p.grade>=3).slice().sort((a,b)=>soccerGraduateScore(b)-soccerGraduateScore(a));if(!grads.length)return '';
-    return '<div class="phase7-graduation-preview">'+grads.slice(0,6).map(p=>{const x=soccerGraduatePath(p);return '<div class="phase7-grad-row"><b>'+escapeHtml(p.name)+' • '+p.primaryPos+' • OVR '+p.ovr+'</b><span>'+escapeHtml(x.label)+'候補</span></div>';}).join('')+'</div>';
+    return '<div class="phase7-graduation-preview">'+grads.slice(0,6).map(p=>{const x=soccerGraduatePath(p),interest=soccerProScoutInterest(p),tag=soccerProspectTag(p);return '<div class="phase7-grad-row"><b>'+escapeHtml(p.name)+' • '+p.primaryPos+' • OVR '+p.ovr+(tag?' • '+escapeHtml(tag.label):'')+'</b><span>SCOUT '+interest+'% • '+escapeHtml(x.label)+'候補</span></div>';}).join('')+'</div>';
   }
   function soccerAlumniCardHtml(a){
-    const pro=soccerIsProCareer(a.currentType),over=a.currentType==='overseas',nt=!!a.nationalTeam,tags=[pro?'<span class="phase7-career-tag pro">PRO</span>':'',over?'<span class="phase7-career-tag eu">OVERSEAS</span>':'',nt?'<span class="phase7-career-tag nt">JAPAN '+(a.nationalCaps||0)+' CAPS</span>':''].filter(Boolean).join('');
+    const pro=soccerIsProCareer(a.currentType),over=a.currentType==='overseas',nt=!!a.nationalTeam,tags=[a.prospectLabel?'<span class="phase7-career-tag">'+escapeHtml(a.prospectLabel)+'</span>':'',Number.isFinite(Number(a.scoutInterest))?'<span class="phase7-career-tag">SCOUT '+Math.round(a.scoutInterest)+'%</span>':'',pro?'<span class="phase7-career-tag pro">PRO</span>':'',over?'<span class="phase7-career-tag eu">OVERSEAS</span>':'',nt?'<span class="phase7-career-tag nt">JAPAN '+(a.nationalCaps||0)+' CAPS</span>':''].filter(Boolean).join('');
     return '<article class="phase7-alumni-card'+(pro?' pro':'')+(over?' overseas':'')+(nt?' national':'')+'"><div class="phase7-alumni-head"><span class="soccer-pos">'+escapeHtml(a.pos)+'</span><div><b>'+escapeHtml(a.name)+'</b><small>YEAR '+a.graduateYear+'卒 • 高校OVR '+a.schoolOvr+'</small></div><span class="phase7-alumni-rating">'+Math.round(a.careerRating||a.schoolOvr)+'</span></div><div class="phase7-career-path"><strong>'+escapeHtml(a.pathLabel||a.currentType)+'</strong> • '+escapeHtml(a.destination||'—')+'<br>高校通算 '+(a.schoolGoals||0)+'G '+(a.schoolAssists||0)+'A • 卒業時評価 '+a.graduateScore+' • キャリア '+(a.careerYear||0)+'年目</div>'+(tags?'<div class="phase7-career-tags">'+tags+'</div>':'')+'</article>';
   }
   function renderSoccerCareerLegacy(){
