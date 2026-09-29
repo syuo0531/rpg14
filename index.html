@@ -5845,20 +5845,20 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if(assistId&&assistId!==scorerId)rt.playerAssists[assistId]=(rt.playerAssists[assistId]||0)+1;
   }
   function applySoccerMatchStatistics(){
-    const rt=soccerMatchRuntime;if(!rt)return null;const participants=[];
+    const rt=soccerMatchRuntime;if(!rt)return null;const event=SEASON_EVENTS.find(e=>e.id===rt.eventId)||currentSeasonEvent(),compKey=soccerCompetitionKey(event),participants=[];
     state.soccer.players.forEach(p=>{
       const mins=Math.min(90,Math.round(rt.minutesPlayed?.[p.id]||0));if(mins<=0)return;
       p.seasonMatches=(p.seasonMatches||0)+1;p.seasonMinutes=(p.seasonMinutes||0)+mins;p.seasonGoals=(p.seasonGoals||0)+(rt.playerGoals?.[p.id]||0);p.seasonAssists=(p.seasonAssists||0)+(rt.playerAssists?.[p.id]||0);
-      p.careerGoals=(p.careerGoals||0)+(rt.playerGoals?.[p.id]||0);p.careerAssists=(p.careerAssists||0)+(rt.playerAssists?.[p.id]||0);
+      p.careerGoals=(p.careerGoals||0)+(rt.playerGoals?.[p.id]||0);p.careerAssists=(p.careerAssists||0)+(rt.playerAssists?.[p.id]||0);const cs=soccerEnsureCompetitionStats(p)[compKey];cs.matches++;cs.minutes+=mins;cs.goals+=(rt.playerGoals?.[p.id]||0);cs.assists+=(rt.playerAssists?.[p.id]||0);
       participants.push(p);
     });
     const gkId=rt.liveLineup?.[soccerFormationSlots().find(s=>s.pos==='GK')?.id]||rt.startingLineup?.[soccerFormationSlots().find(s=>s.pos==='GK')?.id],gk=state.soccer.players.find(p=>p.id===gkId);
-    if(gk&&rt.away===0){gk.seasonCleanSheets=(gk.seasonCleanSheets||0)+1;gk.careerCleanSheets=(gk.careerCleanSheets||0)+1;}
+    if(gk&&rt.away===0){gk.seasonCleanSheets=(gk.seasonCleanSheets||0)+1;gk.careerCleanSheets=(gk.careerCleanSheets||0)+1;soccerEnsureCompetitionStats(gk)[compKey].cleanSheets++;}
     const motm=participants.slice().sort((a,b)=>{
       const sa=(rt.playerGoals?.[a.id]||0)*6+(rt.playerAssists?.[a.id]||0)*4+(rt.minutesPlayed?.[a.id]||0)/90+(Number(a.ovr)||0)/30;
       const sb=(rt.playerGoals?.[b.id]||0)*6+(rt.playerAssists?.[b.id]||0)*4+(rt.minutesPlayed?.[b.id]||0)/90+(Number(b.ovr)||0)/30;return sb-sa;
     })[0]||null;
-    if(motm){motm.seasonMotm=(motm.seasonMotm||0)+1;motm.careerMotm=(motm.careerMotm||0)+1;}
+    if(motm){motm.seasonMotm=(motm.seasonMotm||0)+1;motm.careerMotm=(motm.careerMotm||0)+1;soccerEnsureCompetitionStats(motm)[compKey].motm++;}
     return motm;
   }
   function soccerCurrentSeasonSnapshot(){
@@ -5881,7 +5881,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     const book=soccerSchoolHonorBook(snap.schoolName);if(ss.league.finalRank===1)book.trophies.league++;if(ss.tournaments.interhigh.champion)book.trophies.interhigh++;if(ss.tournaments.championship.champion)book.trophies.championship++;if(ss.league.promotionPlayoffWon)book.trophies.promotion++;honors.trophies={...book.trophies};
     soccerUpdateSchoolRecords(snap);return snap;
   }
-  function soccerResetSeasonPlayerStats(p){['seasonGoals','seasonAssists','seasonMotm','seasonMatches','seasonMinutes','seasonCleanSheets'].forEach(k=>p[k]=0);}
+  function soccerResetSeasonPlayerStats(p){['seasonGoals','seasonAssists','seasonMotm','seasonMatches','seasonMinutes','seasonCleanSheets'].forEach(k=>p[k]=0);p.competitionStats={};soccerEnsureCompetitionStats(p);}
   function soccerAwardCard(label,p,value,unit,cls=''){
     if(!p)return '<article class="phase12-award-card '+cls+'"><span>'+label+'</span><b>—</b><strong>0</strong></article>';
     return '<article class="phase12-award-card '+cls+'"><span>'+label+'</span><b>'+escapeHtml(p.name)+'</b><strong>'+value+unit+'</strong><small>'+p.pos+' • '+p.grade+'年 • OVR '+p.ovr+'</small></article>';
@@ -6106,7 +6106,8 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   function soccerCareerPick(list,seed){return list[Math.abs(Number(seed)||0)%list.length];}
   function soccerGraduateScore(p){
     const ss=state.soccer.season||{},league=currentLeagueTier(),title=(ss.tournaments?.championship?.champion?5:0)+(ss.tournaments?.interhigh?.champion?4:0);
-    return (Number(p.ovr)||0)*.72+(Number(p.potential)||70)*.11+Math.min(6,(Number(p.appearances)||0)*.35)+Math.min(5,(Number(p.careerMinutes)||0)/600)+(p.specialTraits?.length||0)*1.3+Math.min(5,(state.soccer.reputation||0)/180)+league*.8+title;
+    const scout=soccerProScoutInterest(p),national=(p.competitionStats?.interhigh?.goals||0)+(p.competitionStats?.championship?.goals||0)*1.4+(p.competitionStats?.championship?.motm||0)*1.5;
+    return (Number(p.ovr)||0)*.72+(Number(p.potential)||70)*.11+Math.min(6,(Number(p.appearances)||0)*.35)+Math.min(5,(Number(p.careerMinutes)||0)/600)+(p.specialTraits?.length||0)*1.3+Math.min(5,(state.soccer.reputation||0)/180)+league*.8+title+Math.min(5,scout/22)+Math.min(4,national);
   }
   function soccerGraduatePath(p){
     const score=soccerGraduateScore(p),seed=soccerHashSeed(p.id+':graduate:'+state.soccer.year),roll=(seed%100)/100;let type='university',label='大学進学',destination='';
@@ -6680,7 +6681,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     $('seasonLeagueTierBanner').innerHTML='<span>CURRENT LEAGUE</span><b>'+escapeHtml(leagueInfo.name)+'</b><small>'+(leagueInfo.promotion==='top'?'1位：最高峰リーグ優勝':'1位：'+(leagueInfo.promotion==='playoff'?'プレミア参入プレーオフ':'昇格'))+' / 8位：'+(currentLeagueTier()===0?'残留':'降格')+'</small><div class="league-path">'+path.map((l,i)=>'<span class="league-step '+(i===currentLeagueTier()?'current':i<currentLeagueTier()?'cleared':'')+'">'+escapeHtml(l.short)+'</span>').join('')+'</div>'+(ss.league.movement?'<div class="league-movement">'+escapeHtml(ss.league.movement)+'</div>':'');
     $('seasonLeagueTable').innerHTML='<table class="season-table"><thead><tr><th>#</th><th style="text-align:left">TEAM</th><th>試</th><th>勝</th><th>分</th><th>敗</th><th>得失</th><th>勝点</th></tr></thead><tbody>'+table.map((r,i)=>'<tr class="'+(r.id==='user'?'user':'')+'"><td class="rank">'+(i+1)+'</td><td class="team">'+escapeHtml(seasonTeamName(r.id))+'</td><td>'+r.p+'</td><td>'+r.w+'</td><td>'+r.d+'</td><td>'+r.l+'</td><td>'+((r.gf-r.ga)>=0?'+':'')+(r.gf-r.ga)+'</td><td><b>'+r.pts+'</b></td></tr>').join('')+'</tbody></table>';
     $('seasonCalendar').innerHTML=SEASON_EVENTS.map((ev,i)=>{const done=seasonEventDone(ev.id),skipped=ss.skipped.includes(ev.id),current=i===ss.currentIndex;return '<div class="season-event'+(current?' current':'')+(done?' done':'')+(skipped?' skipped':'')+'"><span class="month">'+ev.month+'月</span><div><b>'+escapeHtml(ev.title)+'</b><small>'+seasonCompetitionLabel(ev)+(ev.type==='league'?' • 第'+ev.leagueRound+'節':'')+'</small></div><em>'+(current?'NEXT':done?'DONE':skipped?'敗退':'UPCOMING')+'</em></div>';}).join('');
-    renderSoccerHonors();renderSoccerCareerLegacy();
+    renderSoccerHonors();renderSoccerPhase13();renderSoccerCareerLegacy();
   }
 
   function soccerRankInfo(rep=state.soccer.reputation){
@@ -6711,8 +6712,8 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   }
   function soccerPlayerCard(p,{selected=false,slotPos=null}={}){
     const starter=state.soccer.starterIds.includes(p.id),effective=slotPos?soccerEffectiveOvr(p,slotPos):p.ovr,grade=slotPos?soccerAptitudeGrade(p,slotPos):'';
-    const con=soccerConditionValue(p),conClass=con>=80?'good':con>=60?'mid':'low',inj=soccerInjuryGames(p),traits=soccerSpecialTraitNames(p);
-    return '<button type="button" class="soccer-player-card'+(starter?' starter':'')+(selected?' selected':'')+'" data-soccer-player="'+p.id+'">'+(starter?'<span class="starter-tag">STARTING XI</span>':'')+'<div class="soccer-player-main"><span class="soccer-pos">'+p.primaryPos+'</span><div><b>'+escapeHtml(p.name)+'</b><small>'+p.grade+'年 • '+escapeHtml(SOCCER_GROWTH_CURVES[soccerGrowthCurveFor(p)].name)+' • POT '+p.potential+'</small></div><span class="soccer-ovr">'+effective+'</span></div><div class="soccer-position-chips"><span class="soccer-condition-chip '+conClass+'">CON '+con+'</span>'+(inj?'<span class="phase5-injury">離脱 '+inj+'試合</span>':'')+(slotPos?'<span class="soccer-position-chip grade-'+String(grade).toLowerCase()+'"><strong>'+grade+'</strong> '+slotPos+'適性</span>':soccerAptitudeChips(p))+(traits[0]?'<span class="phase5-trait">'+escapeHtml(traits[0])+'</span>':'')+'</div><div class="soccer-attrs">'+SOCCER_ATTRS.map(a=>'<div class="soccer-attr"><span>'+a+'</span><b>'+p[a]+'</b></div>').join('')+'</div></button>';
+    const con=soccerConditionValue(p),conClass=con>=80?'good':con>=60?'mid':'low',inj=soccerInjuryGames(p),traits=soccerSpecialTraitNames(p),prospect=soccerProspectTag(p),scout=soccerProScoutInterest(p);
+    return '<button type="button" class="soccer-player-card'+(starter?' starter':'')+(selected?' selected':'')+'" data-soccer-player="'+p.id+'">'+(starter?'<span class="starter-tag">STARTING XI</span>':'')+'<div class="soccer-player-main"><span class="soccer-pos">'+p.primaryPos+'</span><div><b>'+escapeHtml(p.name)+'</b><small>'+p.grade+'年 • '+escapeHtml(SOCCER_GROWTH_CURVES[soccerGrowthCurveFor(p)].name)+' • POT '+p.potential+'</small></div><span class="soccer-ovr">'+effective+'</span></div><div class="soccer-position-chips"><span class="soccer-condition-chip '+conClass+'">CON '+con+'</span>'+(inj?'<span class="phase5-injury">離脱 '+inj+'試合</span>':'')+(slotPos?'<span class="soccer-position-chip grade-'+String(grade).toLowerCase()+'"><strong>'+grade+'</strong> '+slotPos+'適性</span>':soccerAptitudeChips(p))+(traits[0]?'<span class="phase5-trait">'+escapeHtml(traits[0])+'</span>':'')+'</div>'+(prospect||p.grade>=3?'<div class="phase13-badges">'+(prospect?'<span class="phase13-badge '+prospect.className+'">'+prospect.label+'</span>':'')+(p.grade>=3?'<span class="phase13-badge national">SCOUT '+scout+'%</span>':'')+'</div>':'')+'<div class="soccer-attrs">'+SOCCER_ATTRS.map(a=>'<div class="soccer-attr"><span>'+a+'</span><b>'+p[a]+'</b></div>').join('')+'</div></button>';
   }
   function renderSoccerHome(){
     if(!$('soccerHomeSchool'))return;normalizeSoccerState();const rank=soccerRankInfo(),team=soccerTeamOvr(),event=currentSeasonEvent(),next=soccerSeasonOpponent(event);
