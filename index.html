@@ -5732,18 +5732,18 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
 
   /* HIGH SCHOOL SOCCER • PHASE 12 HONORS & RECORDS */
   function soccerPlayerSeasonScore(p){
-    return (p.seasonGoals||0)*8+(p.seasonAssists||0)*5+(p.seasonMotm||0)*7+Math.min(18,(p.seasonMinutes||0)/90*.9)+(Number(p.ovr)||50)*.22;
+    return (p.seasonGoals||0)*8+(p.seasonAssists||0)*5+(p.seasonMotm||0)*7+(p.seasonCleanSheets||0)*4+Math.min(18,(p.seasonMinutes||0)/90*.9)+(Number(p.ovr)||50)*.22;
   }
   function soccerPlayerSeasonStats(p){
     return {id:p.id,name:p.name,pos:p.primaryPos,grade:p.grade,ovr:p.ovr,goals:p.seasonGoals||0,assists:p.seasonAssists||0,motm:p.seasonMotm||0,matches:p.seasonMatches||0,minutes:p.seasonMinutes||0,cleanSheets:p.seasonCleanSheets||0,score:+soccerPlayerSeasonScore(p).toFixed(1)};
   }
   function soccerSeasonStatsSorted(){return state.soccer.players.map(soccerPlayerSeasonStats).sort((a,b)=>b.score-a.score||b.goals-a.goals||b.assists-a.assists);}
   function soccerSeasonLeaders(){
-    const all=soccerSeasonStatsSorted(),by=(key)=>all.slice().sort((a,b)=>b[key]-a[key]||b.score-a.score)[0]||null;
+    const all=soccerSeasonStatsSorted().filter(x=>x.matches>0),by=(key)=>all.slice().sort((a,b)=>b[key]-a[key]||b.score-a.score)[0]||null;
     return {mvp:all[0]||null,scorer:by('goals'),assister:by('assists'),young:all.filter(x=>Number(x.grade)<=2).sort((a,b)=>b.score-a.score)[0]||all[0]||null};
   }
   function soccerBestXI(){
-    const stats=soccerSeasonStatsSorted(),groups={
+    const all=soccerSeasonStatsSorted(),played=all.filter(x=>x.matches>0),stats=played.length?played:all,groups={
       GK:stats.filter(x=>x.pos==='GK'),
       DEF:stats.filter(x=>['CB','LSB','RSB'].includes(x.pos)),
       MID:stats.filter(x=>['DMF','CMF','OMF','LMF','RMF'].includes(x.pos)),
@@ -5781,20 +5781,23 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     return motm;
   }
   function soccerCurrentSeasonSnapshot(){
-    const leaders=soccerSeasonLeaders(),bestXI=soccerBestXI(),ss=state.soccer.season,history=ss.history||[],big=history.filter(h=>Number.isFinite(h.home)&&Number.isFinite(h.away)).slice().sort((a,b)=>(b.home-b.away)-(a.home-a.away))[0]||null,seasonRecord=history.reduce((a,h)=>{a.wins+=h.won?1:0;a.draws+=h.draw?1:0;a.losses+=(!h.won&&!h.draw)?1:0;a.gf+=Number(h.home)||0;a.ga+=Number(h.away)||0;return a;},{wins:0,draws:0,losses:0,gf:0,ga:0});
+    const leaders=soccerSeasonLeaders(),bestXI=soccerBestXI(),ss=state.soccer.season,history=ss.history||[],big=history.filter(h=>Number.isFinite(h.home)&&Number.isFinite(h.away)&&h.home>h.away).slice().sort((a,b)=>(b.home-b.away)-(a.home-a.away))[0]||null,seasonRecord=history.reduce((a,h)=>{a.wins+=h.won?1:0;a.draws+=h.draw?1:0;a.losses+=(!h.won&&!h.draw)?1:0;a.gf+=Number(h.home)||0;a.ga+=Number(h.away)||0;return a;},{wins:0,draws:0,losses:0,gf:0,ga:0});
     return {year:state.soccer.year,schoolName:state.soccer.schoolName,league:currentLeagueInfo().name,leagueRank:ss.league.finalRank||null,record:seasonRecord,interhigh:ss.tournaments.interhigh.champion?'全国優勝':ss.tournaments.interhigh.best,championship:ss.tournaments.championship.champion?'全国優勝':ss.tournaments.championship.best,awards:{mvp:leaders.mvp,scorer:leaders.scorer,assister:leaders.assister,young:leaders.young},bestXI,biggestWin:big?{opponent:big.opponent,home:big.home,away:big.away,title:big.title}:null};
   }
+  function soccerSchoolHonorBook(schoolName=state.soccer.schoolName){
+    const honors=state.soccer.honors;honors.schools=honors.schools||{};if(!honors.schools[schoolName])honors.schools[schoolName]={records:{},trophies:{league:0,interhigh:0,championship:0,promotion:0}};const book=honors.schools[schoolName];book.records=book.records||{};book.trophies={league:0,interhigh:0,championship:0,promotion:0,...(book.trophies||{})};return book;
+  }
   function soccerUpdateSchoolRecords(snapshot){
-    const records=state.soccer.honors.records||{},setRecord=(key,value,data,higher=true)=>{const old=records[key];if(!old||(higher?value>old.value:value<old.value))records[key]={value,...data};};
+    const book=soccerSchoolHonorBook(snapshot.schoolName),records=book.records||{},setRecord=(key,value,data,higher=true)=>{const old=records[key];if(!old||(higher?value>old.value:value<old.value))records[key]={value,...data};};
     const a=snapshot.awards;if(a.scorer)setRecord('goals',a.scorer.goals,{player:a.scorer.name,year:snapshot.year});if(a.assister)setRecord('assists',a.assister.assists,{player:a.assister.name,year:snapshot.year});if(a.mvp)setRecord('motm',a.mvp.motm,{player:a.mvp.name,year:snapshot.year});
     setRecord('wins',snapshot.record.wins,{school:snapshot.schoolName,year:snapshot.year});setRecord('gf',snapshot.record.gf,{school:snapshot.schoolName,year:snapshot.year});
     if(snapshot.biggestWin){const margin=snapshot.biggestWin.home-snapshot.biggestWin.away;setRecord('winMargin',margin,{opponent:snapshot.biggestWin.opponent,score:snapshot.biggestWin.home+'-'+snapshot.biggestWin.away,year:snapshot.year});}
-    state.soccer.honors.records=records;
+    book.records=records;if(snapshot.schoolName===state.soccer.schoolName){state.soccer.honors.records={...records};state.soccer.honors.trophies={...book.trophies};}
   }
   function soccerFinalizeSeasonHonors(){
     const honors=state.soccer.honors;if(honors.seasons.some(s=>s.year===state.soccer.year&&s.schoolName===state.soccer.schoolName))return honors.seasons.find(s=>s.year===state.soccer.year&&s.schoolName===state.soccer.schoolName);
     const snap=soccerCurrentSeasonSnapshot(),ss=state.soccer.season;honors.seasons.unshift(snap);honors.seasons=honors.seasons.slice(0,30);
-    if(ss.league.finalRank===1)honors.trophies.league++;if(ss.tournaments.interhigh.champion)honors.trophies.interhigh++;if(ss.tournaments.championship.champion)honors.trophies.championship++;if(ss.league.promotionPlayoffWon)honors.trophies.promotion++;
+    const book=soccerSchoolHonorBook(snap.schoolName);if(ss.league.finalRank===1)book.trophies.league++;if(ss.tournaments.interhigh.champion)book.trophies.interhigh++;if(ss.tournaments.championship.champion)book.trophies.championship++;if(ss.league.promotionPlayoffWon)book.trophies.promotion++;honors.trophies={...book.trophies};
     soccerUpdateSchoolRecords(snap);return snap;
   }
   function soccerResetSeasonPlayerStats(p){['seasonGoals','seasonAssists','seasonMotm','seasonMatches','seasonMinutes','seasonCleanSheets'].forEach(k=>p[k]=0);}
@@ -5808,9 +5811,9 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     $('seasonAwardCards').innerHTML=soccerAwardCard('SEASON MVP',leaders.mvp,leaders.mvp?.score||0,' pt','mvp')+soccerAwardCard('TOP SCORER',leaders.scorer,leaders.scorer?.goals||0,' GOALS')+soccerAwardCard('ASSIST KING',leaders.assister,leaders.assister?.assists||0,' AST')+soccerAwardCard('YOUNG PLAYER',leaders.young,leaders.young?.score||0,' pt');
     $('seasonPlayerLeaderboard').innerHTML='<div class="phase12-stat-row head"><span>#</span><span>PLAYER</span><em>G</em><em>A</em><em>MOM</em><em>APP</em></div>'+stats.slice(0,8).map((p,i)=>'<div class="phase12-stat-row"><span class="rank">'+(i+1)+'</span><div><b>'+escapeHtml(p.name)+'</b><small>'+p.pos+' • '+p.grade+'年</small></div><em>'+p.goals+'</em><em>'+p.assists+'</em><em>'+p.motm+'</em><em>'+p.matches+'</em></div>').join('');
     $('seasonBestXi').innerHTML=xi.map(p=>'<div class="phase12-xi-player"><span>'+p.pos+'</span><b>'+escapeHtml(p.name)+'</b><small>G'+p.goals+' A'+p.assists+' • '+p.score+'</small></div>').join('');
-    const r=honors.records||{},record=(key,label,unit='')=>{const x=r[key];return '<div class="phase12-record"><span>'+label+'</span><b>'+(x?escapeHtml(x.player||x.school||x.score||'—'):'—')+'</b><small>'+(x?(x.value+unit+' • YEAR '+x.year):'記録なし')+'</small></div>';};
+    const book=soccerSchoolHonorBook(),r=book.records||{},record=(key,label,unit='')=>{const x=r[key];return '<div class="phase12-record"><span>'+label+'</span><b>'+(x?escapeHtml(x.player||x.school||x.score||'—'):'—')+'</b><small>'+(x?(x.value+unit+' • YEAR '+x.year):'記録なし')+'</small></div>';};
     $('schoolRecordGrid').innerHTML=record('goals','1シーズン最多得点','点')+record('assists','1シーズン最多アシスト','A')+record('wins','シーズン最多勝','勝')+record('winMargin','最大得点差','点差');
-    const t=honors.trophies;$('schoolTrophyCabinet').innerHTML='<span class="phase12-trophy">🏆 LEAGUE '+t.league+'</span><span class="phase12-trophy">🏆 INTERHIGH '+t.interhigh+'</span><span class="phase12-trophy">🏆 選手権 '+t.championship+'</span><span class="phase12-trophy">⬆ 昇格PO '+t.promotion+'</span>';
+    const t=book.trophies;$('schoolTrophyCabinet').innerHTML='<span class="phase12-trophy">🏆 LEAGUE '+t.league+'</span><span class="phase12-trophy">🏆 INTERHIGH '+t.interhigh+'</span><span class="phase12-trophy">🏆 選手権 '+t.championship+'</span><span class="phase12-trophy">⬆ 昇格PO '+t.promotion+'</span>';
     $('seasonHonorsHistory').innerHTML=honors.seasons.length?honors.seasons.slice(0,8).map(s=>'<div class="phase12-history-row"><span>YEAR '+s.year+'</span><b>'+escapeHtml(s.awards?.mvp?.name||'—')+' • MVP</b><small>'+escapeHtml(s.schoolName)+'<br>'+((s.awards?.scorer?.goals||0))+'G</small></div>').join(''):'<div class="phase12-history-row"><span>—</span><b>まだシーズン表彰はありません</b><small>卒業式で確定</small></div>';
   }
 
@@ -6320,7 +6323,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   const SOCCER_ACTION_MS=430;
 
   function soccerDefaultState(){
-    return {initialized:false,identitySetupDone:false,schoolName:'FORGE高校',year:1,month:4,reputation:0,schoolExp:0,trainingPoints:0,formation:'4-3-3',players:[],starterIds:[],lineupSlots:{},selectedSlotId:null,selectedPlayerId:null,scouting:{points:30,selectedZone:'local',candidates:[],committed:[],scholarshipUsed:0,searchSerial:0,homePrefecture:'北海道',recruitWins:0,recruitLosses:0},career:{alumni:[],news:[],totalGraduates:0},facilities:{points:120,levels:{ground:1,training:1,recovery:1,dormitory:1,medical:1,scouting:1,analysis:1},history:[]},world:{initialized:false,lastSimulatedYear:0,schools:{},leagues:{},news:[],history:[]},honors:{seasons:[],records:{},trophies:{league:0,interhigh:0,championship:0,promotion:0}},manager:{level:1,xp:0,skillPoints:0,skills:{development:0,tactics:0,recruiting:0},careerMode:false,years:0,wins:0,titles:0,offers:[],history:[],lastSeasonAwardYear:0},season:{currentIndex:0,gradesSeeded:false,history:[],skipped:[],news:'新シーズン開幕。',league:{region:'hokkaido',tier:0,nextTier:0,table:[],roundsPlayed:0,finalized:false,finalRank:null,promotionPlayoffEligible:false,promotionPlayoffWon:false,movement:'札幌ブロック4部からスタート'},tournaments:{interhigh:{alive:true,champion:false,best:'未出場'},championship:{alive:true,champion:false,best:'未出場'}},lastGraduates:[],lastIntake:[]},record:{played:0,wins:0,draws:0,losses:0,gf:0,ga:0},lastResult:null};
+    return {initialized:false,identitySetupDone:false,schoolName:'FORGE高校',year:1,month:4,reputation:0,schoolExp:0,trainingPoints:0,formation:'4-3-3',players:[],starterIds:[],lineupSlots:{},selectedSlotId:null,selectedPlayerId:null,scouting:{points:30,selectedZone:'local',candidates:[],committed:[],scholarshipUsed:0,searchSerial:0,homePrefecture:'北海道',recruitWins:0,recruitLosses:0},career:{alumni:[],news:[],totalGraduates:0},facilities:{points:120,levels:{ground:1,training:1,recovery:1,dormitory:1,medical:1,scouting:1,analysis:1},history:[]},world:{initialized:false,lastSimulatedYear:0,schools:{},leagues:{},news:[],history:[]},honors:{seasons:[],records:{},trophies:{league:0,interhigh:0,championship:0,promotion:0},schools:{}},manager:{level:1,xp:0,skillPoints:0,skills:{development:0,tactics:0,recruiting:0},careerMode:false,years:0,wins:0,titles:0,offers:[],history:[],lastSeasonAwardYear:0},season:{currentIndex:0,gradesSeeded:false,history:[],skipped:[],news:'新シーズン開幕。',league:{region:'hokkaido',tier:0,nextTier:0,table:[],roundsPlayed:0,finalized:false,finalRank:null,promotionPlayoffEligible:false,promotionPlayoffWon:false,movement:'札幌ブロック4部からスタート'},tournaments:{interhigh:{alive:true,champion:false,best:'未出場'},championship:{alive:true,champion:false,best:'未出場'}},lastGraduates:[],lastIntake:[]},record:{played:0,wins:0,draws:0,losses:0,gf:0,ga:0},lastResult:null};
   }
 
   let pendingSoccerRename=null;
@@ -6370,9 +6373,9 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   }
   function normalizeSoccerState(){
     const base=soccerDefaultState();
-    const prev=state.soccer||{},prevSeason=prev.season||{},prevTournaments=prevSeason.tournaments||{},prevCareer=prev.career||{},prevFacilities=prev.facilities||{},prevWorld=prev.world||{},prevManager=prev.manager||{},prevHonors=prev.honors||{};state.soccer={...base,...prev,record:{...base.record,...(prev.record||{})},lineupSlots:{...base.lineupSlots,...(prev.lineupSlots||{})},scouting:{...base.scouting,...(prev.scouting||{})},career:{...base.career,...prevCareer},facilities:{...base.facilities,...prevFacilities,levels:{...base.facilities.levels,...(prevFacilities.levels||{})}},world:{...base.world,...prevWorld},honors:{...base.honors,...prevHonors,records:{...base.honors.records,...(prevHonors.records||{})},trophies:{...base.honors.trophies,...(prevHonors.trophies||{})}},manager:{...base.manager,...prevManager,skills:{...base.manager.skills,...(prevManager.skills||{})}},season:{...base.season,...prevSeason,league:{...base.season.league,...(prevSeason.league||{})},tournaments:{interhigh:{...base.season.tournaments.interhigh,...(prevTournaments.interhigh||{})},championship:{...base.season.tournaments.championship,...(prevTournaments.championship||{})}}}};
+    const prev=state.soccer||{},prevSeason=prev.season||{},prevTournaments=prevSeason.tournaments||{},prevCareer=prev.career||{},prevFacilities=prev.facilities||{},prevWorld=prev.world||{},prevManager=prev.manager||{},prevHonors=prev.honors||{};state.soccer={...base,...prev,record:{...base.record,...(prev.record||{})},lineupSlots:{...base.lineupSlots,...(prev.lineupSlots||{})},scouting:{...base.scouting,...(prev.scouting||{})},career:{...base.career,...prevCareer},facilities:{...base.facilities,...prevFacilities,levels:{...base.facilities.levels,...(prevFacilities.levels||{})}},world:{...base.world,...prevWorld},honors:{...base.honors,...prevHonors,records:{...base.honors.records,...(prevHonors.records||{})},trophies:{...base.honors.trophies,...(prevHonors.trophies||{})},schools:{...base.honors.schools,...(prevHonors.schools||{})}},manager:{...base.manager,...prevManager,skills:{...base.manager.skills,...(prevManager.skills||{})}},season:{...base.season,...prevSeason,league:{...base.season.league,...(prevSeason.league||{})},tournaments:{interhigh:{...base.season.tournaments.interhigh,...(prevTournaments.interhigh||{})},championship:{...base.season.tournaments.championship,...(prevTournaments.championship||{})}}}};
     if(!Array.isArray(state.soccer.players)||state.soccer.players.length<11){state.soccer.players=generateSoccerRoster();state.soccer.initialized=true;}
-    state.soccer.players.forEach(ensureSoccerPlayerProfile);const honors=state.soccer.honors;honors.seasons=Array.isArray(honors.seasons)?honors.seasons:[];honors.records=honors.records&&typeof honors.records==='object'?honors.records:{};honors.trophies={league:0,interhigh:0,championship:0,promotion:0,...(honors.trophies||{})};
+    state.soccer.players.forEach(ensureSoccerPlayerProfile);const honors=state.soccer.honors;honors.seasons=Array.isArray(honors.seasons)?honors.seasons:[];honors.records=honors.records&&typeof honors.records==='object'?honors.records:{};honors.trophies={league:0,interhigh:0,championship:0,promotion:0,...(honors.trophies||{})};honors.schools=honors.schools&&typeof honors.schools==='object'?honors.schools:{};if(!honors.schools[state.soccer.schoolName]&&Object.keys(honors.records).length)honors.schools[state.soccer.schoolName]={records:{...honors.records},trophies:{...honors.trophies}};
     if(!SOCCER_FORMATIONS[state.soccer.formation])state.soccer.formation='4-3-3';
     if(!SOCCER_TACTICS[state.soccer.tactic])state.soccer.tactic='balanced';
     const validIds=new Set(state.soccer.players.map(p=>p.id)),slots=SOCCER_FORMATIONS[state.soccer.formation].slots,slotIds=new Set(slots.map(x=>x.id));
