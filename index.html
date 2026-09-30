@@ -1712,6 +1712,8 @@ main.soccer-gesture-lock{
 #soccerPitchActors .match-athlete.selectable{touch-action:manipulation!important}
 #soccerPitchActors .match-athlete.dribble-ready{touch-action:none!important}
 
+
+.soccer-chance-overlay{pointer-events:none!important;}
 </style>
 </head>
 <body>
@@ -7289,6 +7291,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     const defending=!!(rt?.inChance&&rt?.chanceType==='defense'),attacking=!!(rt?.inChance&&rt?.chanceType==='attack');
     $('soccerMatchStatus').textContent=rt?(rt.finished?'FULL TIME':defending?'DANGER!':attacking?'CHANCE!':'LIVE'):(event?.type==='graduation'?'NO MATCH':'READY');
     $('soccerStartMatchBtn').disabled=!!(rt&&!rt.finished)||event?.type==='graduation';$('soccerStartMatchBtn').textContent=rt&&rt.finished?'日程へ戻る':'KICK OFF';$('soccerShootBtn').disabled=!attacking||!!rt?.actionLocked;
+    $('soccerPitch')?.classList.toggle('soccer-action-lock',!!rt?.actionLocked);
     $('soccerMatchControls')?.classList.toggle('hidden',defending);$('soccerDefenseControls')?.classList.toggle('hidden',!defending);
     if($('soccerDefenseControls'))$('soccerDefenseControls').querySelectorAll('[data-defense-action]').forEach(btn=>btn.disabled=!!rt?.actionLocked);
     renderSoccerTacticControls();if($('soccerMatchPower'))$('soccerMatchPower').textContent=rt?numbers.overall:soccerTeamOvr();if($('soccerMatchCondition'))$('soccerMatchCondition').textContent=soccerAverageCondition(rt?.liveLineup||state.soccer.lineupSlots)+'%';if($('soccerMatchTacticEdge'))$('soccerMatchTacticEdge').textContent='vs '+soccerTacticInfo(numbers.awayKey).name+' • 相性 '+(numbers.edge>0?'+':'')+numbers.edge;
@@ -7359,7 +7362,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   }
   function soccerActiveTouchGuard(e){ return; }
   function startSoccerChance(){
-    const rt=soccerMatchRuntime;if(!rt)return;rt.inChance=true;rt.chanceType='attack';rt.defenseScene=null;setSoccerGestureScrollLock(true);rt.chances++;rt.stage=0;rt.actionLocked=false;
+    const rt=soccerMatchRuntime;if(!rt)return;$('soccerPitch')?.classList.remove('soccer-action-lock');rt.inChance=true;rt.chanceType='attack';rt.defenseScene=null;setSoccerGestureScrollLock(true);rt.chances++;rt.stage=0;rt.actionLocked=false;
     const liveLineup=soccerMatchLineup(),pool=soccerFormationSlots().map(slot=>({p:state.soccer.players.find(x=>x.id===liveLineup[slot.id]),slot})).filter(x=>x.p&&x.slot.pos!=='GK').sort((a,b)=>(b.p.SHO+b.p.DRI+b.p.PAS)-(a.p.SHO+a.p.DRI+a.p.PAS));
     rt.attackers=pool.slice(0,7).sort(()=>Math.random()-.5).slice(0,4).map(x=>x.p);rt.ballHolder=rt.attackers[0]?.id||null;rt.lastPasserId=null;
     rt.actorPos={};rt.attackers.forEach((p,i)=>{rt.actorPos[p.id]=soccerChanceCoordinates(p,i);});
@@ -7478,7 +7481,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     await new Promise(resolve=>setTimeout(resolve,220));endSoccerDefenseChance(concede,false);
   }
   function endSoccerDefenseChance(conceded=false,cleanStop=false){
-    const rt=soccerMatchRuntime;if(!rt)return;rt.inChance=false;rt.chanceType=null;rt.defenseScene=null;rt.actionLocked=false;setSoccerGestureScrollLock(false);rt.nextDefense=rt.minute+soccerNextDefenseGap();
+    const rt=soccerMatchRuntime;if(!rt)return;setSoccerActionLock(false);rt.inChance=false;rt.chanceType=null;rt.defenseScene=null;rt.actionLocked=false;setSoccerGestureScrollLock(false);rt.nextDefense=rt.minute+soccerNextDefenseGap();
     renderSoccerMatch();setTimeout(()=>{if(soccerMatchRuntime&&!soccerMatchRuntime.finished)renderSoccerPitchIdle();},220);
   }
 
