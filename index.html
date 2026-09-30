@@ -7318,6 +7318,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     const slots=soccerFormationSlots(),live=!!(soccerMatchRuntime&&!soccerMatchRuntime.finished),liveLineup=soccerMatchLineup();
     const home=slots.map(slot=>{const p=state.soccer.players.find(x=>x.id===liveLineup[slot.id]);if(!p)return'';return soccerAthleteMarkup({p,x:slot.x,y:soccerIdleY(slot.y,true),team:'home'});}).join('');
     const oppSlots=SOCCER_FORMATIONS['4-3-3'].slots,opp=oppSlots.map((slot,i)=>soccerAthleteMarkup({x:slot.x,y:soccerIdleY(slot.y,false),team:'opponent',pos:slot.pos,number:i+1,name:'相手'})).join('');
+    const pitch=$('soccerPitch');if(pitch){pitch.style.touchAction='';pitch.style.overscrollBehavior='';}
     $('soccerPitchActors').className=live?'match-live':'';$('soccerPitchActors').innerHTML=home+opp;
     $('soccerChanceHelp').className='soccer-chance-overlay is-compact';
     $('soccerChanceHelp').innerHTML='<b>'+(live?'AUTO MATCH':'MATCH READY')+'</b><span>'+(live?'22人の配置を反映して自動進行中。決定機になると操作へ切り替わります。':'KICK OFFで試合開始。スタメンの配置と適性が試合力に反映されます。')+'</span>';
@@ -7346,7 +7347,11 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     const host=document.querySelector('main');if(!host)return;
     host.classList.toggle('soccer-gesture-lock',!!locked);
   }
-  function stopPitchNativeScroll(e){if(e.cancelable)e.preventDefault();}
+  function stopPitchNativeScroll(e){
+    const rt=soccerMatchRuntime;
+    if(!rt?.inChance||rt.chanceType!=='attack')return;
+    if(e.cancelable)e.preventDefault();
+  }
   function soccerActiveTouchGuard(e){
     const rt=soccerMatchRuntime;
     if(!rt?.inChance||rt.chanceType!=='attack')return;
@@ -7411,6 +7416,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
       soccerAthleteMarkup({x:70,y:49,team:'opponent',pos:'WG',number:7,name:'相手',actorId:'opp-r'}),
       soccerAthleteMarkup({x:50,y:60,team:'opponent',pos:'OMF',number:10,name:'相手',actorId:'opp-mid'})
     ].join('');
+    const pitch=$('soccerPitch');if(pitch){pitch.style.touchAction='pan-y';pitch.style.overscrollBehavior='auto';}
     $('soccerPitchActors').className='match-live defense-live';$('soccerPitchActors').innerHTML=home+gk+oppActors;
     document.querySelectorAll('#soccerPitchActors [data-match-actor^="home-def-"]').forEach(el=>{
       const id=String(el.getAttribute('data-match-actor')||'').replace('home-def-','');
@@ -7526,6 +7532,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     ];
     const defenders=defs.map(([id,pos,num])=>{const c=rt.defenderPos[id]||{x:50,y:40};return soccerAthleteMarkup({x:c.x,y:c.y,team:'opponent',pos,number:num,name:id==='gk'?'GK':'相手',actorId:'def-'+id,extraClass:id==='gk'?'keeper':''});}).join('');
     const attackers=rt.attackers.map((p,i)=>{const c=rt.actorPos[p.id]||soccerChanceCoordinates(p,i),isHolder=p.id===rt.ballHolder;return soccerAthleteMarkup({p,x:c.x,y:c.y,team:'home',focus:true,ball:isHolder,interactive:!rt.actionLocked&&!isHolder,extraClass:isHolder&&!rt.actionLocked?'dribble-ready':''});}).join('');
+    const pitch=$('soccerPitch');if(pitch){pitch.style.touchAction='none';pitch.style.overscrollBehavior='none';}
     $('soccerPitchActors').className='match-live';$('soccerPitchActors').innerHTML=defenders+attackers;
     const holder=state.soccer.players.find(p=>p.id===rt.ballHolder),holderPos=rt.actorPos[rt.ballHolder],pressure=nearestSoccerDefender(holderPos).distance;
     $('soccerChanceHelp').className='soccer-chance-overlay is-chance';$('soccerChanceHelp').innerHTML='<b>CHANCE • '+escapeHtml(holder?.name||'')+' / '+(holder?.primaryPos||'')+'</b><span>保持者を左右スワイプ＝切り返し　↑＝縦突破　↓＝キープ　／　味方タップ＝パス　／　ピッチ空白を上スワイプ＝シュート。DF距離 '+Math.round(pressure)+'m相当。</span>';
@@ -7692,7 +7699,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     const pitch=$('soccerPitch');
     pitch?.addEventListener('pointerdown',soccerPitchPointerDown);
     pitch?.addEventListener('pointerup',soccerPitchPointerUp);
-    pitch?.addEventListener('pointermove',e=>{if(soccerMatchRuntime?.inChance&&e.cancelable)e.preventDefault();});
+    pitch?.addEventListener('pointermove',e=>{if(soccerMatchRuntime?.inChance&&soccerMatchRuntime?.chanceType==='attack'&&e.cancelable)e.preventDefault();});
     pitch?.addEventListener('touchstart',soccerPitchTouchStart,{passive:false});
     pitch?.addEventListener('touchmove',stopPitchNativeScroll,{passive:false});
     pitch?.addEventListener('touchend',soccerPitchTouchEnd,{passive:false});
