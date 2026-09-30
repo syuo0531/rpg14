@@ -1,0 +1,27 @@
+/* STUDY FORGE FC - PHASE 13
+ * Prospects, tournament splits, national ranking, and pro scouting.
+ */
+.phase13-prospect-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:10px}
+.phase13-panel{padding:12px;border:1px solid var(--line);border-radius:11px;background:#0c1114}
+.phase13-comp-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:8px}
+.phase13-comp-card{padding:9px;border:1px solid var(--line);border-radius:9px;background:#0a0f12}
+.phase13-comp-card>span{display:block;font-size:6px;color:#6fb7ff;font-weight:1000;letter-spacing:.08em}
+.phase13-comp-row{display:grid;grid-template-columns:1fr auto;gap:6px;padding-top:5px;margin-top:5px;border-top:1px solid rgba(255,255,255,.05)}
+.phase13-comp-row b{font-size:7px}.phase13-comp-row small{font-size:6px;color:#8c9991}
+.phase13-scout-list{display:grid;gap:6px;margin-top:8px}
+.phase13-scout-row{padding:9px;border:1px solid var(--line);border-radius:9px;background:linear-gradient(145deg,#10161a,#0b1013)}
+.phase13-scout-head{display:grid;grid-template-columns:1fr auto;gap:7px}
+.phase13-scout-head b{font-size:8px}.phase13-scout-head strong{font-size:10px;color:#f0d77f}
+.phase13-scout-row small{display:block;margin-top:3px;font-size:6px;color:#7c8982}
+.phase13-scout-bar{height:5px;margin-top:7px;border-radius:999px;overflow:hidden;background:#070b0d}
+.phase13-scout-bar i{display:block;height:100%;background:linear-gradient(90deg,#6fb7ff,#45d483)}
+.phase13-badges{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.phase13-badge{padding:4px 6px;border-radius:999px;border:1px solid var(--line);font-size:6px;font-weight:1000;color:#96a39c}
+.phase13-badge.monster{border-color:rgba(242,209,122,.4);color:#f0d77f;background:rgba(242,209,122,.055)}
+.phase13-badge.star{border-color:rgba(111,183,255,.35);color:#a9d3ff}
+.phase13-badge.national{border-color:rgba(69,212,131,.32);color:#9fe6ba}
+.phase9-rank-row.phase13-user-school{border-color:rgba(69,212,131,.5)!important;background:linear-gradient(90deg,rgba(69,212,131,.11),rgba(69,212,131,.025))!important;box-shadow:inset 3px 0 0 #45d483}
+.phase9-rank-row.phase13-user-school b::after{content:" YOUR SCHOOL";margin-left:5px;font-size:5px;color:#8be2aa;letter-spacing:.08em}
+.soccer-player-card .phase13-badges{margin-top:7px}
+@media(max-width:760px){.phase13-prospect-grid{grid-template-columns:1fr}}
+@media(max-width:480px){.phase13-comp-grid{grid-template-columns:1fr}}
