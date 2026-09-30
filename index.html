@@ -1261,7 +1261,6 @@ button.match-athlete{cursor:pointer}
 main.soccer-gesture-lock{
   overflow-y:hidden!important;
   overscroll-behavior:none!important;
-  touch-action:none!important;
   -webkit-overflow-scrolling:auto!important;
 }
 .defense-live [data-match-actor^="home-def-"]{
@@ -1708,6 +1707,10 @@ main.soccer-gesture-lock{
 
 .soccer-pitch.defense-moment{touch-action:pan-y!important;overscroll-behavior:auto!important;box-shadow:inset 0 0 0 3px rgba(255,88,88,.18),inset 0 0 55px rgba(70,0,0,.18)!important}
 .soccer-pitch.defense-moment .soccer-goal{border-color:rgba(255,220,220,.95)}
+
+
+#soccerPitchActors .match-athlete.selectable{touch-action:manipulation!important}
+#soccerPitchActors .match-athlete.dribble-ready{touch-action:none!important}
 
 </style>
 </head>
@@ -7350,13 +7353,11 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   function stopPitchNativeScroll(e){
     const rt=soccerMatchRuntime;
     if(!rt?.inChance||rt.chanceType!=='attack')return;
+    const athlete=e.target?.closest?.('.match-athlete');
+    if(athlete?.classList.contains('selectable'))return;
     if(e.cancelable)e.preventDefault();
   }
-  function soccerActiveTouchGuard(e){
-    const rt=soccerMatchRuntime;
-    if(!rt?.inChance||rt.chanceType!=='attack')return;
-    if(e.cancelable)e.preventDefault();
-  }
+  function soccerActiveTouchGuard(e){ return; }
   function startSoccerChance(){
     const rt=soccerMatchRuntime;if(!rt)return;rt.inChance=true;rt.chanceType='attack';rt.defenseScene=null;setSoccerGestureScrollLock(true);rt.chances++;rt.stage=0;rt.actionLocked=false;
     const liveLineup=soccerMatchLineup(),pool=soccerFormationSlots().map(slot=>({p:state.soccer.players.find(x=>x.id===liveLineup[slot.id]),slot})).filter(x=>x.p&&x.slot.pos!=='GK').sort((a,b)=>(b.p.SHO+b.p.DRI+b.p.PAS)-(a.p.SHO+a.p.DRI+a.p.PAS));
@@ -7536,8 +7537,17 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     $('soccerPitchActors').className='match-live';$('soccerPitchActors').innerHTML=defenders+attackers;
     const holder=state.soccer.players.find(p=>p.id===rt.ballHolder),holderPos=rt.actorPos[rt.ballHolder],pressure=nearestSoccerDefender(holderPos).distance;
     $('soccerChanceHelp').className='soccer-chance-overlay is-chance';$('soccerChanceHelp').innerHTML='<b>CHANCE • '+escapeHtml(holder?.name||'')+' / '+(holder?.primaryPos||'')+'</b><span>保持者を左右スワイプ＝切り返し　↑＝縦突破　↓＝キープ　／　味方タップ＝パス　／　ピッチ空白を上スワイプ＝シュート。DF距離 '+Math.round(pressure)+'m相当。</span>';
-    Array.from(document.querySelectorAll('#soccerPitchActors [data-chance-player]')).forEach(btn=>btn.addEventListener('click',()=>soccerChancePass(btn.dataset.chancePlayer)));
+    Array.from(document.querySelectorAll('#soccerPitchActors [data-chance-player]')).forEach(btn=>{
+      btn.addEventListener('click',()=>{if(Date.now()-soccerLastPassTouchAt<450)return;soccerChancePass(btn.dataset.chancePlayer);});
+      btn.addEventListener('touchend',e=>soccerChancePassTouch(e,btn.dataset.chancePlayer),{passive:false});
+    });
     bindSoccerDribbleHolder();
+  }
+  let soccerLastPassTouchAt=0;
+  function soccerChancePassTouch(e,targetId){
+    const rt=soccerMatchRuntime;if(!rt?.inChance||rt.chanceType!=='attack'||rt.actionLocked)return;
+    if(e.cancelable)e.preventDefault();e.stopPropagation();
+    soccerLastPassTouchAt=Date.now();soccerChancePass(targetId);
   }
   function bindSoccerDribbleHolder(){
     const rt=soccerMatchRuntime;if(!rt?.inChance||rt.actionLocked)return;
@@ -7545,6 +7555,23 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     holder.addEventListener('pointerdown',soccerDribblePointerDown);
     holder.addEventListener('pointerup',soccerDribblePointerUp);
     holder.addEventListener('pointercancel',()=>{soccerDribblePointer=null;});
+    holder.addEventListener('touchstart',soccerDribbleTouchStart,{passive:false});
+    holder.addEventListener('touchend',soccerDribbleTouchEnd,{passive:false});
+    holder.addEventListener('touchcancel',()=>{soccerDribblePointer=null;},{passive:true});
+  }
+  function soccerDribbleTouchStart(e){
+    const rt=soccerMatchRuntime;if(!rt?.inChance||rt.chanceType!=='attack'||rt.actionLocked)return;
+    const t=e.changedTouches?.[0];if(!t)return;if(e.cancelable)e.preventDefault();e.stopPropagation();
+    soccerPointerStart=null;soccerTouchStart=null;soccerDribblePointer={x:t.clientX,y:t.clientY,pointerId:'touch'};
+  }
+  function soccerDribbleTouchEnd(e){
+    const rt=soccerMatchRuntime;if(!rt?.inChance||rt.chanceType!=='attack'||rt.actionLocked||!soccerDribblePointer)return;
+    const t=e.changedTouches?.[0];if(!t){soccerDribblePointer=null;return;}if(e.cancelable)e.preventDefault();e.stopPropagation();
+    const dx=t.clientX-soccerDribblePointer.x,dy=t.clientY-soccerDribblePointer.y;soccerDribblePointer=null;
+    const ax=Math.abs(dx),ay=Math.abs(dy);if(Math.max(ax,ay)<20)return;
+    if(ax>ay*1.15)soccerChanceDribble(dx<0?'cut-left':'cut-right');
+    else if(dy<0)soccerChanceDribble('burst');
+    else soccerChanceDribble('shield');
   }
   function soccerDribblePointerDown(e){
     const rt=soccerMatchRuntime;if(!rt?.inChance||rt.actionLocked)return;
@@ -7646,6 +7673,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     soccerTouchStart={x:t.clientX,y:t.clientY};
   }
   function soccerPitchTouchEnd(e){
+    if(e.target?.closest?.('.match-athlete')){soccerTouchStart=null;return;}
     if(!soccerMatchRuntime?.inChance||soccerMatchRuntime?.chanceType!=='attack'||soccerMatchRuntime?.actionLocked||!soccerTouchStart)return;
     const t=e.changedTouches?.[0];if(!t){soccerTouchStart=null;return;}if(e.cancelable)e.preventDefault();
     const dx=t.clientX-soccerTouchStart.x,dy=t.clientY-soccerTouchStart.y;soccerTouchStart=null;soccerPointerStart=null;
@@ -7699,12 +7727,12 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     const pitch=$('soccerPitch');
     pitch?.addEventListener('pointerdown',soccerPitchPointerDown);
     pitch?.addEventListener('pointerup',soccerPitchPointerUp);
-    pitch?.addEventListener('pointermove',e=>{if(soccerMatchRuntime?.inChance&&soccerMatchRuntime?.chanceType==='attack'&&e.cancelable)e.preventDefault();});
+
     pitch?.addEventListener('touchstart',soccerPitchTouchStart,{passive:false});
     pitch?.addEventListener('touchmove',stopPitchNativeScroll,{passive:false});
     pitch?.addEventListener('touchend',soccerPitchTouchEnd,{passive:false});
     pitch?.addEventListener('touchcancel',()=>{soccerTouchStart=null;soccerPointerStart=null;},{passive:true});
-    document.addEventListener('touchmove',soccerActiveTouchGuard,{passive:false});
+
   }
 
 
