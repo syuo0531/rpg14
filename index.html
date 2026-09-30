@@ -7498,7 +7498,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"è²§è¡
     $('soccerPlayerNameSaveBtn')?.addEventListener('click',saveSoccerPlayerName);
     $('soccerPlayerNameKeepBtn')?.addEventListener('click',closeSoccerPlayerNameModal);
     $('soccerShootBtn')?.addEventListener('click',()=>soccerChanceShoot('center'));
-    $('#soccerDefenseControls [data-defense-action]').forEach(btn=>btn.addEventListener('click',()=>soccerDefenseAction(btn.dataset.defenseAction)));
+    $$('#soccerDefenseControls [data-defense-action]').forEach(btn=>btn.addEventListener('click',()=>soccerDefenseAction(btn.dataset.defenseAction)));
     $('soccerSubBtn')?.addEventListener('click',substituteSoccerPlayer);
     $('soccerPositionTrainBtn')?.addEventListener('click',trainSoccerPositionAptitude);
     $('soccerOpenBankManagerBtn')?.addEventListener('click',openBankManager);
