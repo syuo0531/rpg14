@@ -1690,6 +1690,25 @@ main.soccer-gesture-lock{
 .app-shell.match-focus .soccer-defense-controls{position:sticky;bottom:0;z-index:36}
 @media(max-width:560px){.soccer-defense-controls{grid-template-columns:repeat(2,1fr);padding:6px;gap:6px}.soccer-defense-action{min-height:50px;padding:7px}.soccer-defense-action b{font-size:10px}}
 
+
+/* ===== MANUAL WEAKNESS ===== */
+.manual-weak-panel .panel-head{margin-bottom:12px}
+.manual-weak-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.manual-weak-grid .full{grid-column:1/-1}
+.manual-weak-input{width:100%;min-height:44px;background:#0d0f13;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit}
+.manual-weak-actions{display:flex;gap:8px;margin-top:10px}
+.manual-weak-actions button{flex:1;min-height:44px;padding:10px 12px}
+.manual-weak-status{margin-top:10px;padding:10px 11px;border:1px solid var(--line);border-radius:10px;background:rgba(0,0,0,.18);font-size:11px;line-height:1.55;color:var(--muted)}
+.manual-weak-status strong{color:var(--text)}
+.manual-weak-status.ok{border-color:rgba(101,210,141,.3);color:#b7e8c8}
+.manual-weak-status.warn{border-color:rgba(255,177,74,.3);color:#ffd08a}
+.manual-weak-status.bad{border-color:rgba(255,81,81,.3);color:#ffaaaa}
+.manual-weak-count{display:inline-flex;align-items:center;gap:6px;margin-top:9px;padding:6px 8px;border-radius:999px;background:rgba(255,81,81,.08);border:1px solid rgba(255,81,81,.22);font-size:10px;color:#ff9999;font-weight:900;letter-spacing:.06em}
+
+
+.soccer-pitch.defense-moment{box-shadow:inset 0 0 0 3px rgba(255,88,88,.18),inset 0 0 55px rgba(70,0,0,.18)!important}
+.soccer-pitch.defense-moment .soccer-goal{border-color:rgba(255,220,220,.95)}
+
 </style>
 </head>
 <body>
@@ -1993,6 +2012,26 @@ main.soccer-gesture-lock{
                 <div><span>習得済み</span><b id="masteryMastered">0</b></div>
               </div>
               <p class="small-copy">習得率が上がるほどQUIZ STRIKEに最大+15%のMastery Bonus。</p>
+            </div>
+            <div class="metal-panel compact-panel manual-weak-panel">
+              <div class="panel-head"><span>苦手問題を手動登録</span><small>YEAR + QUESTION NO.</small></div>
+              <div class="manual-weak-grid">
+                <label class="filter-label">年度
+                  <select id="manualWeakYear" class="filter-select"><option value="all">年度を選択</option></select>
+                </label>
+                <label class="filter-label">区分
+                  <select id="manualWeakType" class="filter-select"><option value="all">すべて</option></select>
+                </label>
+                <label class="filter-label full">問題番号
+                  <input id="manualWeakNums" class="manual-weak-input" type="text" inputmode="text" placeholder="例: 3,12,17-22" autocomplete="off" />
+                </label>
+              </div>
+              <div class="manual-weak-actions">
+                <button class="secondary-btn" id="manualWeakAddBtn" type="button">苦手に追加</button>
+                <button class="secondary-btn" id="manualWeakRemoveBtn" type="button">指定解除</button>
+              </div>
+              <div class="manual-weak-count">手動指定 <b id="manualWeakCount">0</b>問</div>
+              <div class="manual-weak-status" id="manualWeakStatus">年度・区分・問題番号を指定すると、自分で苦手問題に登録できます。</div>
             </div>
             <div class="metal-panel compact-panel">
               <div class="panel-head"><span>FILTER</span><small>LARGE BANK READY</small></div>
@@ -3271,6 +3310,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   let bankDbPromise = null;
   let questionIndex = {all:[], byId:new Map(), bySubject:new Map(), byDifficulty:new Map(), byYear:new Map(), byExamType:new Map(), subjects:[], years:[], examTypes:[]};
   let reviewIdSet = new Set();
+  let manualWeakIdSet = new Set();
   let bankStorageStats = {usage:0, quota:0};
   let lastBankStatusRefresh = 0;
   let currentQuestion = null;
@@ -3499,7 +3539,10 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if(!lastCorrect || acc<.60)return {key:'weak',label:'苦手',points:1};
     return {key:'learning',label:'習得中',points:2};
   }
-  function masteryStatus(id){return masteryStatusFromHistory(state.study.history?.[id]);}
+  function masteryStatus(id){
+    if(manualWeakIdSet.has(id)) return {key:'weak',label:'苦手',points:1,manual:true};
+    return masteryStatusFromHistory(state.study.history?.[id]);
+  }
   function invalidateMasteryCache(){masteryCache.dirty=true;}
   function getMasteryStats(){
     if(!masteryCache.dirty && masteryCache.total===questions.length)return masteryCache;
@@ -3600,7 +3643,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
 
   function progressRecordFor(id) {
     const h=state.study.history?.[id];
-    return {id,answered:Number(h?.answered)||0,correct:Number(h?.correct)||0,lastCorrect:!!h?.lastCorrect,review:reviewIdSet.has(id),updatedAt:Date.now()};
+    return {id,answered:Number(h?.answered)||0,correct:Number(h?.correct)||0,lastCorrect:!!h?.lastCorrect,review:reviewIdSet.has(id),manualWeak:manualWeakIdSet.has(id),updatedAt:Date.now()};
   }
   function persistStudyProgress(id) { if(id) return bankProgressPut(progressRecordFor(id)).catch(err=>console.warn('Progress save failed',err)); return Promise.resolve(); }
   async function loadStudyProgress() {
@@ -3610,16 +3653,17 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     try{records=await bankProgressGetAll();}catch(err){console.warn('Progress store unavailable',err);}
     if(!records.length && (Object.keys(legacyHistory).length||legacyReview.length)){
       reviewIdSet=new Set(legacyReview);
-      for(const id of new Set([...Object.keys(legacyHistory),...legacyReview])) await bankProgressPut({id,answered:Number(legacyHistory[id]?.answered)||0,correct:Number(legacyHistory[id]?.correct)||0,lastCorrect:!!legacyHistory[id]?.lastCorrect,review:reviewIdSet.has(id),updatedAt:Date.now()});
+      for(const id of new Set([...Object.keys(legacyHistory),...legacyReview])) await bankProgressPut({id,answered:Number(legacyHistory[id]?.answered)||0,correct:Number(legacyHistory[id]?.correct)||0,lastCorrect:!!legacyHistory[id]?.lastCorrect,review:reviewIdSet.has(id),manualWeak:false,updatedAt:Date.now()});
       records=await bankProgressGetAll();
     }
-    state.study.history={}; reviewIdSet=new Set();
-    for(const r of records){if(!questionIndex.byId.has(r.id))continue;state.study.history[r.id]={answered:Number(r.answered)||0,correct:Number(r.correct)||0,lastCorrect:!!r.lastCorrect};if(r.review)reviewIdSet.add(r.id);}
+    state.study.history={}; reviewIdSet=new Set(); manualWeakIdSet=new Set();
+    for(const r of records){if(!questionIndex.byId.has(r.id))continue;state.study.history[r.id]={answered:Number(r.answered)||0,correct:Number(r.correct)||0,lastCorrect:!!r.lastCorrect};if(r.review)reviewIdSet.add(r.id);if(r.manualWeak)manualWeakIdSet.add(r.id);}
+    for(const id of manualWeakIdSet) reviewIdSet.add(id);
     state.study.reviewIds=[...reviewIdSet]; invalidateMasteryCache();
   }
 
   function markReview(id, value) {
-    if(value) reviewIdSet.add(id); else reviewIdSet.delete(id);
+    if(value) reviewIdSet.add(id); else if(!manualWeakIdSet.has(id)) reviewIdSet.delete(id);
     state.study.reviewIds=[...reviewIdSet];
   }
 
@@ -3722,6 +3766,59 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     const types=questionIndex.examTypes||[]; const typeSelect=$('examTypeFilter'); typeSelect.innerHTML='<option value="all">基礎 + 応用 + 未分類</option>'+types.map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
     if(types.includes(state.study.filters.examType))typeSelect.value=state.study.filters.examType;else{state.study.filters.examType='all';typeSelect.value='all';}
     $('difficultyFilter').value=['1','2','3'].includes(String(state.study.filters.difficulty))?String(state.study.filters.difficulty):'all';
+  }
+
+
+  function parseQuestionNumberSpec(value){
+    const nums=new Set();
+    const text=String(value||'').replace(/問/g,'').replace(/，/g,',').replace(/〜|～/g,'-');
+    for(const raw of text.split(/[\s,、]+/).filter(Boolean)){
+      const m=raw.match(/^(\d+)\s*-\s*(\d+)$/);
+      if(m){let a=Number(m[1]),b=Number(m[2]);if(a>b)[a,b]=[b,a];if(b-a>300)continue;for(let n=a;n<=b;n++)nums.add(n);continue;}
+      const n=Number(raw.match(/\d+/)?.[0]);if(Number.isFinite(n)&&n>0)nums.add(n);
+    }
+    return [...nums].sort((a,b)=>a-b);
+  }
+  function renderManualWeakOptions(){
+    if(!$('manualWeakYear'))return;
+    const years=questionIndex.years||[],types=questionIndex.examTypes||[];
+    const oldY=$('manualWeakYear').value,oldT=$('manualWeakType').value;
+    $('manualWeakYear').innerHTML='<option value="all">年度を選択</option>'+years.map(v=>'<option value="'+escapeHtml(v)+'">'+escapeHtml(v)+(/^\d{4}$/.test(v)?'年度':'')+'</option>').join('');
+    $('manualWeakType').innerHTML='<option value="all">すべて</option>'+types.map(v=>'<option value="'+escapeHtml(v)+'">'+escapeHtml(v)+'</option>').join('');
+    if(years.includes(oldY))$('manualWeakYear').value=oldY;
+    if(types.includes(oldT))$('manualWeakType').value=oldT;
+    $('manualWeakCount').textContent=manualWeakIdSet.size.toLocaleString();
+  }
+  function manualWeakMatches(){
+    const year=$('manualWeakYear')?.value||'all',type=$('manualWeakType')?.value||'all',nums=parseQuestionNumberSpec($('manualWeakNums')?.value);
+    if(year==='all'||!nums.length)return {matches:[],nums,year,type};
+    const wanted=new Set(nums);
+    const matches=questionIndex.all.filter(q=>String(q.year||'未設定')===year&&(type==='all'||String(q.examType||'未分類')===type)&&wanted.has(qNumValue(q)));
+    return {matches,nums,year,type};
+  }
+  function setManualWeakStatus(html,kind=''){
+    const el=$('manualWeakStatus');if(!el)return;el.className='manual-weak-status'+(kind?' '+kind:'');el.innerHTML=html;
+  }
+  async function applyManualWeak(value){
+    const {matches,nums,year,type}=manualWeakMatches();
+    if(year==='all'){setManualWeakStatus('年度を選択してください。','warn');return;}
+    if(!nums.length){setManualWeakStatus('問題番号を入力してください。例：<strong>3,12,17-22</strong>','warn');return;}
+    if(!matches.length){setManualWeakStatus('<strong>'+escapeHtml(year)+' '+escapeHtml(type==='all'?'全区分':type)+'</strong> に指定番号の問題が見つかりません。','bad');return;}
+    for(const q of matches){
+      if(value){manualWeakIdSet.add(q.id);reviewIdSet.add(q.id);}
+      else{
+        manualWeakIdSet.delete(q.id);
+        const h=state.study.history?.[q.id],answered=Number(h?.answered)||0,acc=answered?(Number(h?.correct)||0)/answered:1;
+        if(!answered||((h?.lastCorrect!==false)&&acc>=.60))reviewIdSet.delete(q.id);
+      }
+      await persistStudyProgress(q.id);
+    }
+    state.study.reviewIds=[...reviewIdSet];invalidateMasteryCache();saveState();renderMasterySummary();renderManualWeakOptions();renderAll();
+    const foundNums=[...new Set(matches.map(q=>qNumValue(q)))].sort((a,b)=>a-b);
+    const missing=nums.filter(n=>!foundNums.includes(n));
+    const action=value?'苦手登録':'手動指定解除';
+    setManualWeakStatus('<strong>'+action+'：'+matches.length+'問</strong><br>'+escapeHtml(year)+' • '+escapeHtml(type==='all'?'全区分':type)+' • 問'+foundNums.join(', 問')+(missing.length?'<br>未検出：問'+missing.join(', 問'):'') ,missing.length?'warn':'ok');
+    toast('<b>'+action+'</b> '+matches.length+'問を更新');
   }
 
   function normalizePhase2State() {
@@ -5778,7 +5875,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
       localStorage.setItem(BANK_INIT_KEY, '1');
       questions = await bankGetAll();
       rebuildQuestionIndex();
-      if (importMode === 'replace') { state.study.reviewIds=[]; state.study.history={}; reviewIdSet=new Set(); }
+      if (importMode === 'replace') { state.study.reviewIds=[]; state.study.history={}; reviewIdSet=new Set(); manualWeakIdSet=new Set(); }
       currentQuestion = null;
       currentBattleQuestion = null;
       buildQuestionFilters();
@@ -5813,7 +5910,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     try {
       await bankClear(true);
       localStorage.setItem(BANK_INIT_KEY, '1');
-      questions = []; rebuildQuestionIndex(); await bankProgressClear().catch(()=>{}); state.study.history={}; state.study.reviewIds=[]; reviewIdSet=new Set();
+      questions = []; rebuildQuestionIndex(); await bankProgressClear().catch(()=>{}); state.study.history={}; state.study.reviewIds=[]; reviewIdSet=new Set(); manualWeakIdSet=new Set();
       currentQuestion = null;
       currentBattleQuestion = null;
       state.study.lastQuestionId = null;
@@ -7191,7 +7288,17 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     $('soccerMatchControls')?.classList.toggle('hidden',defending);$('soccerDefenseControls')?.classList.toggle('hidden',!defending);
     if($('soccerDefenseControls'))$('soccerDefenseControls').querySelectorAll('[data-defense-action]').forEach(btn=>btn.disabled=!!rt?.actionLocked);
     renderSoccerTacticControls();if($('soccerMatchPower'))$('soccerMatchPower').textContent=rt?numbers.overall:soccerTeamOvr();if($('soccerMatchCondition'))$('soccerMatchCondition').textContent=soccerAverageCondition(rt?.liveLineup||state.soccer.lineupSlots)+'%';if($('soccerMatchTacticEdge'))$('soccerMatchTacticEdge').textContent='vs '+soccerTacticInfo(numbers.awayKey).name+' • 相性 '+(numbers.edge>0?'+':'')+numbers.edge;
-    renderSoccerSubstitutionControls();if(!rt||!rt.inChance)renderSoccerPitchIdle();
+    renderSoccerSubstitutionControls();
+    if(rt?.inChance){
+      setSoccerGestureScrollLock(true);
+      $('soccerPitch')?.classList.toggle('defense-moment',rt.chanceType==='defense');
+      if(rt.chanceType==='defense')renderSoccerDefenseChance();
+      else if(rt.chanceType==='attack')renderSoccerChance();
+    }else{
+      setSoccerGestureScrollLock(false);
+      $('soccerPitch')?.classList.remove('defense-moment');
+      renderSoccerPitchIdle();
+    }
   }
   function soccerAthleteMarkup({p=null,x=50,y=50,team='home',focus=false,ball=false,interactive=false,pos='',number=0,name='',actorId='',extraClass=''}={}){
     const athleteName=name||(p?.name||''),position=pos||(p?.primaryPos||''),shirtNo=number||(p?.number||0),classes=['match-athlete',team,focus?'focus':'',ball?'ball-holder':'',interactive?'selectable':'',extraClass].filter(Boolean).join(' ');
@@ -7239,13 +7346,18 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     host.classList.toggle('soccer-gesture-lock',!!locked);
   }
   function stopPitchNativeScroll(e){if(e.cancelable)e.preventDefault();}
+  function soccerActiveTouchGuard(e){
+    const rt=soccerMatchRuntime;
+    if(!rt?.inChance||rt.chanceType!=='attack')return;
+    if(e.cancelable)e.preventDefault();
+  }
   function startSoccerChance(){
     const rt=soccerMatchRuntime;if(!rt)return;rt.inChance=true;rt.chanceType='attack';rt.defenseScene=null;setSoccerGestureScrollLock(true);rt.chances++;rt.stage=0;rt.actionLocked=false;
     const liveLineup=soccerMatchLineup(),pool=soccerFormationSlots().map(slot=>({p:state.soccer.players.find(x=>x.id===liveLineup[slot.id]),slot})).filter(x=>x.p&&x.slot.pos!=='GK').sort((a,b)=>(b.p.SHO+b.p.DRI+b.p.PAS)-(a.p.SHO+a.p.DRI+a.p.PAS));
     rt.attackers=pool.slice(0,7).sort(()=>Math.random()-.5).slice(0,4).map(x=>x.p);rt.ballHolder=rt.attackers[0]?.id||null;rt.lastPasserId=null;
     rt.actorPos={};rt.attackers.forEach((p,i)=>{rt.actorPos[p.id]=soccerChanceCoordinates(p,i);});
     rt.defenderPos={lsb:{x:24,y:27},lcb:{x:41,y:32},rcb:{x:59,y:32},rsb:{x:76,y:27},dmf:{x:50,y:44},gk:{x:50,y:10}};
-    soccerLog('CHANCE! 攻撃局面を自分で操作');soccerCinematic('CHANCE!',rt.attackers[0]?.name||'ATTACK','good','ATTACKING MOMENT',650);renderSoccerChance();renderSoccerMatch();
+    soccerLog('CHANCE! 攻撃局面を自分で操作');soccerCinematic('CHANCE!',rt.attackers[0]?.name||'ATTACK','good','ATTACKING MOMENT',650);renderSoccerMatch();
   }
 
   function soccerNextDefenseGap(){
@@ -7281,7 +7393,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     const intent=soccerDefenseIntent(),primary=unit.field[0],support=unit.field.slice(1,5);
     rt.defenseScene={intent,defenderId:primary.p.id,supportIds:support.map(x=>x.p.id)};
     soccerLog('DANGER! 相手の決定機。守備を選択');soccerCinematic('DANGER!',rt.opponent.name+' ATTACK','bad','DEFENSIVE MOMENT',620);
-    renderSoccerMatch();renderSoccerDefenseChance();
+    renderSoccerMatch();
   }
   function renderSoccerDefenseChance(){
     const rt=soccerMatchRuntime,scene=rt?.defenseScene;if(!rt?.inChance||rt.chanceType!=='defense'||!scene||!$('soccerPitchActors'))return;
@@ -7584,6 +7696,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     pitch?.addEventListener('touchmove',stopPitchNativeScroll,{passive:false});
     pitch?.addEventListener('touchend',soccerPitchTouchEnd,{passive:false});
     pitch?.addEventListener('touchcancel',()=>{soccerTouchStart=null;soccerPointerStart=null;},{passive:true});
+    document.addEventListener('touchmove',soccerActiveTouchGuard,{passive:false});
   }
 
 
@@ -7606,6 +7719,10 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     $('subjectFilter').addEventListener('change', e => setQuestionFilter('subject', e.target.value));
     $('difficultyFilter').addEventListener('change', e => setQuestionFilter('difficulty', e.target.value));
     $('reviewStartBtn').addEventListener('click', () => { setStudyMode('review'); navigate('study'); });
+    $('manualWeakAddBtn')?.addEventListener('click',()=>applyManualWeak(true));
+    $('manualWeakRemoveBtn')?.addEventListener('click',()=>applyManualWeak(false));
+    $('manualWeakYear')?.addEventListener('change',()=>setManualWeakStatus('問題番号を入力して「苦手に追加」を押してください。'));
+    $('manualWeakType')?.addEventListener('change',()=>setManualWeakStatus('問題番号を入力して「苦手に追加」を押してください。'));
     $('quizStrikeBtn').addEventListener('click', startQuizStrike);
     $('guardBtn').addEventListener('click', guard);
     $('weaponSkillBtn').addEventListener('click', useWeaponSkill);
@@ -7670,6 +7787,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     rebuildQuestionIndex();
     normalizeFilters();
     buildQuestionFilters();
+    renderManualWeakOptions();
     updateImportMode('append');
     updateImportMetaHint();
     $('weaponRarityFilter').value = state.forge.inventoryFilter || 'all';
