@@ -447,11 +447,27 @@ main {
 .file-drop strong { margin-top: 4px; font-size: 14px; }
 .file-drop small { color: var(--muted); font-size: 10px; }
 .file-drop input {
-  position: absolute;
+  position: fixed;
+  left: -10000px;
+  top: -10000px;
   width: 1px;
   height: 1px;
   opacity: 0;
-  pointer-events: none;
+}
+.csv-pick-btn{
+  margin-top:10px;
+  min-width:190px;
+  min-height:48px;
+  padding:11px 16px;
+  border:1px solid rgba(255,177,74,.44);
+  border-radius:12px;
+  background:rgba(255,138,42,.13);
+  color:#ffd08a;
+  font-weight:900;
+  cursor:pointer;
+  touch-action:manipulation;
+  -webkit-user-select:none;
+  user-select:none;
 }
 .import-files {
   margin-top: 10px;
@@ -2961,12 +2977,13 @@ button.match-athlete{cursor:pointer}
         </div>
         <div class="import-meta-hint" id="importMetaHint">先に「年度」と「基礎 / 応用」を選択してください。CSV内に同じ項目がなくても自動付与されます。</div>
 
-        <label class="file-drop" for="questionCsvInput" id="questionCsvDrop">
+        <div class="file-drop" id="questionCsvDrop">
           <span class="file-drop-icon">＋</span>
           <strong>CSVファイルを選択</strong>
-          <small>複数ファイルをまとめて選択できます</small>
-          <input id="questionCsvInput" type="file" accept=".csv,text/csv" multiple />
-        </label>
+          <small>iPhone / iPad は下のボタンから「ファイル」を開いてください。複数選択にも対応します。</small>
+          <button type="button" class="csv-pick-btn" id="chooseCsvBtn">CSVを選ぶ</button>
+          <input id="questionCsvInput" type="file" accept=".csv,text/csv,text/plain,application/vnd.ms-excel" multiple />
+        </div>
 
         <div class="import-files" id="importFileList">ファイル未選択</div>
 
@@ -5713,8 +5730,20 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if(pendingImportErrors.length){$('importErrors').classList.remove('hidden');$('importErrors').innerHTML=pendingImportErrors.slice(0,30).map(e=>`<div>${escapeHtml(e)}</div>`).join('')+(pendingImportErrors.length>30?`<div>…ほか ${pendingImportErrors.length-30}件</div>`:'');}else{$('importErrors').classList.add('hidden');$('importErrors').innerHTML='';}
   }
 
+  function openCsvPicker(){
+    const input=$('questionCsvInput');if(!input)return;
+    input.value='';
+    try{
+      if(typeof input.showPicker==='function')input.showPicker();
+      else input.click();
+    }catch(_){
+      try{input.click();}catch(err){console.warn('CSV picker open failed',err);toast('<b>CSV</b> ファイルを開けませんでした。Safariからもう一度お試しください');}
+    }
+  }
+
   async function handleImportFiles(fileList,reparse=false) {
-    const files=Array.from(fileList||[]).filter(file=>/\.csv$/i.test(file.name)||file.type==='text/csv');if(!reparse)pendingImportFiles=files;pendingImportQuestions=[];pendingImportErrors=[];pendingImportStats={detected:0,accepted:0,excluded:0,duplicates:0};
+    const selected=Array.from(fileList||[]),files=selected.filter(file=>/\.csv$/i.test(file.name)||['text/csv','text/plain','application/vnd.ms-excel',''].includes(file.type));if(!reparse)pendingImportFiles=files;pendingImportQuestions=[];pendingImportErrors=[];pendingImportStats={detected:0,accepted:0,excluded:0,duplicates:0};
+    if(selected.length&&!files.length){pendingImportErrors=['CSVファイルを選択してください。'];$('importFileList').textContent=selected.map(f=>f.name).join(' / ');renderImportPreview(selected.map(f=>f.name));return;}
     if(!files.length){renderImportPreview([]);hideImportProgress();return;}const meta=getImportMetadata();
     if(!meta){pendingImportErrors=['年度と「基礎 / 応用」を選択すると解析を開始します。'];$('importFileList').textContent=files.map(f=>f.name).join(' / ');renderImportPreview(files.map(f=>f.name));hideImportProgress();return;}
     $('importFileList').textContent='CSVを解析中…';$('importQuestionsBtn').disabled=true;const allQuestions=new Map();setImportProgress(0,'CSVを読み込み中');let detected=0,rejected=0,duplicates=0;
@@ -7547,6 +7576,8 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     $('openBankManagerBtn').addEventListener('click', openBankManager);
     $('closeBankManagerBtn').addEventListener('click', closeBankManager);
     $('questionCsvInput').addEventListener('change',event=>handleImportFiles(event.target.files));
+    $('chooseCsvBtn')?.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();openCsvPicker();});
+    $('questionCsvDrop')?.addEventListener('click',event=>{if(event.target.closest?.('button,select,input,a'))return;openCsvPicker();});
     ['importYearSelect','importExamTypeSelect'].forEach(id=>$(id).addEventListener('change',()=>{updateImportMetaHint();if(pendingImportFiles.length)handleImportFiles(pendingImportFiles,true);}));
     $('studyImageAddBtn').addEventListener('click',()=>openQuestionImagePicker('study'));
     $('studyImageRemoveBtn').addEventListener('click',()=>removeCurrentQuestionImage('study'));
