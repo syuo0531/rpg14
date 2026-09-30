@@ -7385,8 +7385,8 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"è²§è¡
 
 
   function bindEvents() {
-    $('[data-nav]').forEach(btn => btn.addEventListener('click', () => navigate(btn.dataset.nav)));
-    $('[data-exam-mode]').forEach(btn=>btn.addEventListener('click',()=>setExamMode(btn.dataset.examMode)));
+    $$('[data-nav]').forEach(btn => btn.addEventListener('click', () => navigate(btn.dataset.nav)));
+    $$('[data-exam-mode]').forEach(btn=>btn.addEventListener('click',()=>setExamMode(btn.dataset.examMode)));
     ['examSetupType','examSetupYear','examSetupDuration'].forEach(id=>$(id)?.addEventListener('change',updateExamSetup));
     $('examStartBtn')?.addEventListener('click',startExam); $('examResumeBtn')?.addEventListener('click',resumeExam);
     $('examPrevBtn')?.addEventListener('click',()=>examGo(-1)); $('examNextBtn')?.addEventListener('click',()=>examGo(1)); $('examMarkBtn')?.addEventListener('click',toggleExamMark);
