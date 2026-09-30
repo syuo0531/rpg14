@@ -1626,6 +1626,23 @@ button.match-athlete{cursor:pointer}
 @media(max-width:820px){.phase12-award-grid{grid-template-columns:repeat(2,1fr)}.phase12-stats-layout{grid-template-columns:1fr}}@media(max-width:560px){.phase12-stat-row{grid-template-columns:24px 1fr repeat(4,34px)}.phase12-record-grid{grid-template-columns:1fr}}
 
 
+/* ===== SOCCER STUDY EXAM PATCH ===== */
+/* =========================
+   PHASE 12 • EXAM MODE
+   ========================= */
+.phase12-home-card{width:100%;margin:14px 0 0;padding:20px 22px;border:1px solid rgba(126,200,255,.20);border-radius:18px;background:linear-gradient(135deg,rgba(34,58,82,.35),rgba(15,17,21,.96));color:var(--text);display:flex;align-items:center;justify-content:space-between;gap:16px;text-align:left;cursor:pointer;box-shadow:var(--shadow)}
+.phase12-home-card h3{margin:5px 0 6px;font-size:22px}.phase12-home-card p{margin:0;color:var(--muted);font-size:12px}.phase12-home-card em{color:#9fd4ff;font-style:normal;font-size:11px;font-weight:900;letter-spacing:.08em;white-space:nowrap}
+.exam-shell{display:grid;gap:14px}.exam-setup-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.exam-mode-card{border:1px solid var(--line);background:#11141a;border-radius:16px;padding:16px;text-align:left;cursor:pointer;min-height:150px;transition:.18s}.exam-mode-card.active{border-color:rgba(126,200,255,.65);box-shadow:inset 0 0 0 1px rgba(126,200,255,.12),0 0 28px rgba(55,145,220,.10);background:linear-gradient(145deg,rgba(45,88,126,.22),#11141a)}.exam-mode-card span{display:block;color:#9fd4ff;font-size:9px;font-weight:900;letter-spacing:.14em}.exam-mode-card b{display:block;margin-top:9px;font-size:19px}.exam-mode-card small{display:block;margin-top:7px;color:var(--muted);line-height:1.5}
+.exam-config{padding:18px}.exam-config-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px}.exam-pool-info{margin-top:12px;padding:12px;border-radius:12px;border:1px solid var(--line);background:rgba(0,0,0,.18);display:flex;justify-content:space-between;gap:12px;align-items:center}.exam-pool-info b{font-size:18px}.exam-pool-info small{color:var(--muted)}.exam-start-row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}.exam-start-row button{flex:1;min-width:180px}
+.exam-session-head{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}.exam-progress-line{display:flex;gap:10px;flex-wrap:wrap;align-items:baseline}.exam-progress-line b{font-size:24px}.exam-progress-line span{color:var(--muted);font-size:11px}.exam-timer{font-variant-numeric:tabular-nums;font-weight:900;font-size:22px;color:#9fd4ff;padding:10px 14px;border:1px solid rgba(126,200,255,.25);border-radius:12px;background:rgba(70,140,190,.08)}.exam-timer.danger{color:#ff7777;border-color:rgba(255,81,81,.35);animation:timerPulse 1s infinite}@keyframes timerPulse{50%{opacity:.65}}
+.exam-layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px}.exam-question-panel{padding:clamp(18px,4vw,30px);min-height:540px}.exam-question-panel h3{font-size:clamp(19px,3vw,28px);line-height:1.55;margin:12px 0 20px}.exam-meta{display:flex;gap:7px;flex-wrap:wrap}.exam-meta span{padding:6px 8px;border:1px solid var(--line);border-radius:8px;color:var(--muted);font-size:9px;font-weight:900}.exam-choice-grid{display:grid;gap:9px}.exam-choice-grid .choice-btn{min-height:56px}.exam-question-actions{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;margin-top:18px}.exam-question-actions button{min-height:48px}.exam-mark-btn.marked{border-color:rgba(231,191,103,.5);color:#ffd06d;background:rgba(231,191,103,.08)}
+.exam-side{display:grid;gap:12px;align-content:start}.exam-summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}.exam-summary-grid div{padding:10px 6px;text-align:center;border:1px solid var(--line);border-radius:10px;background:rgba(0,0,0,.18)}.exam-summary-grid span{display:block;color:var(--muted);font-size:8px}.exam-summary-grid b{display:block;margin-top:4px;font-size:17px}.exam-palette{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:12px;max-height:360px;overflow:auto;padding-right:2px}.exam-palette button{aspect-ratio:1;border:1px solid var(--line);border-radius:8px;background:#101216;color:#8d9097;font-size:10px;font-weight:900;cursor:pointer}.exam-palette button.answered{color:#8fe9af;border-color:rgba(101,210,141,.30);background:rgba(101,210,141,.08)}.exam-palette button.marked{box-shadow:inset 0 -3px #e7bf67}.exam-palette button.current{color:#fff;border-color:#7ec8ff;background:rgba(126,200,255,.15)}
+.exam-image-wrap{margin:10px 0 16px;border:1px solid var(--line);border-radius:14px;background:#07080a;padding:8px;text-align:center}.exam-image-wrap img{display:block;max-width:100%;max-height:420px;margin:auto;border-radius:9px}.exam-image-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0 14px}.exam-image-tools button{min-height:40px;padding:8px 12px;font-size:10px}.exam-image-tools small{color:var(--muted);font-size:9px}
+.exam-result{display:grid;gap:14px}.exam-score-hero{padding:28px;text-align:center;background:radial-gradient(circle at 50% 0,rgba(126,200,255,.14),transparent 45%),linear-gradient(180deg,var(--panel-2),var(--panel))}.exam-score-hero span{color:#9fd4ff;font-size:10px;font-weight:900;letter-spacing:.18em}.exam-score-hero b{display:block;font-size:clamp(58px,12vw,92px);line-height:1;margin:14px 0 8px}.exam-score-hero strong{font-size:18px}.exam-score-hero p{color:var(--muted);margin:8px 0 0}.exam-result-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.exam-subject-results,.exam-wrong-list,.exam-history-list{display:grid;gap:7px;margin-top:12px}.exam-subject-row,.exam-history-row,.exam-wrong-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:11px;border:1px solid var(--line);border-radius:10px;background:rgba(0,0,0,.16)}.exam-subject-row span,.exam-wrong-row small,.exam-history-row small{color:var(--muted);font-size:10px}.exam-subject-row b{font-size:14px}.exam-wrong-list{max-height:340px;overflow:auto}.exam-history-list{max-height:280px;overflow:auto}.exam-history-row b{font-size:14px}.exam-history-row .score{color:#9fd4ff;font-size:16px}.exam-empty{padding:20px;text-align:center;color:var(--muted);font-size:11px;border:1px dashed var(--line);border-radius:12px}
+.exam-resume-banner{padding:13px;border:1px solid rgba(231,191,103,.28);background:rgba(231,191,103,.06);border-radius:12px;margin-top:12px;display:flex;justify-content:space-between;align-items:center;gap:10px}.exam-resume-banner span{font-size:11px}.exam-resume-banner b{color:#ffd06d}.exam-finish-note{color:var(--muted);font-size:9px;line-height:1.5;margin-top:8px}
+@media(max-width:820px){.exam-setup-grid{grid-template-columns:1fr}.exam-config-grid{grid-template-columns:1fr 1fr}.exam-layout{grid-template-columns:1fr}.exam-side{grid-template-columns:1fr}.exam-palette{grid-template-columns:repeat(10,1fr);max-height:none}.exam-result-grid{grid-template-columns:1fr}.phase12-home-card{align-items:flex-start;flex-direction:column}}
+@media(max-width:520px){.exam-config-grid{grid-template-columns:1fr}.exam-palette{grid-template-columns:repeat(8,1fr)}.exam-session-head{grid-template-columns:1fr}.exam-timer{justify-self:start}.exam-question-actions{grid-template-columns:1fr 1fr}.exam-mark-btn{grid-column:1/-1;order:-1}.exam-score-hero{padding:22px 14px}.phase12-home-card{padding:18px}.exam-summary-grid{gap:5px}.exam-summary-grid b{font-size:15px}}
+
 </style>
 </head>
 <body>
@@ -1670,6 +1687,8 @@ button.match-athlete{cursor:pointer}
               <div class="panel-head"><span>MANAGER HUB</span><small>PHASE 13</small></div>
               <div class="soccer-actions">
                 <button class="soccer-action primary" data-nav="study"><span>📚</span><b>勉強する</b><small>正解で育成PTを獲得</small></button>
+                <button class="soccer-action" type="button" id="soccerWeakStartBtn"><span>🎯</span><b>苦手問題</b><small id="soccerWeakCountText">自動抽出した問題を復習</small></button>
+                <button class="soccer-action" data-nav="exam"><span>📝</span><b>試験モード</b><small>年度別・ランダム・苦手模試</small></button>
                 <button class="soccer-action csv-action" type="button" id="soccerCsvMenuBtn"><span>📥</span><b>問題CSV</b><small>問題を追加・管理</small></button>
                 <button class="soccer-action" data-nav="soccer-training"><span>🏃</span><b>選手育成</b><small>能力を個別強化</small></button>
                 <button class="soccer-action" data-nav="soccer-team"><span>📋</span><b>チーム編成</b><small>スタメン・布陣を決定</small></button>
@@ -1954,6 +1973,100 @@ button.match-athlete{cursor:pointer}
       </section>
 
       
+      <section class="screen" id="screen-exam" data-screen="exam">
+        <div class="screen-title-row">
+          <button class="icon-btn" data-nav="home" aria-label="ホームへ戻る">←</button>
+          <div><span class="eyebrow">PHASE 12 • FLEX EXAM MODE</span><h2>Examination Hall</h2></div>
+          <div class="combo-badge"><span>FULL SCORE</span><b>100%</b></div>
+        </div>
+
+        <div class="exam-shell" id="examSetupView">
+          <div class="metal-panel compact-panel">
+            <div class="panel-head"><span>SELECT EXAM</span><small>NO FEEDBACK UNTIL FINISH</small></div>
+            <div class="exam-setup-grid">
+              <button class="exam-mode-card active" data-exam-mode="random"><span>RANDOM MOCK</span><b>ランダム模試</b><small>最大110問をランダム抽出。110問未満なら登録されている全問題を使用。</small></button>
+              <button class="exam-mode-card" data-exam-mode="weak"><span>WEAKNESS MOCK</span><b>苦手模試</b><small>苦手問題を優先して最大110問。110問未満でもその問題数で受験可能。</small></button>
+              <button class="exam-mode-card" data-exam-mode="real"><span>REAL EXAM</span><b>本番モード</b><small>選択した年度＋基礎/応用の全問題を問題番号順に出題。問題数そのものを100%として採点。</small></button>
+            </div>
+          </div>
+
+          <div class="metal-panel exam-config">
+            <div class="panel-head"><span>EXAM CONFIG</span><small id="examModeLabel">RANDOM MOCK</small></div>
+            <div class="exam-config-grid">
+              <label class="filter-label">区分
+                <select id="examSetupType" class="filter-select"><option value="all">基礎 + 応用 + 未分類</option></select>
+              </label>
+              <label class="filter-label">年度
+                <select id="examSetupYear" class="filter-select"><option value="all">ALL YEARS</option></select>
+              </label>
+              <label class="filter-label">制限時間
+                <select id="examSetupDuration" class="filter-select">
+                  <option value="0">時間制限なし</option>
+                  <option value="90">90分</option>
+                  <option value="110" selected>110分</option>
+                  <option value="120">120分</option>
+                  <option value="150">150分</option>
+                </select>
+              </label>
+            </div>
+            <div class="exam-pool-info"><div><b id="examPoolCount">0問</b><small id="examPoolDetail">問題バンクを確認中</small></div><small id="examStartHint">1問以上で開始できます</small></div>
+            <div class="exam-resume-banner hidden" id="examResumeBanner"><span><b>試験を中断中</b><br><small id="examResumeText">—</small></span><button class="secondary-btn" id="examResumeBtn">再開</button></div>
+            <div class="exam-start-row"><button class="primary-btn" id="examStartBtn">模試を開始</button></div>
+            <p class="exam-finish-note">試験中は正誤・解説・報酬を表示しません。終了後に採点し、不正解・未回答は自動で復習リストへ追加します。</p>
+          </div>
+
+          <div class="metal-panel compact-panel">
+            <div class="panel-head"><span>EXAM HISTORY</span><small>LAST 20 RESULTS</small></div>
+            <div class="exam-history-list" id="examHistoryList"></div>
+          </div>
+        </div>
+
+        <div class="exam-shell hidden" id="examSessionView">
+          <div class="metal-panel compact-panel exam-session-head">
+            <div><div class="exam-progress-line"><b id="examSessionTitle">RANDOM MOCK</b><span id="examSessionMeta">QUESTIONS</span></div><div class="progress" style="margin-top:10px"><i id="examProgressBar"></i></div></div>
+            <div class="exam-timer" id="examTimer">--:--</div>
+          </div>
+
+          <div class="exam-layout">
+            <div class="metal-panel exam-question-panel">
+              <div class="exam-meta"><span id="examQNumber">問1</span><span id="examQType">基礎</span><span id="examQYear">—</span><span id="examQSubject">SUBJECT</span></div>
+              <h3 id="examQuestionText">問題を読み込み中…</h3>
+              <div class="exam-image-wrap hidden" id="examQuestionImageWrap"><img id="examQuestionImage" alt="問題画像" /></div>
+
+              <div class="exam-choice-grid" id="examChoiceGrid"></div>
+              <div class="exam-question-actions">
+                <button class="secondary-btn" id="examPrevBtn">← PREV</button>
+                <button class="secondary-btn exam-mark-btn" id="examMarkBtn">☆ MARK</button>
+                <button class="primary-btn" id="examNextBtn">NEXT →</button>
+              </div>
+            </div>
+            <aside class="exam-side">
+              <div class="metal-panel compact-panel">
+                <div class="panel-head"><span>PROGRESS</span><small>ANSWER SHEET</small></div>
+                <div class="exam-summary-grid"><div><span>回答済み</span><b id="examAnsweredCount">0</b></div><div><span>未回答</span><b id="examUnansweredCount">0</b></div><div><span>MARK</span><b id="examMarkedCount">0</b></div></div>
+                <div class="exam-palette" id="examPalette"></div>
+              </div>
+              <div class="metal-panel compact-panel">
+                <button class="secondary-btn" id="examPauseBtn" style="width:100%">中断してHOMEへ</button>
+                <button class="primary-btn" id="examFinishBtn" style="width:100%;margin-top:8px">試験を終了して採点</button>
+                <p class="exam-finish-note">本番モードでは残り時間が0になると自動採点します。</p>
+              </div>
+            </aside>
+          </div>
+        </div>
+
+        <div class="exam-result hidden" id="examResultView">
+          <div class="metal-panel exam-score-hero">
+            <span>EXAM RESULT</span><b id="examResultScore">0 / 0</b><strong id="examResultPercent">0%</strong><p id="examResultMeta">—</p>
+          </div>
+          <div class="exam-result-grid">
+            <div class="metal-panel compact-panel"><div class="panel-head"><span>SUBJECT ANALYSIS</span><small>ACCURACY</small></div><div class="exam-subject-results" id="examSubjectResults"></div></div>
+            <div class="metal-panel compact-panel"><div class="panel-head"><span>WRONG / UNANSWERED</span><small>AUTO → REVIEW</small></div><div class="exam-wrong-list" id="examWrongList"></div></div>
+          </div>
+          <div class="exam-start-row"><button class="secondary-btn" id="examResultStudyBtn">間違いをREVIEWで復習</button><button class="primary-btn" id="examResultNewBtn">別の模試を受ける</button></div>
+        </div>
+      </section>
+
       <section class="screen" id="screen-forge" data-screen="forge">
         <div class="screen-title-row">
           <button class="icon-btn" data-nav="home" aria-label="ホームへ戻る">←</button>
@@ -3087,6 +3200,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     phase5: {dailyKey:'',weeklyKey:'',daily:{correct:0,reviewCorrect:0,upgrades:0,bestCombo:0,claims:{}},weekly:{correct:0,bosses:0,forges:0,claims:{}},achievements:{unlocked:[],claimed:{}},seenEnemies:[],goalsTab:'daily'},
     phase9: {collectionClaims:{},mythicTickets:0},
     phase10: {loadout:{subWeaponId:null,accessoryIds:['scholar-ring',null]},accessories:['scholar-ring'],daily:{key:'',subject:'',element:'FIRE',hunt:'ELITE',huntKills:0},season:{key:'',xp:0,bossKills:0,claimed:{},firstBossReward:false}},
+    phase12: {setup:{mode:'random',examType:'all',year:'all',durationMin:0},active:null,history:[],lastResult:null},
     today: { date: TODAY_KEY(), answered: 0, correct: 0 },
     soccer: {initialized:false,schoolName:'FORGE高校',year:1,month:4,reputation:0,schoolExp:0,trainingPoints:0,formation:'4-3-3',players:[],starterIds:[],selectedPlayerId:null,record:{played:0,wins:0,draws:0,losses:0,gf:0,ga:0},lastResult:null},
     settings: { sound: false, fxMode: 'lite' }
@@ -3278,6 +3392,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
         dungeon: {...base.dungeon, ...(parsed.dungeon || {}), clears:{...base.dungeon.clears,...((parsed.dungeon||{}).clears||{})}},
         phase9: {...base.phase9, ...(parsed.phase9 || {}), collectionClaims:{...base.phase9.collectionClaims,...((parsed.phase9||{}).collectionClaims||{})}},
         phase10: {...base.phase10, ...(parsed.phase10 || {}), loadout:{...base.phase10.loadout,...((parsed.phase10||{}).loadout||{})}, daily:{...base.phase10.daily,...((parsed.phase10||{}).daily||{})}, season:{...base.phase10.season,...((parsed.phase10||{}).season||{}),claimed:{...base.phase10.season.claimed,...(((parsed.phase10||{}).season||{}).claimed||{})}}, accessories:Array.isArray((parsed.phase10||{}).accessories)?parsed.phase10.accessories:base.phase10.accessories},
+        phase12: {...base.phase12, ...(parsed.phase12 || {}), setup:{...base.phase12.setup,...((parsed.phase12||{}).setup||{})}, history:Array.isArray((parsed.phase12||{}).history)?parsed.phase12.history:base.phase12.history},
         today: {...base.today, ...(parsed.today || {})},
         settings: {...base.settings, ...(parsed.settings || {})}
       };
@@ -3432,7 +3547,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     const h=state.study.history?.[id];
     return {id,answered:Number(h?.answered)||0,correct:Number(h?.correct)||0,lastCorrect:!!h?.lastCorrect,review:reviewIdSet.has(id),updatedAt:Date.now()};
   }
-  function persistStudyProgress(id) { if(id) bankProgressPut(progressRecordFor(id)).catch(err=>console.warn('Progress save failed',err)); }
+  function persistStudyProgress(id) { if(id) return bankProgressPut(progressRecordFor(id)).catch(err=>console.warn('Progress save failed',err)); return Promise.resolve(); }
   async function loadStudyProgress() {
     const legacyHistory={...(state.study.history||{})};
     const legacyReview=[...(state.study.reviewIds||[])];
@@ -4512,6 +4627,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if (screen === 'goals') renderGoals();
     if (screen === 'battle') ensureEnemy();
     if (screen === 'forge') renderForge();
+    if (screen === 'exam') renderExamScreen();
     if (screen === 'soccer-team') renderSoccerTeam();
     if (screen === 'soccer-training') renderSoccerTraining();
     if (screen === 'soccer-match') renderSoccerMatch();
@@ -4545,6 +4661,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     $('todayAccuracy').textContent = state.today.answered ? `${Math.round(state.today.correct / state.today.answered * 100)}%` : '—';
     $('bestCombo').textContent = state.study.bestCombo;
     $('reviewCount').textContent = state.study.reviewIds.length;
+    if($('soccerWeakCountText')) $('soccerWeakCountText').textContent = `苦手 ${state.study.reviewIds.length.toLocaleString()}問を自動抽出`;
     $('questionBankCount').textContent = questions.length.toLocaleString();
     $('questionSubjectCount').textContent = `${questionIndex.subjects.length} SUBJECTS`;
     $('studyCombo').textContent = state.study.combo;
@@ -4564,6 +4681,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if(activeScreen==='dungeon') renderDungeon();
     if(activeScreen==='goals') renderGoals();
     if(activeScreen==='skills') renderSkills();
+    if(activeScreen==='exam') renderExamScreen();
     renderFxMode();
     if(activeScreen==='battle') updateWeaponSkillButton();
 
@@ -4777,6 +4895,152 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
       : '全問題から出題します。';
     saveState();
     nextStudyQuestion();
+  }
+
+
+  // =========================
+  // PHASE 12 • EXAM MODE
+  // =========================
+  let examTimerInterval=null;
+  let examResultVisible=false;
+  const EXAM_MAX_TARGET=110;
+  function normalizePhase12State(){
+    const base=defaultState().phase12;
+    if(!state.phase12||typeof state.phase12!=='object')state.phase12=typeof structuredClone==='function'?structuredClone(base):JSON.parse(JSON.stringify(base));
+    state.phase12.setup={...base.setup,...(state.phase12.setup||{})};
+    if(!['random','weak','real'].includes(state.phase12.setup.mode))state.phase12.setup.mode='random';
+    state.phase12.setup.durationMin=Math.max(0,Number(state.phase12.setup.durationMin)||0);
+    if(!Array.isArray(state.phase12.history))state.phase12.history=[];
+    state.phase12.history=state.phase12.history.slice(0,20);
+    const a=state.phase12.active;
+    if(a&&(!Array.isArray(a.questionIds)||!a.questionIds.length))state.phase12.active=null;
+    if(state.phase12.active){
+      const x=state.phase12.active;
+      x.answers=x.answers&&typeof x.answers==='object'?x.answers:{}; x.marked=Array.isArray(x.marked)?x.marked:[]; x.currentIndex=clamp(Number(x.currentIndex)||0,0,Math.max(0,x.questionIds.length-1));
+    }
+  }
+  function examModeLabel(mode){return mode==='weak'?'苦手模試':mode==='real'?'本番モード':'ランダム模試';}
+  function examModeEnglish(mode){return mode==='weak'?'WEAKNESS MOCK':mode==='real'?'REAL EXAM':'RANDOM MOCK';}
+  function shuffleCopy(arr){const out=[...arr];for(let i=out.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[out[i],out[j]]=[out[j],out[i]];}return out;}
+  function examFilteredPool(setup=state.phase12.setup){
+    let pool=[...questionIndex.all];
+    if(setup.examType&&setup.examType!=='all')pool=pool.filter(q=>String(q.examType||'未分類')===setup.examType);
+    if(setup.year&&setup.year!=='all')pool=pool.filter(q=>String(q.year||'未設定')===setup.year);
+    return pool;
+  }
+  function qNumValue(q){const m=String(q?.qNum??'').match(/\d+/);return m?Number(m[0]):99999;}
+  function weakPriority(q){
+    const h=state.study.history?.[q.id]||{},answered=Number(h.answered)||0,correct=Number(h.correct)||0,acc=answered?correct/answered:1;
+    const st=masteryStatus(q.id).key;let score=reviewIdSet.has(q.id)?1200:0;
+    if(st==='weak')score+=850;else if(st==='learning')score+=520;else if(st==='unlearned')score+=180;else score+=40;
+    if(answered)score+=(1-acc)*500+Math.min(120,answered*8);else score-=100;
+    return score+Math.random()*25;
+  }
+  function buildExamQuestionIds(){
+    const setup=state.phase12.setup,pool=examFilteredPool(setup);
+    // 本番モードは、選択した年度＋区分に登録されている全問題を使用。
+    // 109問なら109問、112問なら112問を100%として採点する。
+    if(setup.mode==='real'){
+      if(setup.examType==='all'||setup.year==='all'||pool.length<1)return [];
+      return [...pool].sort((a,b)=>qNumValue(a)-qNumValue(b)||String(a.id).localeCompare(String(b.id))).map(q=>q.id);
+    }
+    // ランダム/苦手模試は最大110問。候補が110問未満なら全問を使用する。
+    if(pool.length<1)return [];
+    const target=Math.min(EXAM_MAX_TARGET,pool.length);
+    if(setup.mode==='weak')return [...pool].sort((a,b)=>weakPriority(b)-weakPriority(a)).slice(0,target).map(q=>q.id);
+    return shuffleCopy(pool).slice(0,target).map(q=>q.id);
+  }
+  function renderExamSetupOptions(){
+    if(!$('examSetupType'))return;
+    const type=$('examSetupType'),year=$('examSetupYear');
+    type.innerHTML='<option value="all">基礎 + 応用 + 未分類</option>'+(questionIndex.examTypes||[]).map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
+    year.innerHTML='<option value="all">ALL YEARS</option>'+(questionIndex.years||[]).map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
+    type.value=(questionIndex.examTypes||[]).includes(state.phase12.setup.examType)?state.phase12.setup.examType:'all';
+    year.value=(questionIndex.years||[]).includes(state.phase12.setup.year)?state.phase12.setup.year:'all';
+    state.phase12.setup.examType=type.value;state.phase12.setup.year=year.value;
+    $('examSetupDuration').value=String(state.phase12.setup.durationMin||0);
+  }
+  function renderExamSetup(){
+    normalizePhase12State();renderExamSetupOptions();
+    const setup=state.phase12.setup,mode=setup.mode,pool=examFilteredPool(setup),strict=mode==='real';
+    $('[data-exam-mode]').forEach(b=>b.classList.toggle('active',b.dataset.examMode===mode));
+    $('examModeLabel').textContent=examModeEnglish(mode);
+    const type=$('examSetupType'),year=$('examSetupYear');
+    type.disabled=false;year.disabled=false;
+    const valid=strict?(setup.examType!=='all'&&setup.year!=='all'&&pool.length>=1):pool.length>=1;
+    const examCount=strict?pool.length:Math.min(EXAM_MAX_TARGET,pool.length);
+    $('examPoolCount').textContent=`${pool.length.toLocaleString()}問`;
+    $('examPoolDetail').textContent=strict
+      ?(setup.examType==='all'||setup.year==='all'?'年度と基礎/応用を選択してください':`${pool.length.toLocaleString()}問すべてを100%として採点します。`)
+      :(pool.length?`${pool.length.toLocaleString()}問の候補から${examCount.toLocaleString()}問で模試を作成。${examCount}問＝100%です。`:'条件に一致する問題がありません。');
+    $('examStartHint').textContent=valid?`${examCount.toLocaleString()}問 • READY`:'START LOCKED';
+    $('examStartBtn').disabled=!valid;
+    $('examStartBtn').textContent=valid?`${examModeLabel(mode)} ${examCount.toLocaleString()}問を開始`:'条件を選択してください';
+    const active=state.phase12.active;$('examResumeBanner').classList.toggle('hidden',!active);if(active)$('examResumeText').textContent=`${examModeLabel(active.mode)} • ${active.questionIds.length}問 • 問${(active.currentIndex||0)+1}から再開`;
+    renderExamHistory();
+  }
+  function renderExamHistory(){
+    if(!$('examHistoryList'))return;const list=state.phase12.history||[];
+    $('examHistoryList').innerHTML=list.length?list.map(r=>`<div class="exam-history-row"><div><b>${escapeHtml(examModeLabel(r.mode))} • ${escapeHtml(r.examType||'ALL')} • ${escapeHtml(r.year||'ALL')}</b><small>${escapeHtml(new Date(r.finishedAt).toLocaleString('ja-JP'))} • ${Math.round((r.elapsedSec||0)/60)}分</small></div><div class="score">${r.score}/${r.total}</div></div>`).join(''):'<div class="exam-empty">まだ試験履歴がありません。</div>';
+  }
+  function setExamMode(mode){normalizePhase12State();if(!['random','weak','real'].includes(mode))return;state.phase12.setup.mode=mode;if(mode==='real'&&state.phase12.setup.durationMin===0)state.phase12.setup.durationMin=110;saveState();renderExamSetup();}
+  function updateExamSetup(){normalizePhase12State();state.phase12.setup.examType=$('examSetupType').value;state.phase12.setup.year=$('examSetupYear').value;state.phase12.setup.durationMin=Number($('examSetupDuration').value)||0;saveState();renderExamSetup();}
+  function startExam(){
+    normalizePhase12State();const ids=buildExamQuestionIds();if(!ids.length){toast('<b>EXAM LOCKED</b> 条件に一致する問題がありません');renderExamSetup();return;}
+    if(state.phase12.active&&!confirm('中断中の模試を破棄して、新しい模試を開始しますか？'))return;
+    const setup={...state.phase12.setup};state.phase12.active={mode:setup.mode,examType:setup.examType,year:setup.year,questionIds:ids,answers:{},marked:[],currentIndex:0,startedAt:Date.now(),durationSec:Math.max(0,(Number(setup.durationMin)||0)*60),durationMin:Number(setup.durationMin)||0};examResultVisible=false;saveState();renderExamScreen();showMoment('EXAM START',`${examModeLabel(setup.mode)} • ${ids.length} QUESTIONS = 100%`,'crit');
+  }
+  function resumeExam(){if(!state.phase12.active)return;examResultVisible=false;renderExamScreen();}
+  function examCurrentQuestion(){const a=state.phase12.active;if(!a)return null;return questionIndex.byId.get(a.questionIds[a.currentIndex])||null;}
+  function examSelectionFor(q){const raw=state.phase12.active?.answers?.[q?.id];return new Set(Array.isArray(raw)?raw:[]);}
+  function saveExamSelection(q,selection){if(!q||!state.phase12.active)return;state.phase12.active.answers[q.id]=[...selection].sort((a,b)=>a-b);saveState();renderExamProgressOnly();}
+  function renderExamChoices(q){
+    const box=$('examChoiceGrid');box.innerHTML='';if(!q)return;const selection=examSelectionFor(q),max=getSelectCount(q);
+    q.choices.forEach((choice,index)=>{const btn=document.createElement('button');btn.type='button';btn.className=`choice-btn${selection.has(index)?' selected':''}`;btn.setAttribute('aria-pressed',String(selection.has(index)));btn.innerHTML=`<span class="choice-key">${escapeHtml(getChoiceLabel(q,index))}</span><span>${escapeHtml(choice)}</span>`;btn.addEventListener('click',()=>{const sel=examSelectionFor(q);if(sel.has(index))sel.delete(index);else{if(max===1)sel.clear();else if(sel.size>=max){toast(`<b>SELECT ${max}</b> ${max}つまで選択できます`);return;}sel.add(index);}saveExamSelection(q,sel);renderExamChoices(q);});box.appendChild(btn);});
+  }
+  async function renderExamQuestionImage(q){
+    const wrap=$('examQuestionImageWrap'),img=$('examQuestionImage'),add=$('examImageAddBtn'),remove=$('examImageRemoveBtn');if(!wrap||!img)return;revokeQuestionImageUrl('exam');wrap.classList.add('hidden');img.removeAttribute('src');remove?.classList.add('hidden');if(add)add.textContent='＋ 画像を追加';if(!q?.id)return;const expected=q.id;
+    try{const rec=await questionImageGet(expected);if(examCurrentQuestion()?.id!==expected)return;if(!rec?.blob)return;const url=URL.createObjectURL(rec.blob);questionImageUrls.exam=url;img.src=url;wrap.classList.remove('hidden');remove?.classList.remove('hidden');if(add)add.textContent='画像を変更';}catch(err){console.warn('Exam image load failed',err);}
+  }
+  function renderExamQuestion(){
+    const a=state.phase12.active,q=examCurrentQuestion();if(!a||!q)return;
+    $('examSessionTitle').textContent=examModeEnglish(a.mode);$('examSessionMeta').textContent=`${a.examType==='all'?'ALL':a.examType} • ${a.year==='all'?'ALL YEARS':a.year} • ${a.questionIds.length} QUESTIONS = 100%`;
+    $('examQNumber').textContent=`${q.qNum?`問${q.qNum}`:`Q${a.currentIndex+1}`} • ${a.currentIndex+1} / ${a.questionIds.length}`;$('examQType').textContent=q.examType||'未分類';$('examQYear').textContent=q.year||'—';$('examQSubject').textContent=q.subject||'GENERAL';$('examQuestionText').textContent=q.question;
+    renderExamQuestionImage(q);renderExamChoices(q);const marked=new Set(a.marked||[]);$('examMarkBtn').classList.toggle('marked',marked.has(q.id));$('examMarkBtn').textContent=marked.has(q.id)?'★ MARKED':'☆ MARK';$('examPrevBtn').disabled=a.currentIndex<=0;$('examNextBtn').textContent=a.currentIndex>=a.questionIds.length-1?'最後の問題':'NEXT →';renderExamProgressOnly();startExamTimer();
+  }
+  function renderExamProgressOnly(){
+    const a=state.phase12.active;if(!a)return;const answered=a.questionIds.filter(id=>Array.isArray(a.answers?.[id])&&a.answers[id].length>0).length,marked=new Set(a.marked||[]);
+    $('examAnsweredCount').textContent=answered;$('examUnansweredCount').textContent=a.questionIds.length-answered;$('examMarkedCount').textContent=marked.size;$('examProgressBar').style.width=`${Math.round(answered/a.questionIds.length*100)}%`;
+    $('examPalette').innerHTML=a.questionIds.map((id,i)=>{const q=questionIndex.byId.get(id),ans=Array.isArray(a.answers?.[id])&&a.answers[id].length>0;return `<button data-exam-jump="${i}" class="${ans?'answered ':''}${marked.has(id)?'marked ':''}${i===a.currentIndex?'current':''}" title="${escapeHtml(q?.subject||'')} ${escapeHtml(q?.qNum?`問${q.qNum}`:`Q${i+1}`)}">${q?.qNum||i+1}</button>`;}).join('');$('[data-exam-jump]').forEach(btn=>btn.addEventListener('click',()=>{a.currentIndex=Number(btn.dataset.examJump)||0;saveState();renderExamQuestion();}));
+  }
+  function examGo(delta){const a=state.phase12.active;if(!a)return;a.currentIndex=clamp(a.currentIndex+delta,0,a.questionIds.length-1);saveState();renderExamQuestion();}
+  function toggleExamMark(){const a=state.phase12.active,q=examCurrentQuestion();if(!a||!q)return;const m=new Set(a.marked||[]);m.has(q.id)?m.delete(q.id):m.add(q.id);a.marked=[...m];saveState();renderExamQuestion();}
+  function examRemainingSec(){const a=state.phase12.active;if(!a||!a.durationSec)return null;return Math.max(0,a.durationSec-Math.floor((Date.now()-a.startedAt)/1000));}
+  function startExamTimer(){clearInterval(examTimerInterval);const tick=()=>{const a=state.phase12.active,t=$('examTimer');if(!a||!t)return;const remain=examRemainingSec();if(remain===null){t.textContent='NO LIMIT';t.classList.remove('danger');return;}const h=Math.floor(remain/3600),m=Math.floor((remain%3600)/60),sec=remain%60;t.textContent=h?`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`:`${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;t.classList.toggle('danger',remain<=300);if(remain<=0){clearInterval(examTimerInterval);finishExam(true);}};tick();examTimerInterval=setInterval(tick,1000);}
+  function pauseExam(){clearInterval(examTimerInterval);saveState();navigate('home');toast('<b>EXAM SAVED</b> HOMEからいつでも再開できます');}
+  async function finishExam(auto=false){
+    const a=state.phase12.active;if(!a)return;const answered=a.questionIds.filter(id=>Array.isArray(a.answers?.[id])&&a.answers[id].length>0).length,unanswered=a.questionIds.length-answered;if(!auto&&!confirm(unanswered?`未回答が${unanswered}問あります。終了して採点しますか？`:'試験を終了して採点しますか？'))return;
+    clearInterval(examTimerInterval);let score=0;const subjectMap={},wrong=[];let dailyFocusCorrect=0;
+    for(const id of a.questionIds){const q=questionIndex.byId.get(id);if(!q)continue;const selected=new Set(Array.isArray(a.answers?.[id])?a.answers[id]:[]),correct=selected.size>0&&selectionsMatch(selected,getCorrectIndexes(q));if(correct)score++;const subject=q.subject||'GENERAL';subjectMap[subject]??={correct:0,total:0};subjectMap[subject].total++;if(correct)subjectMap[subject].correct++;
+      state.study.totalAnswered++;state.today.answered++;state.study.history[id]={answered:(state.study.history[id]?.answered||0)+1,correct:(state.study.history[id]?.correct||0)+(correct?1:0),lastCorrect:correct};if(correct){state.study.totalCorrect++;state.today.correct++;markReview(id,false);if(q.subject===state.phase10?.daily?.subject)dailyFocusCorrect++;}else{markReview(id,true);wrong.push({id,qNum:q.qNum||'',subject,question:q.question,unanswered:selected.size===0});}
+    }
+    await Promise.all(a.questionIds.map(id=>persistStudyProgress(id).catch(err=>console.warn('Exam progress save failed',id,err))));
+    invalidateMasteryCache();phase5Track('correct',score);normalizePhase10State();addSeasonXp(score*2+dailyFocusCorrect);
+    const reward={exp:score*3,gold:score*2,energy:Math.floor(score/10)};addRewards(reward,false);
+    const elapsedSec=Math.max(0,Math.floor((Date.now()-a.startedAt)/1000));const result={id:`exam-${Date.now()}`,mode:a.mode,examType:a.examType,year:a.year,score,total:a.questionIds.length,percent:Math.round(score/a.questionIds.length*1000)/10,answered,unanswered,wrong,subjects:subjectMap,finishedAt:Date.now(),elapsedSec,reward,auto};
+    state.phase12.history.unshift({...result,wrong:undefined,subjects:undefined,reward:undefined});state.phase12.history=state.phase12.history.slice(0,20);state.phase12.lastResult=result;state.phase12.active=null;examResultVisible=true;saveState();renderAll();renderExamResult();showMoment(`${score} / ${result.total}`,auto?'TIME UP • EXAM COMPLETE':'EXAM COMPLETE',score/result.total>=.8?'good':score/result.total>=.6?'crit':'bad');
+  }
+  function renderExamResult(){
+    const r=state.phase12.lastResult;if(!r){examResultVisible=false;renderExamScreen();return;}$('examSetupView').classList.add('hidden');$('examSessionView').classList.add('hidden');$('examResultView').classList.remove('hidden');
+    $('examResultScore').textContent=`${r.score} / ${r.total}`;$('examResultPercent').textContent=`${r.percent}%`;$('examResultMeta').textContent=`${examModeLabel(r.mode)} • ${r.examType==='all'?'ALL':r.examType} • ${r.year==='all'?'ALL YEARS':r.year} • ${Math.round(r.elapsedSec/60)}分 • EXAM REWARD ${r.reward.exp} EXP / ${r.reward.gold}G / ${r.reward.energy} FE`;
+    const subjects=Object.entries(r.subjects||{}).sort((a,b)=>a[0].localeCompare(b[0],'ja'));$('examSubjectResults').innerHTML=subjects.length?subjects.map(([name,v])=>`<div class="exam-subject-row"><span>${escapeHtml(name)}</span><b>${v.correct} / ${v.total} • ${Math.round(v.correct/v.total*100)}%</b></div>`).join(''):'<div class="exam-empty">科目データなし</div>';
+    $('examWrongList').innerHTML=r.wrong?.length?r.wrong.map(w=>`<div class="exam-wrong-row"><div><b>${w.qNum?`問${escapeHtml(w.qNum)} • `:''}${escapeHtml(w.subject)}</b><small>${w.unanswered?'未回答':'不正解'} • ${escapeHtml(String(w.question).slice(0,86))}${String(w.question).length>86?'…':''}</small></div><span>REVIEW</span></div>`).join(''):'<div class="exam-empty">全問正解です。</div>';
+  }
+  function renderExamScreen(){
+    if(!$('examSetupView'))return;normalizePhase12State();
+    if(examResultVisible&&state.phase12.lastResult){renderExamResult();return;}
+    if(state.phase12.active){$('examSetupView').classList.add('hidden');$('examResultView').classList.add('hidden');$('examSessionView').classList.remove('hidden');renderExamQuestion();}
+    else{$('examSessionView').classList.add('hidden');$('examResultView').classList.add('hidden');$('examSetupView').classList.remove('hidden');renderExamSetup();}
   }
 
 
@@ -7121,7 +7385,15 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
 
 
   function bindEvents() {
-    $$('[data-nav]').forEach(btn => btn.addEventListener('click', () => navigate(btn.dataset.nav)));
+    $('[data-nav]').forEach(btn => btn.addEventListener('click', () => navigate(btn.dataset.nav)));
+    $('[data-exam-mode]').forEach(btn=>btn.addEventListener('click',()=>setExamMode(btn.dataset.examMode)));
+    ['examSetupType','examSetupYear','examSetupDuration'].forEach(id=>$(id)?.addEventListener('change',updateExamSetup));
+    $('examStartBtn')?.addEventListener('click',startExam); $('examResumeBtn')?.addEventListener('click',resumeExam);
+    $('examPrevBtn')?.addEventListener('click',()=>examGo(-1)); $('examNextBtn')?.addEventListener('click',()=>examGo(1)); $('examMarkBtn')?.addEventListener('click',toggleExamMark);
+    $('examPauseBtn')?.addEventListener('click',pauseExam); $('examFinishBtn')?.addEventListener('click',()=>finishExam(false));
+    $('examResultNewBtn')?.addEventListener('click',()=>{examResultVisible=false;state.phase12.lastResult=null;saveState();renderExamScreen();});
+    $('examResultStudyBtn')?.addEventListener('click',()=>{examResultVisible=false;setStudyMode('review');navigate('study');});
+    $('soccerWeakStartBtn')?.addEventListener('click',()=>{setStudyMode('review');navigate('study');});
     $('nextQuestionBtn').addEventListener('click', nextStudyQuestion);
     $('submitAnswerBtn').addEventListener('click', answerStudy);
     $('submitBattleAnswerBtn').addEventListener('click', answerBattle);
@@ -7184,7 +7456,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     state.settings = {...{sound:false,fxMode:'lite'}, ...(state.settings||{})};
     if(!['off','lite','full'].includes(state.settings.fxMode)) state.settings.fxMode='lite';
     normalizePhase4State();
-    normalizePhase5State(); normalizePhase10State(); normalizeSoccerState();
+    normalizePhase5State(); normalizePhase10State(); normalizePhase12State(); normalizeSoccerState();
     recoverSoccerScrollState();
     bindEvents();
     await loadQuestions();
