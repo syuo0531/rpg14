@@ -1725,6 +1725,8 @@ main.soccer-gesture-lock{
 .soccer-lineup-pitch.custom-editing .soccer-lineup-slot:active,.soccer-lineup-pitch.custom-editing .soccer-lineup-slot.dragging{cursor:grabbing;z-index:20;box-shadow:0 0 0 2px rgba(69,212,131,.5),0 10px 28px rgba(0,0,0,.42);transform:translate(-50%,-50%) scale(1.05)}
 .custom-position-badge{display:inline-flex;margin-top:6px;padding:5px 8px;border-radius:999px;border:1px solid rgba(69,212,131,.24);color:#9de3b7;font-size:9px;font-weight:900}
 
+
+.manual-weak-clean-btn{width:100%;min-height:42px;margin-top:8px;border-color:rgba(101,210,141,.28)!important;color:#b7e8c8!important}
 </style>
 </head>
 <body>
@@ -2047,8 +2049,9 @@ main.soccer-gesture-lock{
                 <button class="secondary-btn" id="manualWeakAddBtn" type="button">苦手に追加</button>
                 <button class="secondary-btn" id="manualWeakRemoveBtn" type="button">指定解除</button>
               </div>
-              <div class="manual-weak-count">手動指定 <b id="manualWeakCount">0</b>問</div>
-              <div class="manual-weak-status" id="manualWeakStatus">年度・区分・問題番号を指定すると、自分で苦手問題に登録できます。</div>
+              <button class="secondary-btn manual-weak-clean-btn" id="manualWeakClearMasteredBtn" type="button">習得済みを苦手リストから整理</button>
+              <div class="manual-weak-count">手動指定 <b id="manualWeakCount">0</b>問 • 習得で自動解除</div>
+              <div class="manual-weak-status" id="manualWeakStatus">年度・区分・問題番号を指定して苦手登録できます。3回以上回答・正答率80%以上・直近正解で「習得済み」になり、自動で苦手リストから外れます。</div>
             </div>
             <div class="metal-panel compact-panel">
               <div class="panel-head"><span>FILTER</span><small>LARGE BANK READY</small></div>
@@ -3564,6 +3567,29 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if(manualWeakIdSet.has(id)) return {key:'weak',label:'苦手',points:1,manual:true};
     return masteryStatusFromHistory(state.study.history?.[id]);
   }
+  function graduateManualWeakIfMastered(id){
+    if(!manualWeakIdSet.has(id))return false;
+    const raw=masteryStatusFromHistory(state.study.history?.[id]);
+    if(raw.key!=='mastered')return false;
+    manualWeakIdSet.delete(id);
+    reviewIdSet.delete(id);
+    state.study.reviewIds=[...reviewIdSet];
+    invalidateMasteryCache();
+    return true;
+  }
+  async function clearMasteredManualWeak(){
+    const cleared=[];
+    for(const id of [...manualWeakIdSet]){
+      if(graduateManualWeakIfMastered(id)){cleared.push(id);await persistStudyProgress(id);}
+    }
+    saveState();renderManualWeakOptions();renderMasterySummary();renderAll();
+    if(cleared.length){
+      setManualWeakStatus('<strong>習得済み '+cleared.length+'問を苦手リストから外しました。</strong>','ok');
+      toast('<b>WEAKNESS CLEARED</b> 習得済み '+cleared.length+'問');
+    }else{
+      setManualWeakStatus('現在、習得済み条件を満たした手動苦手問題はありません。','warn');
+    }
+  }
   function invalidateMasteryCache(){masteryCache.dirty=true;}
   function getMasteryStats(){
     if(!masteryCache.dirty && masteryCache.total===questions.length)return masteryCache;
@@ -5028,7 +5054,9 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     state.study.totalAnswered++;
     state.today.answered++;
     state.study.history[q.id] = {answered:(state.study.history[q.id]?.answered || 0)+1, correct:(state.study.history[q.id]?.correct || 0)+(correct?1:0), lastCorrect:correct};
+    const manualWeakGraduated=correct&&graduateManualWeakIfMastered(q.id);
     invalidateMasteryCache(); const masteryAfter=masteryStatus(q.id); setMasteryBadge($('questionMastery'),q.id); renderMasterySummary();
+    if(manualWeakGraduated)toast('<b>WEAKNESS CLEARED</b> 習得済みになったため苦手リストから卒業');
     if(masteryBefore.key!==masteryAfter.key){showMoment(`MASTERY • ${masteryAfter.label}`,q.subject||'KNOWLEDGE',masteryAfter.key==='mastered'?'good':masteryAfter.key==='weak'?'bad':'crit');}
 
     if (correct) {
@@ -5193,15 +5221,15 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   function pauseExam(){clearInterval(examTimerInterval);saveState();navigate('home');toast('<b>EXAM SAVED</b> HOMEからいつでも再開できます');}
   async function finishExam(auto=false){
     const a=state.phase12.active;if(!a)return;const answered=a.questionIds.filter(id=>Array.isArray(a.answers?.[id])&&a.answers[id].length>0).length,unanswered=a.questionIds.length-answered;if(!auto&&!confirm(unanswered?`未回答が${unanswered}問あります。終了して採点しますか？`:'試験を終了して採点しますか？'))return;
-    clearInterval(examTimerInterval);let score=0;const subjectMap={},wrong=[];let dailyFocusCorrect=0;
+    clearInterval(examTimerInterval);let score=0;const subjectMap={},wrong=[];let dailyFocusCorrect=0,manualWeakGraduated=0;
     for(const id of a.questionIds){const q=questionIndex.byId.get(id);if(!q)continue;const selected=new Set(Array.isArray(a.answers?.[id])?a.answers[id]:[]),correct=selected.size>0&&selectionsMatch(selected,getCorrectIndexes(q));if(correct)score++;const subject=q.subject||'GENERAL';subjectMap[subject]??={correct:0,total:0};subjectMap[subject].total++;if(correct)subjectMap[subject].correct++;
-      state.study.totalAnswered++;state.today.answered++;state.study.history[id]={answered:(state.study.history[id]?.answered||0)+1,correct:(state.study.history[id]?.correct||0)+(correct?1:0),lastCorrect:correct};if(correct){state.study.totalCorrect++;state.today.correct++;markReview(id,false);if(q.subject===state.phase10?.daily?.subject)dailyFocusCorrect++;}else{markReview(id,true);wrong.push({id,qNum:q.qNum||'',subject,question:q.question,unanswered:selected.size===0});}
+      state.study.totalAnswered++;state.today.answered++;state.study.history[id]={answered:(state.study.history[id]?.answered||0)+1,correct:(state.study.history[id]?.correct||0)+(correct?1:0),lastCorrect:correct};if(correct){if(graduateManualWeakIfMastered(id))manualWeakGraduated++;state.study.totalCorrect++;state.today.correct++;markReview(id,false);if(q.subject===state.phase10?.daily?.subject)dailyFocusCorrect++;}else{markReview(id,true);wrong.push({id,qNum:q.qNum||'',subject,question:q.question,unanswered:selected.size===0});}
     }
     await Promise.all(a.questionIds.map(id=>persistStudyProgress(id).catch(err=>console.warn('Exam progress save failed',id,err))));
     invalidateMasteryCache();phase5Track('correct',score);normalizePhase10State();addSeasonXp(score*2+dailyFocusCorrect);
     const reward={exp:score*3,gold:score*2,energy:Math.floor(score/10)};addRewards(reward,false);
     const elapsedSec=Math.max(0,Math.floor((Date.now()-a.startedAt)/1000));const result={id:`exam-${Date.now()}`,mode:a.mode,examType:a.examType,year:a.year,score,total:a.questionIds.length,percent:Math.round(score/a.questionIds.length*1000)/10,answered,unanswered,wrong,subjects:subjectMap,finishedAt:Date.now(),elapsedSec,reward,auto};
-    state.phase12.history.unshift({...result,wrong:undefined,subjects:undefined,reward:undefined});state.phase12.history=state.phase12.history.slice(0,20);state.phase12.lastResult=result;state.phase12.active=null;examResultVisible=true;saveState();renderAll();renderExamResult();showMoment(`${score} / ${result.total}`,auto?'TIME UP • EXAM COMPLETE':'EXAM COMPLETE',score/result.total>=.8?'good':score/result.total>=.6?'crit':'bad');
+    state.phase12.history.unshift({...result,wrong:undefined,subjects:undefined,reward:undefined});state.phase12.history=state.phase12.history.slice(0,20);state.phase12.lastResult=result;state.phase12.active=null;examResultVisible=true;saveState();renderAll();renderExamResult();if(manualWeakGraduated)toast('<b>WEAKNESS CLEARED</b> 習得済み '+manualWeakGraduated+'問が苦手リストから卒業');showMoment(`${score} / ${result.total}`,auto?'TIME UP • EXAM COMPLETE':'EXAM COMPLETE',score/result.total>=.8?'good':score/result.total>=.6?'crit':'bad');
   }
   function renderExamResult(){
     const r=state.phase12.lastResult;if(!r){examResultVisible=false;renderExamScreen();return;}$('examSetupView').classList.add('hidden');$('examSessionView').classList.add('hidden');$('examResultView').classList.remove('hidden');
@@ -5486,7 +5514,9 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     state.study.totalAnswered++;
     state.today.answered++;
     state.study.history[q.id] = {answered:(state.study.history[q.id]?.answered || 0)+1, correct:(state.study.history[q.id]?.correct || 0)+(correct?1:0), lastCorrect:correct};
+    const manualWeakGraduated=correct&&graduateManualWeakIfMastered(q.id);
     invalidateMasteryCache(); const masteryAfter=masteryStatus(q.id); setMasteryBadge($('battleQuestionMastery'),q.id);
+    if(manualWeakGraduated)toast('<b>WEAKNESS CLEARED</b> 習得済みになったため苦手リストから卒業');
     if(masteryBefore.key!==masteryAfter.key&&masteryAfter.key==='mastered')showMoment('KNOWLEDGE MASTERED',q.subject||'QUIZ','good');
 
     setTimeout(() => {
@@ -7992,6 +8022,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     $('reviewStartBtn').addEventListener('click', () => { setStudyMode('review'); navigate('study'); });
     $('manualWeakAddBtn')?.addEventListener('click',()=>applyManualWeak(true));
     $('manualWeakRemoveBtn')?.addEventListener('click',()=>applyManualWeak(false));
+    $('manualWeakClearMasteredBtn')?.addEventListener('click',clearMasteredManualWeak);
     $('manualWeakYear')?.addEventListener('change',()=>setManualWeakStatus('問題番号を入力して「苦手に追加」を押してください。'));
     $('manualWeakType')?.addEventListener('change',()=>setManualWeakStatus('問題番号を入力して「苦手に追加」を押してください。'));
     $('quizStrikeBtn').addEventListener('click', startQuizStrike);
