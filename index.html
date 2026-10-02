@@ -3813,6 +3813,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     const types=questionIndex.examTypes||[]; const typeSelect=$('examTypeFilter'); typeSelect.innerHTML='<option value="all">基礎 + 応用 + 未分類</option>'+types.map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
     if(types.includes(state.study.filters.examType))typeSelect.value=state.study.filters.examType;else{state.study.filters.examType='all';typeSelect.value='all';}
     $('difficultyFilter').value=['1','2','3'].includes(String(state.study.filters.difficulty))?String(state.study.filters.difficulty):'all';
+    if($('manualWeakYear'))renderManualWeakOptions();
   }
 
 
@@ -5930,6 +5931,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
       currentQuestion = null;
       currentBattleQuestion = null;
       buildQuestionFilters();
+      renderManualWeakOptions();
       nextStudyQuestion();
       renderAll();
       saveState();
