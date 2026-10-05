@@ -59,7 +59,7 @@
       let el=api.dom('phase15AnswerBurst');
       if(!el){
         el=document.createElement('div');el.id='phase15AnswerBurst';el.className='phase15-answer-burst';
-        el.innerHTML='<div class="phase15-rainbow-wash"></div><div class="phase15-rainbow-ring"></div><div class="phase15-glitter" id="phase15Glitter"></div><div class="phase15-burst-core"><span id="phase15BurstKicker">HIT</span><b id="phase15BurstTitle">CORRECT!</b><strong id="phase15BurstReward">+12 TP</strong><small id="phase15BurstSub">TEAM GROWTH</small></div>';
+        el.innerHTML='<div class="phase15-suspense-black"></div><div class="phase15-white-flash"></div><div class="phase15-rainbow-wash"></div><div class="phase15-rainbow-ring"></div><div class="phase15-shockwave"></div><div class="phase15-glitter" id="phase15Glitter"></div><div class="phase15-combo-smash" id="phase15ComboSmash"></div><div class="phase15-burst-core"><span id="phase15BurstKicker">HIT</span><b id="phase15BurstTitle">CORRECT!</b><strong id="phase15BurstReward">+12 TP</strong><small id="phase15BurstSub">TEAM GROWTH</small></div>';
         screen.appendChild(el);
       }
       return el;
@@ -101,14 +101,28 @@
       const el=overlay();if(!el)return;
       clearTimeout(burstTimer);
       const rainbow=kind!=='bad';
+      const combo=Number(study().combo)||0;
       const intensity=kind==='legendary'?1.8:kind==='fever'?1.55:kind==='crit'?1.3:kind==='scout'?1.18:1;
-      el.className='phase15-answer-burst show '+kind+(rainbow?' rainbow':'');
+      const power=combo>=20?' ultra':combo>=10?' mega':combo>=5?' hot':'';
+      el.className='phase15-answer-burst show '+kind+(rainbow?' rainbow':'')+power;
       api.dom('phase15BurstKicker').textContent=kicker;
       api.dom('phase15BurstTitle').textContent=title;
       api.dom('phase15BurstReward').textContent=reward;
       api.dom('phase15BurstSub').textContent=sub;
+      const smash=api.dom('phase15ComboSmash');
+      if(smash)smash.textContent=rainbow&&combo>=3?combo+' COMBO':'';
+      document.querySelectorAll('#choiceGrid .choice-btn.correct').forEach(btn=>{
+        btn.classList.remove('phase15-correct-rainbow');
+        void btn.offsetWidth;
+        if(rainbow)btn.classList.add('phase15-correct-rainbow');
+        setTimeout(()=>btn.classList.remove('phase15-correct-rainbow'),Math.max(850,duration));
+      });
       if(rainbow)spawnGlitter(intensity);
-      burstTimer=setTimeout(()=>{el.classList.remove('show','rainbow');const g=api.dom('phase15Glitter');if(g)g.innerHTML='';},duration);
+      burstTimer=setTimeout(()=>{
+        el.classList.remove('show','rainbow','hot','mega','ultra');
+        const g=api.dom('phase15Glitter');if(g)g.innerHTML='';
+        if(smash)smash.textContent='';
+      },Math.max(duration,860));
     }
 
     function addBonus(tp=0,sp=0){
