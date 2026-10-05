@@ -144,17 +144,19 @@
     function spawnGlitter(intensity=1){
       const box=api.dom('phase15Glitter');if(!box)return;
       box.innerHTML='';
-      const count=Math.round(26+intensity*22);
+      const mode=root().settings?.fxMode||'lite';
+      if(mode==='off')return;
+      const count=mode==='full'?Math.round(8+intensity*5):Math.round(4+intensity*3);
       for(let i=0;i<count;i++){
         const p=document.createElement('i');
-        const size=2+Math.random()*7;
+        const size=2+Math.random()*4;
         p.style.left=(4+Math.random()*92)+'%';
         p.style.top=(4+Math.random()*92)+'%';
         p.style.width=size+'px';
         p.style.height=size+'px';
         p.style.setProperty('--gx',((Math.random()-.5)*120)+'px');
         p.style.setProperty('--gy',((Math.random()-.5)*120)+'px');
-        p.style.setProperty('--gd',(420+Math.random()*760)+'ms');
+        p.style.setProperty('--gd',(320+Math.random()*300)+'ms');
         p.style.setProperty('--gdelay',(Math.random()*140)+'ms');
         p.style.setProperty('--ghue',Math.round(Math.random()*360)+'deg');
         box.appendChild(p);
@@ -166,17 +168,19 @@
       const old=el.querySelector('.phase15-choice-burst');if(old)old.remove();
       const layer=document.createElement('div');layer.className='phase15-choice-burst';
       const r=source.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
-      const count=Math.round(18+intensity*18);
+      const mode=root().settings?.fxMode||'lite';
+      if(mode==='off')return;
+      const count=mode==='full'?Math.round(8+intensity*4):Math.round(4+intensity*2);
       for(let i=0;i<count;i++){
-        const p=document.createElement('i'),a=Math.PI*2*i/count+(Math.random()-.5)*.28,dist=80+Math.random()*(120+intensity*50);
-        const size=3+Math.random()*8;
+        const p=document.createElement('i'),a=Math.PI*2*i/count+(Math.random()-.5)*.28,dist=65+Math.random()*(80+intensity*28);
+        const size=3+Math.random()*5;
         p.style.left=cx+'px';p.style.top=cy+'px';p.style.width=size+'px';p.style.height=size+'px';
         p.style.setProperty('--cbx',(Math.cos(a)*dist)+'px');p.style.setProperty('--cby',(Math.sin(a)*dist)+'px');
         p.style.setProperty('--cbr',(Math.random()*360-180)+'deg');p.style.setProperty('--cbh',Math.round(Math.random()*360)+'deg');
-        p.style.setProperty('--cbd',(460+Math.random()*420)+'ms');p.style.animationDelay=(Math.random()*70)+'ms';
+        p.style.setProperty('--cbd',(340+Math.random()*260)+'ms');p.style.animationDelay=(Math.random()*45)+'ms';
         layer.appendChild(p);
       }
-      el.appendChild(layer);setTimeout(()=>layer.remove(),980);
+      el.appendChild(layer);setTimeout(()=>layer.remove(),720);
     }
     function showBurst({kicker='CORRECT',title='NICE!',reward='',sub='',kind='good',duration=920}={}){
       const el=overlay();if(!el)return;
