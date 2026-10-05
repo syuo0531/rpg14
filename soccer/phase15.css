@@ -19,3 +19,75 @@
 @keyframes p15Burst{0%{transform:scale(.72) translateY(18px);filter:blur(2px)}45%{transform:scale(1.06) translateY(0);filter:none}100%{transform:scale(1) translateY(0);filter:none}}
 @media(max-width:650px){.phase15-study-hud{grid-template-columns:1fr 1fr}.phase15-hit-card.fever{grid-column:1/-1;min-height:54px}.phase15-hit-card{min-height:58px;padding:8px 9px}.phase15-hit-card b{font-size:11px}}
 @media(prefers-reduced-motion:reduce){.phase15-burst-core,.phase15-study-hud.one-away .target{animation:none!important}.phase15-burst-core{transform:none}}
+
+/* PHASE 15.1 • RAINBOW SPARK CORRECT FX */
+.phase15-answer-burst{overflow:hidden}
+.phase15-rainbow-wash,.phase15-rainbow-ring,.phase15-glitter{position:absolute;inset:0;pointer-events:none}
+.phase15-answer-burst.rainbow .phase15-rainbow-wash{
+  opacity:.78;
+  background:
+    radial-gradient(circle at 18% 24%,rgba(255,60,125,.34),transparent 22%),
+    radial-gradient(circle at 82% 24%,rgba(50,170,255,.34),transparent 24%),
+    radial-gradient(circle at 28% 80%,rgba(80,255,150,.3),transparent 24%),
+    radial-gradient(circle at 74% 76%,rgba(255,210,55,.32),transparent 24%);
+  animation:p15RainbowWash .7s ease-out both;
+}
+.phase15-answer-burst.rainbow .phase15-rainbow-ring{
+  inset:-42vmax;
+  margin:auto;
+  width:84vmax;height:84vmax;border-radius:50%;
+  background:conic-gradient(from 0deg,#ff3b64,#ffb52e,#fff56b,#55f09b,#52d5ff,#7c68ff,#ff5ae5,#ff3b64);
+  filter:blur(28px) saturate(1.55);
+  opacity:.24;
+  animation:p15RainbowSpin 1.05s linear infinite,p15RainbowPop .6s ease-out both;
+}
+.phase15-answer-burst.rainbow .phase15-burst-core{
+  isolation:isolate;
+  border-color:rgba(255,255,255,.72);
+  background:
+    linear-gradient(145deg,rgba(8,10,12,.94),rgba(5,6,8,.96)) padding-box,
+    conic-gradient(from var(--p15angle,0deg),#ff4b78,#ffbf3f,#fff26d,#57f0a6,#56d7ff,#856fff,#ff61dc,#ff4b78) border-box;
+  border:2px solid transparent;
+  box-shadow:0 0 22px rgba(255,255,255,.34),0 0 52px rgba(100,190,255,.24),0 0 76px rgba(255,90,190,.18),0 24px 80px rgba(0,0,0,.56);
+  animation:p15Burst .62s cubic-bezier(.16,.8,.2,1) forwards,p15BorderHue .72s linear infinite;
+}
+.phase15-answer-burst.rainbow .phase15-burst-core b{
+  background:linear-gradient(90deg,#fff,#ffe66c,#7dffc4,#68d9ff,#c78cff,#ff79cb,#fff);
+  background-size:260% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 0 24px rgba(255,255,255,.24);
+  animation:p15TextShine .7s linear infinite;
+}
+.phase15-answer-burst.rainbow .phase15-burst-core strong{
+  color:#fff;
+  text-shadow:0 0 10px rgba(255,255,255,.55),0 0 18px rgba(255,210,70,.28);
+}
+.phase15-glitter i{
+  position:absolute;border-radius:50%;
+  background:#fff;
+  box-shadow:0 0 8px #fff,0 0 16px hsl(var(--ghue) 95% 70%);
+  opacity:0;
+  transform:translate(-50%,-50%) scale(.2) rotate(0deg);
+  animation:p15Glitter var(--gd) cubic-bezier(.16,.8,.2,1) var(--gdelay) forwards;
+}
+.phase15-glitter i:nth-child(3n){border-radius:1px;transform:translate(-50%,-50%) scale(.2) rotate(45deg)}
+.phase15-glitter i:nth-child(4n){clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
+@keyframes p15RainbowSpin{to{transform:rotate(360deg)}}
+@keyframes p15RainbowPop{0%{opacity:0;transform:scale(.55)}35%{opacity:.34}100%{opacity:.18;transform:scale(1)}}
+@keyframes p15RainbowWash{0%{opacity:0;filter:brightness(2.2)}30%{opacity:.92}100%{opacity:.22}}
+@keyframes p15TextShine{to{background-position:260% 0}}
+@keyframes p15BorderHue{to{filter:hue-rotate(360deg)}}
+@keyframes p15Glitter{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.15) rotate(0)}
+  24%{opacity:1;transform:translate(-50%,-50%) scale(1.35) rotate(70deg)}
+  100%{opacity:0;transform:translate(calc(-50% + var(--gx)),calc(-50% + var(--gy))) scale(.15) rotate(180deg)}
+}
+.phase15-answer-burst.legendary.rainbow .phase15-rainbow-wash,
+.phase15-answer-burst.fever.rainbow .phase15-rainbow-wash{opacity:1;filter:saturate(1.35) brightness(1.15)}
+.phase15-answer-burst.legendary.rainbow .phase15-burst-core{box-shadow:0 0 30px rgba(255,255,255,.58),0 0 76px rgba(255,220,80,.35),0 0 110px rgba(255,70,210,.28),0 24px 90px rgba(0,0,0,.62)}
+@media(prefers-reduced-motion:reduce){
+  .phase15-answer-burst.rainbow .phase15-rainbow-ring,
+  .phase15-answer-burst.rainbow .phase15-burst-core,
+  .phase15-answer-burst.rainbow .phase15-burst-core b,
+  .phase15-glitter i{animation-duration:.01ms!important;animation-iteration-count:1!important}
+}
