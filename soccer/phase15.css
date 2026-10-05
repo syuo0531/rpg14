@@ -91,3 +91,107 @@
   .phase15-answer-burst.rainbow .phase15-burst-core b,
   .phase15-glitter i{animation-duration:.01ms!important;animation-iteration-count:1!important}
 }
+
+/* PHASE 15.2 • IMPACT SEQUENCE: blackout -> white flash -> rainbow explosion -> shockwave */
+.phase15-suspense-black,.phase15-white-flash,.phase15-shockwave,.phase15-combo-smash{position:absolute;inset:0;pointer-events:none}
+.phase15-answer-burst.rainbow .phase15-suspense-black{
+  background:#000;
+  opacity:0;
+  animation:p15SuspenseBlack .3s ease-out both;
+}
+.phase15-answer-burst.rainbow .phase15-white-flash{
+  background:#fff;
+  opacity:0;
+  mix-blend-mode:screen;
+  animation:p15WhiteFlash .42s ease-out .13s both;
+}
+.phase15-answer-burst.rainbow .phase15-shockwave{
+  inset:50% auto auto 50%;
+  width:22vmin;height:22vmin;border-radius:50%;
+  border:4px solid rgba(255,255,255,.92);
+  box-shadow:0 0 24px #fff,0 0 48px rgba(100,210,255,.65),0 0 70px rgba(255,70,210,.42);
+  opacity:0;
+  transform:translate(-50%,-50%) scale(.12);
+  animation:p15Shockwave .62s cubic-bezier(.08,.74,.2,1) .18s both;
+}
+.phase15-answer-burst.rainbow .phase15-burst-core{
+  animation-delay:.18s,0s;
+}
+.phase15-combo-smash{
+  display:grid;place-items:center;
+  font-weight:1000;
+  font-size:clamp(54px,16vw,150px);
+  letter-spacing:-.06em;
+  color:#fff;
+  opacity:0;
+  text-shadow:0 0 10px #fff,0 0 24px #ffe85f,0 0 44px #6ce8ff,0 0 68px #ff63d7;
+  transform:scale(.25) rotate(-5deg);
+}
+.phase15-answer-burst.rainbow .phase15-combo-smash:not(:empty){
+  animation:p15ComboSmash .74s cubic-bezier(.12,.72,.2,1) .22s both;
+}
+.phase15-answer-burst.hot .phase15-rainbow-ring{opacity:.32;filter:blur(24px) saturate(1.7)}
+.phase15-answer-burst.mega .phase15-rainbow-ring{opacity:.42;filter:blur(20px) saturate(1.95);animation-duration:.72s,.58s}
+.phase15-answer-burst.ultra .phase15-rainbow-ring{opacity:.56;filter:blur(15px) saturate(2.25) brightness(1.2);animation-duration:.52s,.5s}
+.phase15-answer-burst.mega .phase15-white-flash,.phase15-answer-burst.ultra .phase15-white-flash{animation:p15WhiteFlashMega .5s ease-out .12s both}
+.phase15-answer-burst.ultra .phase15-shockwave{border-width:7px;box-shadow:0 0 30px #fff,0 0 70px #fff75d,0 0 110px #5fe7ff,0 0 150px #ff5fd2}
+.choice-btn.phase15-correct-rainbow{
+  position:relative;
+  z-index:3;
+  border-color:transparent!important;
+  background:
+    linear-gradient(#101416,#101416) padding-box,
+    linear-gradient(90deg,#ff4d75,#ffbd3f,#fff56b,#63f4a4,#5bdcff,#8a76ff,#ff65dc,#ff4d75) border-box!important;
+  border:2px solid transparent!important;
+  box-shadow:0 0 12px rgba(255,255,255,.45),0 0 30px rgba(96,218,255,.28),0 0 40px rgba(255,83,204,.2)!important;
+  animation:p15CorrectChoice .78s ease-out both,p15CorrectHue .45s linear 2;
+}
+.choice-btn.phase15-correct-rainbow .choice-key{
+  color:#fff!important;
+  background:linear-gradient(135deg,#ff8d54,#ffe35e,#57e8a3,#5ebeff,#bc6cff)!important;
+  box-shadow:0 0 16px rgba(255,255,255,.35);
+}
+@keyframes p15SuspenseBlack{
+  0%{opacity:0}
+  18%{opacity:.78}
+  62%{opacity:.78}
+  100%{opacity:0}
+}
+@keyframes p15WhiteFlash{
+  0%,28%{opacity:0}
+  38%{opacity:.98}
+  52%{opacity:.36}
+  100%{opacity:0}
+}
+@keyframes p15WhiteFlashMega{
+  0%,22%{opacity:0}
+  32%{opacity:1}
+  42%{opacity:.2}
+  52%{opacity:.9}
+  68%{opacity:.18}
+  100%{opacity:0}
+}
+@keyframes p15Shockwave{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.12)}
+  18%{opacity:1}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(6.2)}
+}
+@keyframes p15ComboSmash{
+  0%{opacity:0;transform:scale(.25) rotate(-6deg);filter:blur(6px)}
+  34%{opacity:1;transform:scale(1.16) rotate(2deg);filter:none}
+  58%{opacity:.92;transform:scale(.98) rotate(0)}
+  100%{opacity:0;transform:scale(1.55) rotate(0);filter:blur(2px)}
+}
+@keyframes p15CorrectChoice{
+  0%{transform:scale(.98);filter:brightness(1)}
+  24%{transform:scale(1.035);filter:brightness(1.55)}
+  100%{transform:scale(1);filter:brightness(1)}
+}
+@keyframes p15CorrectHue{to{filter:hue-rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){
+  .phase15-answer-burst.rainbow .phase15-suspense-black,
+  .phase15-answer-burst.rainbow .phase15-white-flash,
+  .phase15-answer-burst.rainbow .phase15-shockwave,
+  .phase15-answer-burst.rainbow .phase15-combo-smash,
+  .choice-btn.phase15-correct-rainbow{animation-duration:.01ms!important;animation-iteration-count:1!important}
+}
