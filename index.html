@@ -7,13 +7,13 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="description" content="STUDY FORGE — 知識を武器に変える学習RPG" />
-  <title>STUDY FORGE FC — HIGH SCHOOL SOCCER PHASE 15.3</title>
+  <title>STUDY FORGE FC — HIGH SCHOOL SOCCER PHASE 15.4</title>
   <link rel="stylesheet" href="soccer/phase13.css?v=13.1" />
   <link rel="stylesheet" href="soccer/phase14.css?v=14.0" />
-  <link rel="stylesheet" href="soccer/phase15.css?v=15.3" />
+  <link rel="stylesheet" href="soccer/phase15.css?v=15.4" />
   <script src="soccer/phase13.js?v=13.1"></script>
   <script src="soccer/phase14.js?v=14.0"></script>
-  <script src="soccer/phase15.js?v=15.3"></script>
+  <script src="soccer/phase15.js?v=15.4"></script>
   <style>
 :root {
   --bg: #07080a;
@@ -4829,7 +4829,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   function showMoment(title,sub='',tone='good'){ if(!fxEnabled()||!$('fxBanner'))return; const el=$('fxBanner'); $('fxBannerTitle').textContent=title; $('fxBannerSub').textContent=sub; el.className=`fx-banner ${tone}`; void el.offsetWidth; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),1750); }
   function burstAt(target,tone='legendary',count=fxParticleCount()){ if(!fxEnabled()||!$('fxLayer'))return; let rect={left:innerWidth/2,top:innerHeight/2,width:0,height:0}; const el=typeof target==='string'?$(target):target; if(el?.getBoundingClientRect)rect=el.getBoundingClientRect(); const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2; for(let i=0;i<count;i++){const p=document.createElement('i'); const angle=(Math.PI*2*i/count)+Math.random()*.38,dist=38+Math.random()*(fxMode()==='full'?92:58); p.className=`fx-particle ${tone}`; p.style.left=`${cx}px`;p.style.top=`${cy}px`;p.style.setProperty('--tx',`${Math.cos(angle)*dist}px`);p.style.setProperty('--ty',`${Math.sin(angle)*dist}px`);p.style.setProperty('--rot',`${Math.round(Math.random()*280-140)}deg`);$('fxLayer').appendChild(p);setTimeout(()=>p.remove(),800);} }
   function enemyHitFx(crit=false,heavy=false){ const enemy=$('enemyAvatar'); pulseClass(enemy,crit?'fx-crit-hit':'fx-hit',360); if(heavy)pulseClass($('battleStage'),'fx-heavy-hit',340); if(crit){playFlash('crit');burstAt(enemy,'crit');} }
-  function studyAnswerFx(correct){ const panel=document.querySelector('.question-panel'); pulseClass(panel,correct?'fx-answer-good':'fx-answer-bad',520); if(correct){playFlash('good');burstAt(panel,'good',Math.max(4,Math.floor(fxParticleCount()*.55)));} else playFlash('bad'); }
+  function studyAnswerFx(correct){ const panel=document.querySelector('.question-panel'); pulseClass(panel,correct?'fx-answer-good':'fx-answer-bad',correct?360:420); if(correct)playFlash('good'); else playFlash('bad'); }
   function comboMoment(combo){ if(![3,5,10,20].includes(combo))return; pulseClass(document.querySelector('.combo-badge'),'fx-combo',520); const label=combo>=20?'COMBO MASTER':combo>=10?'KNOWLEDGE FLOW':combo>=5?'COMBO CHAIN':'COMBO START'; showMoment(`${combo} COMBO`,label,combo>=10?'crit':'good'); }
 
   function toast(html) {
