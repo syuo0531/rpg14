@@ -59,7 +59,7 @@
       let el=api.dom('phase15AnswerBurst');
       if(!el){
         el=document.createElement('div');el.id='phase15AnswerBurst';el.className='phase15-answer-burst';
-        el.innerHTML='<div class="phase15-burst-core"><span id="phase15BurstKicker">HIT</span><b id="phase15BurstTitle">CORRECT!</b><strong id="phase15BurstReward">+12 TP</strong><small id="phase15BurstSub">TEAM GROWTH</small></div>';
+        el.innerHTML='<div class="phase15-rainbow-wash"></div><div class="phase15-rainbow-ring"></div><div class="phase15-glitter" id="phase15Glitter"></div><div class="phase15-burst-core"><span id="phase15BurstKicker">HIT</span><b id="phase15BurstTitle">CORRECT!</b><strong id="phase15BurstReward">+12 TP</strong><small id="phase15BurstSub">TEAM GROWTH</small></div>';
         screen.appendChild(el);
       }
       return el;
@@ -78,15 +78,37 @@
     }
 
     let burstTimer=null;
+    function spawnGlitter(intensity=1){
+      const box=api.dom('phase15Glitter');if(!box)return;
+      box.innerHTML='';
+      const count=Math.round(26+intensity*22);
+      for(let i=0;i<count;i++){
+        const p=document.createElement('i');
+        const size=2+Math.random()*7;
+        p.style.left=(4+Math.random()*92)+'%';
+        p.style.top=(4+Math.random()*92)+'%';
+        p.style.width=size+'px';
+        p.style.height=size+'px';
+        p.style.setProperty('--gx',((Math.random()-.5)*120)+'px');
+        p.style.setProperty('--gy',((Math.random()-.5)*120)+'px');
+        p.style.setProperty('--gd',(420+Math.random()*760)+'ms');
+        p.style.setProperty('--gdelay',(Math.random()*140)+'ms');
+        p.style.setProperty('--ghue',Math.round(Math.random()*360)+'deg');
+        box.appendChild(p);
+      }
+    }
     function showBurst({kicker='CORRECT',title='NICE!',reward='',sub='',kind='good',duration=920}={}){
       const el=overlay();if(!el)return;
       clearTimeout(burstTimer);
-      el.className='phase15-answer-burst show '+kind;
+      const rainbow=kind!=='bad';
+      const intensity=kind==='legendary'?1.8:kind==='fever'?1.55:kind==='crit'?1.3:kind==='scout'?1.18:1;
+      el.className='phase15-answer-burst show '+kind+(rainbow?' rainbow':'');
       api.dom('phase15BurstKicker').textContent=kicker;
       api.dom('phase15BurstTitle').textContent=title;
       api.dom('phase15BurstReward').textContent=reward;
       api.dom('phase15BurstSub').textContent=sub;
-      burstTimer=setTimeout(()=>{el.classList.remove('show');},duration);
+      if(rainbow)spawnGlitter(intensity);
+      burstTimer=setTimeout(()=>{el.classList.remove('show','rainbow');const g=api.dom('phase15Glitter');if(g)g.innerHTML='';},duration);
     }
 
     function addBonus(tp=0,sp=0){
