@@ -7,11 +7,11 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="description" content="STUDY FORGE — 知識を武器に変える学習RPG" />
-  <title>STUDY FORGE FC — HIGH SCHOOL SOCCER PHASE 16</title>
+  <title>STUDY FORGE FC — HIGH SCHOOL SOCCER PHASE 16.2</title>
   <link rel="stylesheet" href="soccer/phase13.css?v=13.1" />
   <link rel="stylesheet" href="soccer/phase14.css?v=14.0" />
   <link rel="stylesheet" href="soccer/phase15.css?v=15.4" />
-  <link rel="stylesheet" href="soccer/phase16.css?v=16.0" />
+  <link rel="stylesheet" href="soccer/phase16.css?v=16.2" />
   <script src="soccer/phase13.js?v=13.1"></script>
   <script src="soccer/phase14.js?v=14.0"></script>
   <script src="soccer/phase15.js?v=15.4"></script>
@@ -2970,10 +2970,10 @@ main.soccer-gesture-lock{
               <button type="button" class="phase16-setpiece-btn" data-setpiece-target="right">RIGHT</button>
             </div>
             <div class="soccer-defense-controls hidden" id="soccerDefenseControls" aria-label="守備操作">
-              <button type="button" class="soccer-defense-action press" data-defense-action="press"><b>PRESS</b><small>素早く寄せてパスコースを消す</small></button>
-              <button type="button" class="soccer-defense-action jockey" data-defense-action="jockey"><b>JOCKEY</b><small>間合いを保ってドリブルを遅らせる</small></button>
-              <button type="button" class="soccer-defense-action tackle" data-defense-action="tackle"><b>TACKLE</b><small>奪取率は高いが抜かれるリスクも高い</small></button>
-              <button type="button" class="soccer-defense-action block" data-defense-action="block"><b>BLOCK</b><small>シュート・クロスのコースを塞ぐ</small></button>
+              <button type="button" class="soccer-defense-action press" data-defense-action="press" onclick="soccerDefenseAction('press')"><b>PRESS</b><small>素早く寄せてパスコースを消す</small></button>
+              <button type="button" class="soccer-defense-action jockey" data-defense-action="jockey" onclick="soccerDefenseAction('jockey')"><b>JOCKEY</b><small>間合いを保ってドリブルを遅らせる</small></button>
+              <button type="button" class="soccer-defense-action tackle" data-defense-action="tackle" onclick="soccerDefenseAction('tackle')"><b>TACKLE</b><small>奪取率は高いが抜かれるリスクも高い</small></button>
+              <button type="button" class="soccer-defense-action block" data-defense-action="block" onclick="soccerDefenseAction('block')"><b>BLOCK</b><small>シュート・クロスのコースを塞ぐ</small></button>
             </div>
             <div class="soccer-result hidden" id="soccerMatchResult"></div>
           </section>
@@ -7637,7 +7637,15 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     $('soccerStartMatchBtn').disabled=!!(rt&&!rt.finished)||event?.type==='graduation';$('soccerStartMatchBtn').textContent=rt&&rt.finished?'日程へ戻る':'KICK OFF';$('soccerShootBtn').disabled=!attacking||!!rt?.actionLocked;
     $('soccerPitch')?.classList.toggle('soccer-action-lock',!!rt?.actionLocked);
     $('soccerMatchControls')?.classList.toggle('hidden',defending||setpiece);$('soccerDefenseControls')?.classList.toggle('hidden',!defending);$('soccerSetPieceControls')?.classList.toggle('hidden',!setpiece);
-    if($('soccerDefenseControls'))$('soccerDefenseControls').querySelectorAll('[data-defense-action]').forEach(btn=>btn.disabled=!!rt?.actionLocked);
+    if($('soccerDefenseControls')){
+      const defenseBox=$('soccerDefenseControls');
+      defenseBox.style.pointerEvents=defending?'auto':'';
+      defenseBox.querySelectorAll('[data-defense-action]').forEach(btn=>{
+        btn.disabled=defending?!!rt?.actionLocked:true;
+        btn.style.pointerEvents=defending&&!rt?.actionLocked?'auto':'';
+        btn.style.touchAction='manipulation';
+      });
+    }
     renderSoccerTacticControls();if($('soccerMatchPower'))$('soccerMatchPower').textContent=rt?numbers.overall:soccerTeamOvr();if($('soccerMatchCondition'))$('soccerMatchCondition').textContent=soccerAverageCondition(rt?.liveLineup||state.soccer.lineupSlots)+'%';if($('soccerMatchTacticEdge'))$('soccerMatchTacticEdge').textContent='vs '+soccerTacticInfo(numbers.awayKey).name+' • 相性 '+(numbers.edge>0?'+':'')+numbers.edge;
     renderSoccerSubstitutionControls();soccerPhase16().renderRival(opp);
     if(rt?.inChance){
@@ -7797,6 +7805,17 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     const rt=soccerMatchRuntime;if(!rt||rt.finished||rt.inChance)return false;
     const unit=soccerDefenseUnit();if(!unit.field.length)return false;
     rt.inChance=true;rt.chanceType='defense';rt.actionLocked=false;rt.defenseChances=(rt.defenseChances||0)+1;setSoccerGestureScrollLock(false);
+    $('soccerPitch')?.classList.remove('soccer-action-lock');
+    const defenseControls=$('soccerDefenseControls');
+    if(defenseControls){
+      defenseControls.classList.remove('hidden');
+      defenseControls.style.pointerEvents='auto';
+      defenseControls.querySelectorAll('[data-defense-action]').forEach(btn=>{
+        btn.disabled=false;
+        btn.style.pointerEvents='auto';
+        btn.style.touchAction='manipulation';
+      });
+    }
     const intent=soccerDefenseIntent(),primary=unit.field[0],support=unit.field.slice(1,5);
     rt.defenseScene={intent,defenderId:primary.p.id,supportIds:support.map(x=>x.p.id)};
     soccerLog('DANGER! 相手の決定機。守備を選択');soccerCinematic('DANGER!',rt.opponent.name+' ATTACK','bad','DEFENSIVE MOMENT',620);
@@ -7826,6 +7845,22 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     });
     const defender=state.soccer.players.find(p=>p.id===scene.defenderId);
     $('soccerChanceHelp').className='soccer-chance-overlay is-defense';$('soccerChanceHelp').innerHTML='<b>DANGER • '+escapeHtml(info.label)+' • 操作 '+escapeHtml(defender?.name||'DF')+'</b><span>'+escapeHtml(info.clue)+'<br><strong>味方選手をタップでカーソル切替</strong> → PRESS / JOCKEY / TACKLE / BLOCK を選択。</span>';
+    const controls=$('soccerDefenseControls');
+    if(controls){
+      controls.classList.remove('hidden');
+      controls.style.pointerEvents='auto';
+      controls.style.zIndex='9999';
+      controls.querySelectorAll('[data-defense-action]').forEach(btn=>{
+        btn.disabled=false;
+        btn.style.pointerEvents='auto';
+        btn.style.touchAction='manipulation';
+        btn.onclick=event=>{
+          event.preventDefault();
+          event.stopPropagation();
+          if(!soccerMatchRuntime?.actionLocked)soccerDefenseAction(btn.dataset.defenseAction);
+        };
+      });
+    }
   }
   function selectSoccerDefender(playerId){
     const rt=soccerMatchRuntime,scene=rt?.defenseScene;
@@ -7924,7 +7959,10 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     const rt=soccerMatchRuntime;if(rt)rt.actionLocked=locked;
     $('soccerPitch')?.classList.toggle('soccer-action-lock',locked);
     if($('soccerShootBtn'))$('soccerShootBtn').disabled=locked||!(rt&&rt.inChance&&rt.chanceType==='attack');
-    if($('soccerDefenseControls'))$('soccerDefenseControls').querySelectorAll('[data-defense-action]').forEach(btn=>btn.disabled=locked);
+    if($('soccerDefenseControls'))$('soccerDefenseControls').querySelectorAll('[data-defense-action]').forEach(btn=>{
+      btn.disabled=!!locked;
+      btn.style.pointerEvents=locked?'none':'auto';
+    });
   }
   function renderSoccerChance(){
     const rt=soccerMatchRuntime;if(!rt?.inChance||!$('soccerPitchActors'))return;
@@ -8144,7 +8182,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     $('soccerPlayerNameSaveBtn')?.addEventListener('click',saveSoccerPlayerName);
     $('soccerPlayerNameKeepBtn')?.addEventListener('click',closeSoccerPlayerNameModal);
     $('soccerShootBtn')?.addEventListener('click',()=>soccerChanceShoot('center'));
-    $$('#soccerDefenseControls [data-defense-action]').forEach(btn=>btn.addEventListener('click',()=>soccerDefenseAction(btn.dataset.defenseAction)));
+
     $$('#soccerSetPieceControls [data-setpiece-target]').forEach(btn=>btn.addEventListener('click',()=>soccerPhase16().resolveSetPiece(btn.dataset.setpieceTarget)));
     $('soccerSubBtn')?.addEventListener('click',substituteSoccerPlayer);
     $('soccerPositionTrainBtn')?.addEventListener('click',trainSoccerPositionAptitude);
