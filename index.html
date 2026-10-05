@@ -8144,8 +8144,8 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"è²§è¡
     $('soccerPlayerNameSaveBtn')?.addEventListener('click',saveSoccerPlayerName);
     $('soccerPlayerNameKeepBtn')?.addEventListener('click',closeSoccerPlayerNameModal);
     $('soccerShootBtn')?.addEventListener('click',()=>soccerChanceShoot('center'));
-    $('#soccerDefenseControls [data-defense-action]').forEach(btn=>btn.addEventListener('click',()=>soccerDefenseAction(btn.dataset.defenseAction)));
-    $('#soccerSetPieceControls [data-setpiece-target]').forEach(btn=>btn.addEventListener('click',()=>soccerPhase16().resolveSetPiece(btn.dataset.setpieceTarget)));
+    $$('#soccerDefenseControls [data-defense-action]').forEach(btn=>btn.addEventListener('click',()=>soccerDefenseAction(btn.dataset.defenseAction)));
+    $$('#soccerSetPieceControls [data-setpiece-target]').forEach(btn=>btn.addEventListener('click',()=>soccerPhase16().resolveSetPiece(btn.dataset.setpieceTarget)));
     $('soccerSubBtn')?.addEventListener('click',substituteSoccerPlayer);
     $('soccerPositionTrainBtn')?.addEventListener('click',trainSoccerPositionAptitude);
     $('soccerOpenBankManagerBtn')?.addEventListener('click',openBankManager);
