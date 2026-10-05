@@ -1,0 +1,16 @@
+/* STUDY FORGE FC • PHASE 16 */
+.phase16-rival-banner{margin:8px 12px 0;padding:8px 12px;border:1px solid rgba(255,132,64,.22);border-radius:10px;background:rgba(255,85,30,.06);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.phase16-rival-banner span{font-size:8px;font-weight:1000;letter-spacing:.14em;color:#ff9864}.phase16-rival-banner b{font-size:12px}.phase16-rival-banner small{margin-left:auto;color:#9d9da5;font-size:8px}
+.phase16-rival-banner.is-rival{border-color:rgba(255,72,48,.5);box-shadow:0 0 22px rgba(255,55,35,.10);background:linear-gradient(90deg,rgba(132,20,13,.18),rgba(255,110,35,.06))}
+.phase16-setpiece-controls{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.phase16-setpiece-btn{min-height:54px;border:1px solid rgba(255,206,94,.3);border-radius:12px;background:linear-gradient(180deg,#211b10,#111318);color:#ffe28e;font-weight:1000;cursor:pointer}.phase16-setpiece-btn:disabled{opacity:.42}
+.phase16-setpiece-live .match-athlete.focus{filter:drop-shadow(0 0 8px rgba(255,220,90,.5))}
+.phase16-static-ball{position:absolute;width:11px;height:11px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #20242a,0 0 9px rgba(255,255,255,.35);z-index:8}.phase16-static-ball.pk{left:50%;top:27%}.phase16-static-ball.fk{left:50%;top:38%}.phase16-static-ball.ck{left:10%;top:9%}
+.phase16-setpiece-help b{color:#ffe08b!important}
+.soccer-player-card.phase16-awakened{position:relative;border-color:rgba(255,213,94,.55)!important;box-shadow:0 0 18px rgba(255,203,64,.12),inset 0 0 24px rgba(255,193,54,.05)}
+.soccer-player-card.phase16-awakened::before{content:"AWAKENED";position:absolute;right:8px;top:7px;font-size:6px;font-weight:1000;letter-spacing:.14em;color:#ffe77f;text-shadow:0 0 10px rgba(255,215,70,.45)}
+.soccer-player-card.phase16-awakened.phase16-awaken-2{border-color:rgba(127,218,255,.58)!important;box-shadow:0 0 20px rgba(94,203,255,.15),inset 0 0 26px rgba(93,205,255,.06)}
+.soccer-player-card.phase16-awakened.phase16-awaken-3{border-color:rgba(255,255,255,.7)!important;background:linear-gradient(135deg,rgba(255,82,143,.05),rgba(255,218,80,.05),rgba(75,220,255,.05),rgba(180,95,255,.05)),#111318!important;box-shadow:0 0 22px rgba(255,255,255,.12),0 0 34px rgba(108,208,255,.09)}
+.match-athlete.phase16-awakened-player .athlete-shirt{box-shadow:0 0 10px rgba(255,221,90,.7),0 0 18px rgba(255,169,56,.3)}
+.match-athlete.phase16-awakened-player::after{content:"";position:absolute;inset:-7px;border:1px solid rgba(255,222,102,.34);border-radius:50%;box-shadow:0 0 12px rgba(255,210,70,.22);pointer-events:none}
+@media(max-width:650px){.phase16-rival-banner small{width:100%;margin-left:0}.phase16-setpiece-btn{min-height:50px;font-size:10px}}
