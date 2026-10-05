@@ -7,13 +7,15 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="description" content="STUDY FORGE — 知識を武器に変える学習RPG" />
-  <title>STUDY FORGE FC — HIGH SCHOOL SOCCER PHASE 15.4</title>
+  <title>STUDY FORGE FC — HIGH SCHOOL SOCCER PHASE 16</title>
   <link rel="stylesheet" href="soccer/phase13.css?v=13.1" />
   <link rel="stylesheet" href="soccer/phase14.css?v=14.0" />
   <link rel="stylesheet" href="soccer/phase15.css?v=15.4" />
+  <link rel="stylesheet" href="soccer/phase16.css?v=16.0" />
   <script src="soccer/phase13.js?v=13.1"></script>
   <script src="soccer/phase14.js?v=14.0"></script>
   <script src="soccer/phase15.js?v=15.4"></script>
+  <script src="soccer/phase16.js?v=16.0"></script>
   <style>
 :root {
   --bg: #07080a;
@@ -2926,6 +2928,7 @@ main.soccer-gesture-lock{
               <b id="soccerMatchStageText">公式戦</b>
               <small id="soccerMatchStageMeta">90 MIN</small>
             </div>
+            <div class="phase16-rival-banner hidden" id="soccerRivalBanner"></div>
             <div class="soccer-scoreboard">
               <div class="soccer-score-team"><b id="soccerScoreHomeName">FORGE高校</b><small id="soccerScoreHomeOvr">OVR 0</small></div>
               <div class="soccer-score"><span id="soccerHomeGoals">0</span> - <span id="soccerAwayGoals">0</span></div>
@@ -2960,6 +2963,11 @@ main.soccer-gesture-lock{
             <div class="soccer-match-controls" id="soccerMatchControls">
               <button class="primary-btn" id="soccerStartMatchBtn">KICK OFF</button>
               <button class="secondary-btn" id="soccerShootBtn" disabled>シュート</button>
+            </div>
+            <div class="phase16-setpiece-controls hidden" id="soccerSetPieceControls" aria-label="セットプレー操作">
+              <button type="button" class="phase16-setpiece-btn" data-setpiece-target="left">LEFT</button>
+              <button type="button" class="phase16-setpiece-btn" data-setpiece-target="center">CENTER</button>
+              <button type="button" class="phase16-setpiece-btn" data-setpiece-target="right">RIGHT</button>
             </div>
             <div class="soccer-defense-controls hidden" id="soccerDefenseControls" aria-label="守備操作">
               <button type="button" class="soccer-defense-action press" data-defense-action="press"><b>PRESS</b><small>素早く寄せてパスコースを消す</small></button>
@@ -6336,6 +6344,32 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     return soccerPhase15Module;
   }
 
+  /* HIGH SCHOOL SOCCER • PHASE 16 RIVAL / SET PIECE BRIDGE */
+  let soccerPhase16Module=null;
+  function soccerPhase16(){
+    if(soccerPhase16Module)return soccerPhase16Module;
+    if(!window.StudyForgePhase16?.create)throw new Error('Phase 16 module failed to load');
+    soccerPhase16Module=window.StudyForgePhase16.create({
+      getState:()=>state,
+      getRuntime:()=>soccerMatchRuntime,
+      clamp,
+      dom:$,
+      escapeHtml,
+      matchLineup:soccerMatchLineup,
+      matchAttr:soccerMatchAttr,
+      athleteMarkup:soccerAthleteMarkup,
+      animateBall:animateSoccerBall,
+      registerGoal:soccerRegisterGoal,
+      onGoal:p=>soccerPhase14().onGoal(p),
+      cinematic:soccerCinematic,
+      showMoment,
+      log:soccerLog,
+      screenImpact:soccerScreenImpact,
+      renderMatch:renderSoccerMatch
+    });
+    return soccerPhase16Module;
+  }
+
   /* HIGH SCHOOL SOCCER • PHASE 12 HONORS & RECORDS */
   function soccerPlayerSeasonScore(p){
     return (p.seasonGoals||0)*8+(p.seasonAssists||0)*5+(p.seasonMotm||0)*7+(p.seasonCleanSheets||0)*4+Math.min(18,(p.seasonMinutes||0)/90*.9)+(Number(p.ovr)||50)*.22;
@@ -7427,7 +7461,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
   function soccerPlayerCard(p,{selected=false,slotPos=null}={}){
     const starter=state.soccer.starterIds.includes(p.id),effective=slotPos?soccerEffectiveOvr(p,slotPos):p.ovr,grade=slotPos?soccerAptitudeGrade(p,slotPos):'';
     const con=soccerConditionValue(p),conClass=con>=80?'good':con>=60?'mid':'low',inj=soccerInjuryGames(p),traits=soccerSpecialTraitNames(p),prospect=soccerProspectTag(p),scout=soccerProScoutInterest(p);
-    return '<button type="button" class="soccer-player-card'+(starter?' starter':'')+(selected?' selected':'')+'" data-soccer-player="'+p.id+'">'+(starter?'<span class="starter-tag">STARTING XI</span>':'')+'<div class="soccer-player-main"><span class="soccer-pos">'+p.primaryPos+'</span><div><b>'+escapeHtml(p.name)+'</b><small>'+p.grade+'年 • '+escapeHtml(SOCCER_GROWTH_CURVES[soccerGrowthCurveFor(p)].name)+' • POT '+p.potential+'</small></div><span class="soccer-ovr">'+effective+'</span></div><div class="soccer-position-chips"><span class="soccer-condition-chip '+conClass+'">CON '+con+'</span>'+(inj?'<span class="phase5-injury">離脱 '+inj+'試合</span>':'')+(slotPos?'<span class="soccer-position-chip grade-'+String(grade).toLowerCase()+'"><strong>'+grade+'</strong> '+slotPos+'適性</span>':soccerAptitudeChips(p))+(traits[0]?'<span class="phase5-trait'+(p.phase14Abilities?.length?' phase14-ability':'')+'">'+escapeHtml(traits[0])+'</span>':'')+(p.awakenLevel?'<span class="phase5-trait phase14-awaken">覚醒 '+p.awakenLevel+'</span>':'')+'</div>'+(prospect||p.grade>=3?'<div class="phase13-badges">'+(prospect?'<span class="phase13-badge '+prospect.className+'">'+prospect.label+'</span>':'')+(p.grade>=3?'<span class="phase13-badge national">SCOUT '+scout+'%</span>':'')+'</div>':'')+'<div class="soccer-attrs">'+SOCCER_ATTRS.map(a=>'<div class="soccer-attr"><span>'+a+'</span><b>'+p[a]+'</b></div>').join('')+'</div></button>';
+    return '<button type="button" class="soccer-player-card'+(starter?' starter':'')+(selected?' selected':'')+(p.awakenLevel?' phase16-awakened phase16-awaken-'+Math.min(3,Number(p.awakenLevel)||1):'')+'" data-soccer-player="'+p.id+'">'+(starter?'<span class="starter-tag">STARTING XI</span>':'')+'<div class="soccer-player-main"><span class="soccer-pos">'+p.primaryPos+'</span><div><b>'+escapeHtml(p.name)+'</b><small>'+p.grade+'年 • '+escapeHtml(SOCCER_GROWTH_CURVES[soccerGrowthCurveFor(p)].name)+' • POT '+p.potential+'</small></div><span class="soccer-ovr">'+effective+'</span></div><div class="soccer-position-chips"><span class="soccer-condition-chip '+conClass+'">CON '+con+'</span>'+(inj?'<span class="phase5-injury">離脱 '+inj+'試合</span>':'')+(slotPos?'<span class="soccer-position-chip grade-'+String(grade).toLowerCase()+'"><strong>'+grade+'</strong> '+slotPos+'適性</span>':soccerAptitudeChips(p))+(traits[0]?'<span class="phase5-trait'+(p.phase14Abilities?.length?' phase14-ability':'')+'">'+escapeHtml(traits[0])+'</span>':'')+(p.awakenLevel?'<span class="phase5-trait phase14-awaken">覚醒 '+p.awakenLevel+'</span>':'')+'</div>'+(prospect||p.grade>=3?'<div class="phase13-badges">'+(prospect?'<span class="phase13-badge '+prospect.className+'">'+prospect.label+'</span>':'')+(p.grade>=3?'<span class="phase13-badge national">SCOUT '+scout+'%</span>':'')+'</div>':'')+'<div class="soccer-attrs">'+SOCCER_ATTRS.map(a=>'<div class="soccer-attr"><span>'+a+'</span><b>'+p[a]+'</b></div>').join('')+'</div></button>';
   }
   function renderSoccerHome(){
     if(!$('soccerHomeSchool'))return;normalizeSoccerState();const rank=soccerRankInfo(),team=soccerTeamOvr(),event=currentSeasonEvent(),next=soccerSeasonOpponent(event);
@@ -7598,18 +7632,19 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     soccerApplyStagePresentation(event);$('soccerMatchCompetition').textContent=seasonCompetitionLabel(event);$('soccerMatchTitle').textContent=event?.title||'公式戦';
     $('soccerScoreHomeName').textContent=state.soccer.schoolName;$('soccerScoreAwayName').textContent=event?.type==='graduation'?'新年度':opp.name;$('soccerScoreHomeOvr').textContent=(rt?'MATCH ':'OVR ')+team;$('soccerScoreAwayOvr').textContent=event?.type==='graduation'?'—':'OVR '+opp.strength;$('soccerMatchFormation').textContent=state.soccer.formation+' • '+soccerTacticInfo().name;$('soccerMatchRank').textContent=soccerRankInfo().name;
     $('soccerMinute').textContent=rt?Math.min(90,rt.minute):0;$('soccerHomeGoals').textContent=rt?rt.home:0;$('soccerAwayGoals').textContent=rt?rt.away:0;$('soccerMatchProgress').style.width=((rt?Math.min(90,rt.minute):0)/90*100)+'%';$('soccerChanceCount').textContent=rt?rt.chances:0;$('soccerUserGoals').textContent=rt?rt.userGoals:0;if($('soccerDribbleCount'))$('soccerDribbleCount').textContent=rt?(rt.dribbleSuccess+' / '+rt.dribbles):'0 / 0';if($('soccerDefenseStopCount'))$('soccerDefenseStopCount').textContent=rt?((rt.defenseStops||0)+' / '+(rt.defenseChances||0)):'0 / 0';
-    const defending=!!(rt?.inChance&&rt?.chanceType==='defense'),attacking=!!(rt?.inChance&&rt?.chanceType==='attack');
-    $('soccerMatchStatus').textContent=rt?(rt.finished?'FULL TIME':defending?'DANGER!':attacking?'CHANCE!':'LIVE'):(event?.type==='graduation'?'NO MATCH':'READY');
+    const defending=!!(rt?.inChance&&rt?.chanceType==='defense'),attacking=!!(rt?.inChance&&rt?.chanceType==='attack'),setpiece=!!(rt?.inChance&&rt?.chanceType==='setpiece');
+    $('soccerMatchStatus').textContent=rt?(rt.finished?'FULL TIME':setpiece?'SET PIECE!':defending?'DANGER!':attacking?'CHANCE!':'LIVE'):(event?.type==='graduation'?'NO MATCH':'READY');
     $('soccerStartMatchBtn').disabled=!!(rt&&!rt.finished)||event?.type==='graduation';$('soccerStartMatchBtn').textContent=rt&&rt.finished?'日程へ戻る':'KICK OFF';$('soccerShootBtn').disabled=!attacking||!!rt?.actionLocked;
     $('soccerPitch')?.classList.toggle('soccer-action-lock',!!rt?.actionLocked);
-    $('soccerMatchControls')?.classList.toggle('hidden',defending);$('soccerDefenseControls')?.classList.toggle('hidden',!defending);
+    $('soccerMatchControls')?.classList.toggle('hidden',defending||setpiece);$('soccerDefenseControls')?.classList.toggle('hidden',!defending);$('soccerSetPieceControls')?.classList.toggle('hidden',!setpiece);
     if($('soccerDefenseControls'))$('soccerDefenseControls').querySelectorAll('[data-defense-action]').forEach(btn=>btn.disabled=!!rt?.actionLocked);
     renderSoccerTacticControls();if($('soccerMatchPower'))$('soccerMatchPower').textContent=rt?numbers.overall:soccerTeamOvr();if($('soccerMatchCondition'))$('soccerMatchCondition').textContent=soccerAverageCondition(rt?.liveLineup||state.soccer.lineupSlots)+'%';if($('soccerMatchTacticEdge'))$('soccerMatchTacticEdge').textContent='vs '+soccerTacticInfo(numbers.awayKey).name+' • 相性 '+(numbers.edge>0?'+':'')+numbers.edge;
-    renderSoccerSubstitutionControls();
+    renderSoccerSubstitutionControls();soccerPhase16().renderRival(opp);
     if(rt?.inChance){
       setSoccerGestureScrollLock(rt.chanceType==='attack');
       $('soccerPitch')?.classList.toggle('defense-moment',rt.chanceType==='defense');
-      if(rt.chanceType==='defense')renderSoccerDefenseChance();
+      if(rt.chanceType==='setpiece')soccerPhase16().renderSetPiece();
+      else if(rt.chanceType==='defense')renderSoccerDefenseChance();
       else if(rt.chanceType==='attack')renderSoccerChance();
     }else{
       setSoccerGestureScrollLock(false);
@@ -7619,7 +7654,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     soccerPhase14().renderHud();
   }
   function soccerAthleteMarkup({p=null,x=50,y=50,team='home',focus=false,ball=false,interactive=false,pos='',number=0,name='',actorId='',extraClass=''}={}){
-    const athleteName=name||(p?.name||''),position=pos||(p?.primaryPos||''),shirtNo=number||(p?.number||0),classes=['match-athlete',team,focus?'focus':'',ball?'ball-holder':'',interactive?'selectable':'',extraClass].filter(Boolean).join(' ');
+    const athleteName=name||(p?.name||''),position=pos||(p?.primaryPos||''),shirtNo=number||(p?.number||0),classes=['match-athlete',team,focus?'focus':'',ball?'ball-holder':'',interactive?'selectable':'',p?.awakenLevel?'phase16-awakened-player':'',extraClass].filter(Boolean).join(' ');
     const tag=interactive?'button':'div',chanceAttr=interactive&&p?' data-chance-player="'+p.id+'"':'',actorAttr=(actorId||p?.id)?' data-match-actor="'+escapeHtml(actorId||p.id)+'"':'';
     return '<'+tag+' type="'+(interactive?'button':'button')+'"'+chanceAttr+actorAttr+' class="'+classes+'" style="left:'+x+'%;top:'+y+'%"><span class="athlete-head"></span><span class="athlete-hair"></span><span class="athlete-shirt"></span><span class="athlete-number">'+shirtNo+'</span><span class="athlete-shorts"></span><span class="athlete-legs"></span><span class="athlete-label"><span class="athlete-pos">'+position+'</span>'+escapeHtml((athleteName||position).split(' ')[0])+'</span>'+(ball?'<span class="match-ball"></span>':'')+'</'+tag+'>';
   }
@@ -7634,9 +7669,10 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if(!$('soccerPitchActors'))return;
     const rt=soccerMatchRuntime;
     if(rt?.inChance){
+      if(rt.chanceType==='setpiece')return soccerPhase16().renderSetPiece();
       if(rt.chanceType==='defense')return renderSoccerDefenseChance();
       if(rt.chanceType==='attack')return renderSoccerChance();
-      rt.inChance=false;rt.actionLocked=false;rt.chanceType=null;rt.defenseScene=null;
+      rt.inChance=false;rt.actionLocked=false;rt.chanceType=null;rt.defenseScene=null;rt.setPiece=null;
       $('soccerPitch')?.classList.remove('soccer-action-lock');
     }
     normalizeSoccerState();ensureMatchLineupReady();
@@ -7657,7 +7693,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     normalizeSoccerState();const event=currentSeasonEvent();if(event.type==='graduation')return toast('<b>SEASON</b> 年間日程から卒業式を進めてください');const unavailable=state.soccer.starterIds.map(id=>state.soccer.players.find(p=>p.id===id)).filter(p=>!soccerPlayerAvailable(p));if(unavailable.length){autoSelectSoccerStarters(false);toast('<b>LINEUP UPDATED</b> 離脱選手を外して自動編成しました');}if(state.soccer.starterIds.length!==11)return toast('<b>LINEUP ERROR</b> スタメンを11人選んでください');
     if(soccerMatchTimer){clearInterval(soccerMatchTimer);soccerMatchTimer=null;}
     const opp=soccerSeasonOpponent(event);soccerMatchRuntime={eventId:event.id,eventType:event.type,opponent:opp,minute:0,home:0,away:0,chances:0,userGoals:0,dribbles:0,dribbleSuccess:0,nextChance:Math.max(10,Math.round((15+Math.floor(Math.random()*9))/soccerTacticInfo().chance)),nextDefense:12+Math.floor(Math.random()*10),defenseChances:0,defenseStops:0,defenseActions:{press:0,jockey:0,tackle:0,block:0},chanceType:null,defenseScene:null,inChance:false,finished:false,stage:0,ballHolder:null,attackers:[],actorPos:{},defenderPos:{},actionLocked:false,pk:null,liveLineup:{...state.soccer.lineupSlots},startingLineup:{...state.soccer.lineupSlots},substitutions:0,subHistory:[],minutesPlayed:{},tacticalChanges:0,playerGoals:{},playerAssists:{},lastPasserId:null,preScoutInterest:Object.fromEntries(state.soccer.players.map(p=>[p.id,soccerProScoutInterest(p)]))};
-    soccerPhase14().onMatchStart();
+    soccerPhase14().onMatchStart();soccerPhase16().onMatchStart(opp,event);
     $('soccerMatchResult').classList.add('hidden');$('soccerMatchResult').innerHTML='';$('soccerMatchLog').innerHTML='<b>'+escapeHtml(seasonCompetitionLabel(event))+'</b><br>'+escapeHtml(state.soccer.schoolName)+' vs '+escapeHtml(opp.name)+'<br>戦術：'+escapeHtml(soccerTacticInfo().name)+' / 相手：'+escapeHtml(soccerTacticInfo(soccerOpponentTactic(opp)).name);renderSoccerMatch();
     const presentation=soccerEventPresentation(event);soccerCinematic('KICK OFF',state.soccer.schoolName+' vs '+opp.name,presentation.final?'legendary':'good',presentation.badge,900);
     soccerMatchTimer=setInterval(soccerMatchTick,520);
@@ -7671,14 +7707,16 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if(rt.chanceType==='defense'){
       return !!rt.defenseScene&&actors.classList.contains('defense-live')&&help.classList.contains('is-defense');
     }
+    if(rt.chanceType==='setpiece')return soccerPhase16().isSetPieceHealthy();
     return false;
   }
   function soccerRepairActiveMoment(rt){
     if(!rt?.inChance)return false;
     const validAttack=rt.chanceType==='attack'&&rt.ballHolder&&Array.isArray(rt.attackers)&&rt.attackers.length>0;
     const validDefense=rt.chanceType==='defense'&&rt.defenseScene;
-    if(!validAttack&&!validDefense){
-      rt.inChance=false;rt.chanceType=null;rt.actionLocked=false;rt.defenseScene=null;rt.ballHolder=null;rt.attackers=[];
+    const validSetPiece=rt.chanceType==='setpiece'&&rt.setPiece;
+    if(!validAttack&&!validDefense&&!validSetPiece){
+      rt.inChance=false;rt.chanceType=null;rt.actionLocked=false;rt.defenseScene=null;rt.setPiece=null;rt.ballHolder=null;rt.attackers=[];
       $('soccerPitch')?.classList.remove('soccer-action-lock','defense-moment');setSoccerGestureScrollLock(false);
       rt.nextChance=Math.max(Number(rt.nextChance)||0,rt.minute+6);
       rt.nextDefense=Math.max(Number(rt.nextDefense)||0,rt.minute+6);
@@ -7687,7 +7725,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if(!soccerMomentUiHealthy(rt)){
       try{renderSoccerMatch();}catch(err){
         console.warn('Moment recovery failed',err);
-        rt.inChance=false;rt.chanceType=null;rt.actionLocked=false;rt.defenseScene=null;rt.ballHolder=null;rt.attackers=[];
+        rt.inChance=false;rt.chanceType=null;rt.actionLocked=false;rt.defenseScene=null;rt.setPiece=null;rt.ballHolder=null;rt.attackers=[];
         $('soccerPitch')?.classList.remove('soccer-action-lock','defense-moment');setSoccerGestureScrollLock(false);
         rt.nextChance=rt.minute+6;rt.nextDefense=rt.minute+6;
         try{renderSoccerMatch();}catch(_){}
@@ -7701,6 +7739,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if(rt.inChance){soccerRepairActiveMoment(rt);return;}
     soccerAccumulateMinutes(3);rt.minute=Math.min(90,rt.minute+3);soccerPhase14().onTick();const n=soccerMatchNumbers();
     if(Math.random()<.0115*(n.attack/Math.max(35,n.oppDefense))){rt.home++;const contrib=soccerPickAutoGoalContributors();if(contrib.scorer){soccerRegisterGoal(contrib.scorer.id,contrib.assist?.id);soccerPhase14().onGoal(contrib.scorer);}soccerLog((contrib.scorer?contrib.scorer.name+' ':'')+'戦術から崩してゴール！');soccerScreenImpact(true);soccerCinematic('GOAL!',(contrib.scorer?.name||state.soccer.schoolName)+' • '+rt.minute+"'",'good','TEAM GOAL',820);}
+    if(soccerPhase16().tryStartSetPiece())return;
     if(rt.minute>=rt.nextDefense&&rt.minute<88&&(rt.defenseChances||0)<3){if(startSoccerDefenseChance())return;rt.nextDefense=rt.minute+6;}
     if(rt.minute>=rt.nextChance&&rt.minute<87&&rt.chances<3){if(startSoccerChance())return;rt.nextChance=rt.minute+6;}
     if(rt.minute>=90){finishSoccerMatch();return;}renderSoccerMatch();
@@ -8081,10 +8120,11 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     else if(draw){r.draws++;result='DRAW';rep=4;}
     else{r.losses++;result=pk?'LOSE (PK)':'LOSE';rep=event.type==='league'?1:3;}
     const trainingReward=won?12:draw?8:6,facilityReward=(won?10:draw?7:5)+((event.type==='interhigh'||event.type==='championship'||event.type==='promotion')?4:0),managerXp=soccerManagerMatchReward(event,won,draw);state.soccer.reputation+=rep;state.soccer.trainingPoints+=trainingReward;state.soccer.facilities.points+=facilityReward;soccerAwardManagerXp(managerXp);state.soccer.lastResult={result,home:rt.home,away:rt.away,opponent:rt.opponent.name,eventId:event.id,at:Date.now()};
-    const matchMotm=applySoccerMatchStatistics(),scoutBreakthroughs=soccerScoutBreakthroughs(),growthReport=applySoccerMatchDevelopment(event,{won,draw});applySoccerMatchCondition();const injuryReport=applySoccerInjuriesAfterMatch();const phase14Result=soccerPhase14().finishMatch({won,draw,event,teamOvr:team,opponentOvr:opp,matchMotm});seasonRecordResult(event,{won,draw,home:rt.home,away:rt.away,pk,opponent:rt.opponent.name});
+    const matchMotm=applySoccerMatchStatistics(),scoutBreakthroughs=soccerScoutBreakthroughs(),growthReport=applySoccerMatchDevelopment(event,{won,draw});applySoccerMatchCondition();const injuryReport=applySoccerInjuriesAfterMatch();const phase14Result=soccerPhase14().finishMatch({won,draw,event,teamOvr:team,opponentOvr:opp,matchMotm}),phase16Result=soccerPhase16().finishMatch({opponent:rt.opponent,event,home:rt.home,away:rt.away,won,draw});seasonRecordResult(event,{won,draw,home:rt.home,away:rt.away,pk,opponent:rt.opponent.name});
     autoSelectSoccerStarters(false);saveState();
     const phase14Reward=phase14Result?.chest?'DROP：'+escapeHtml(phase14Result.chest.label)+' • 育成PT +'+phase14Result.chest.tp+' / SP +'+phase14Result.chest.sp+' / 施設PT +'+phase14Result.chest.fp:'',phase14Awaken=phase14Result?.awakening?'覚醒：'+escapeHtml(phase14Result.awakening.player.name)+' LV.'+phase14Result.awakening.level+' • '+phase14Result.awakening.gains.map(escapeHtml).join(' / ')+(phase14Result.awakening.abilityName?' • '+escapeHtml(phase14Result.awakening.abilityName):''):'';
-    const extra=[matchMotm?'MOM：'+escapeHtml(matchMotm.name):'',phase14Reward,phase14Awaken,scoutBreakthroughs.length?'スカウト：'+escapeHtml(scoutBreakthroughs[0].p.name)+' '+escapeHtml(scoutBreakthroughs[0].tier.label)+'（'+scoutBreakthroughs[0].after+'%）':'',growthReport.length?'成長：'+growthReport.slice(0,3).map(escapeHtml).join(' / '):'',injuryReport.length?'コンディション：'+injuryReport.map(escapeHtml).join(' / '):''].filter(Boolean).join('<br>');
+    const rivalResult=phase16Result?.entry?.rival?'ライバル：'+escapeHtml(phase16Result.entry.name)+' • 通算 '+phase16Result.entry.w+'勝 '+phase16Result.entry.d+'分 '+phase16Result.entry.l+'敗':'';
+    const extra=[matchMotm?'MOM：'+escapeHtml(matchMotm.name):'',rivalResult,phase14Reward,phase14Awaken,scoutBreakthroughs.length?'スカウト：'+escapeHtml(scoutBreakthroughs[0].p.name)+' '+escapeHtml(scoutBreakthroughs[0].tier.label)+'（'+scoutBreakthroughs[0].after+'%）':'',growthReport.length?'成長：'+growthReport.slice(0,3).map(escapeHtml).join(' / '):'',injuryReport.length?'コンディション：'+injuryReport.map(escapeHtml).join(' / '):''].filter(Boolean).join('<br>');
     const box=$('soccerMatchResult'),outcome=won?'win':draw?'draw':'lose';box.className='soccer-result phase11-result '+outcome;box.innerHTML='<div class="phase11-result-score"><div><span>'+escapeHtml(state.soccer.schoolName)+'</span><b>'+rt.home+'</b></div><div style="text-align:center"><span>'+escapeHtml(result)+'</span><b style="font-size:14px">'+(pk?'PK '+pk.home+'-'+pk.away:'FULL TIME')+'</b></div><div style="text-align:right"><span>'+escapeHtml(rt.opponent.name)+'</span><b>'+rt.away+'</b></div></div><div class="phase11-rewards"><span class="phase11-reward">REP +'+rep+'</span><span class="phase11-reward">育成PT +'+trainingReward+'</span><span class="phase11-reward">施設PT +'+facilityReward+'</span><span class="phase11-reward">監督XP +'+managerXp+'</span></div>'+(extra?'<p>'+extra+'</p>':'');soccerLog('FULL TIME • '+result);if(scoutBreakthroughs.length){const s=scoutBreakthroughs[0];showMoment('SCOUT ATTENTION',s.p.name+' • '+s.tier.label,'legendary');}soccerCinematic(won?'VICTORY':draw?'DRAW':'FULL TIME',rt.home+' - '+rt.away,won?'good':draw?'good':'bad',escapeHtml(event.title),950);renderSoccerMatch();renderSoccerHome();
   }
   function renderSoccerShell(){if(!state.soccer)normalizeSoccerState();renderSoccerHome();const active=document.querySelector('.screen.active')?.dataset.screen;if(active==='soccer-team')renderSoccerTeam();if(active==='soccer-training')renderSoccerTraining();if(active==='soccer-match')renderSoccerMatch();if(active==='soccer-scout')renderSoccerScout();if(active==='soccer-season')renderSoccerSeason();if(active==='soccer-school')renderSoccerSchool();if(active==='soccer-world')renderSoccerWorld();if(active==='soccer-manager')renderSoccerManager();}
@@ -8104,7 +8144,8 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     $('soccerPlayerNameSaveBtn')?.addEventListener('click',saveSoccerPlayerName);
     $('soccerPlayerNameKeepBtn')?.addEventListener('click',closeSoccerPlayerNameModal);
     $('soccerShootBtn')?.addEventListener('click',()=>soccerChanceShoot('center'));
-    $$('#soccerDefenseControls [data-defense-action]').forEach(btn=>btn.addEventListener('click',()=>soccerDefenseAction(btn.dataset.defenseAction)));
+    $('#soccerDefenseControls [data-defense-action]').forEach(btn=>btn.addEventListener('click',()=>soccerDefenseAction(btn.dataset.defenseAction)));
+    $('#soccerSetPieceControls [data-setpiece-target]').forEach(btn=>btn.addEventListener('click',()=>soccerPhase16().resolveSetPiece(btn.dataset.setpieceTarget)));
     $('soccerSubBtn')?.addEventListener('click',substituteSoccerPlayer);
     $('soccerPositionTrainBtn')?.addEventListener('click',trainSoccerPositionAptitude);
     $('soccerOpenBankManagerBtn')?.addEventListener('click',openBankManager);
