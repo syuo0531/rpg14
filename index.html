@@ -7,11 +7,13 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="description" content="STUDY FORGE — 知識を武器に変える学習RPG" />
-  <title>STUDY FORGE FC — HIGH SCHOOL SOCCER PHASE 14</title>
+  <title>STUDY FORGE FC — HIGH SCHOOL SOCCER PHASE 15</title>
   <link rel="stylesheet" href="soccer/phase13.css?v=13.1" />
   <link rel="stylesheet" href="soccer/phase14.css?v=14.0" />
+  <link rel="stylesheet" href="soccer/phase15.css?v=15.0" />
   <script src="soccer/phase13.js?v=13.1"></script>
   <script src="soccer/phase14.js?v=14.0"></script>
+  <script src="soccer/phase15.js?v=15.0"></script>
   <style>
 :root {
   --bg: #07080a;
@@ -4911,6 +4913,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     if(activeScreen==='goals') renderGoals();
     if(activeScreen==='skills') renderSkills();
     if(activeScreen==='exam') renderExamScreen();
+    if(activeScreen==='study') soccerPhase15().render();
     renderFxMode();
     if(activeScreen==='battle') updateWeaponSkillButton();
 
@@ -5000,7 +5003,7 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
     $('questionYear').textContent=currentQuestion.year||'—';$('questionExamType').textContent=currentQuestion.examType||'未分類';
     const qLabel=currentQuestion.qNum?`問${currentQuestion.qNum}`:'QUESTION';$('questionCounter').textContent=state.study.mode==='review'?`REVIEW • ${qLabel}`:state.study.mode==='mastery'?`MASTERY • ${qLabel}`:`AT EXAM • ${qLabel}`;
     setMasteryBadge($('questionMastery'),currentQuestion.id);$('questionText').textContent=currentQuestion.question;$('answerFeedback').className='answer-feedback';$('answerFeedback').innerHTML='';$('nextQuestionBtn').classList.add('hidden');$('submitAnswerBtn').classList.remove('hidden');$('submitAnswerBtn').disabled=true;
-    renderQuestionImage(currentQuestion,'study');renderChoices($('choiceGrid'),currentQuestion,studySelection,updateStudySelectionUI);updateStudySelectionUI();renderRewardPreview(currentQuestion);
+    renderQuestionImage(currentQuestion,'study');renderChoices($('choiceGrid'),currentQuestion,studySelection,updateStudySelectionUI);updateStudySelectionUI();renderRewardPreview(currentQuestion);soccerPhase15().onQuestion();
   }
 
   function renderChoices(container, question, selection, onChange) {
@@ -5099,14 +5102,14 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
       const reward = calculateStudyRewards(q);
       const {exp,gold,energy} = reward;
       const materialDrop = rollStudyMaterial(q);
-      phase5Track('correct',1); if(wasReview) phase5Track('reviewCorrect',1); phase5Track('combo',state.study.combo); phase10OnCorrect(q); soccerStudyReward(true,q,wasReview);
+      phase5Track('correct',1); if(wasReview) phase5Track('reviewCorrect',1); phase5Track('combo',state.study.combo); phase10OnCorrect(q); soccerStudyReward(true,q,wasReview); soccerPhase15().onAnswer(true,q,{wasReview});
       $('answerFeedback').innerHTML = `<strong>✓ CORRECT — COMBO ${state.study.combo}</strong>${explanationHtml(q)}`;
       addRewards({exp,gold,energy});
       if (materialDrop) toast(`<b>MATERIAL</b> ${materialDrop}`);
     } else {
       state.study.combo = 0;
       markReview(q.id,true);
-      soccerStudyReward(false,q,false);
+      soccerStudyReward(false,q,false); soccerPhase15().onAnswer(false,q,{wasReview:false});
       $('answerFeedback').innerHTML = `<strong>✕ WRONG — 復習問題に追加</strong>${explanationHtml(q)}`;
       toast('<b>REVIEW ADDED</b> 間違えた問題を復習リストへ登録');
       saveState();
@@ -6311,6 +6314,26 @@ window.STUDY_FORGE_QUESTIONS = [{"id":"2023-bac-q001","qNum":1,"question":"貧�
       escapeHtml
     });
     return soccerPhase14Module;
+  }
+
+  /* HIGH SCHOOL SOCCER • PHASE 15 STUDY DOPAMINE BRIDGE */
+  let soccerPhase15Module=null;
+  function soccerPhase15(){
+    if(soccerPhase15Module)return soccerPhase15Module;
+    if(!window.StudyForgePhase15?.create)throw new Error('Phase 15 module failed to load');
+    soccerPhase15Module=window.StudyForgePhase15.create({
+      getState:()=>state,
+      clamp,
+      playerOvr:soccerPlayerOvr,
+      showMoment,
+      cinematic:soccerCinematic,
+      toast,
+      dom:$,
+      escapeHtml,
+      save:saveState,
+      renderSoccer:renderSoccerShell
+    });
+    return soccerPhase15Module;
   }
 
   /* HIGH SCHOOL SOCCER • PHASE 12 HONORS & RECORDS */
